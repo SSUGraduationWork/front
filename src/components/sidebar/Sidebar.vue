@@ -15,14 +15,12 @@
     </span>
 
     <div class="margin-block"></div>
-    <SidebarLink :to="workUrl" icon="fas fa-rectangle-list">작업</SidebarLink>
+    <SidebarLink :to="workUrl" icon="fas fa-rectangle-list" class = "sidebar-name">작업</SidebarLink>
     <SidebarLink :to="fileUrl" icon="fas fa-file-lines">파일</SidebarLink>
     <SidebarLink :to="calendarUrl" icon="fas fa-calendar-days">달력</SidebarLink>
     <SidebarLink :to="chattingUrl" icon="fas fa-comment-dots">채팅</SidebarLink>
     <SidebarLink :to="contributionUrl" icon="fas fa-chart-bar">기여도</SidebarLink>
-
-
-  </div>
+</div>
 </template>
 
 <script>
@@ -58,6 +56,8 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=REM:ital,wght@1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
+
 .sidebar {
   color: rgb(0, 0, 0);
   background-color: var(--sidebar-bg-color);

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Work from '../views/Work.vue'
+import Work from '../views/Work/Work.vue'
 
 const routes = [
   {

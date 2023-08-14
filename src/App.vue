@@ -2,7 +2,7 @@
   <div>
     <Sidebar :teamId="teamId" />
     <div :style="{ 'margin-left': sidebarWidth }">
-      <Header />
+      <Header /> 
       <router-view :teamId="teamId"></router-view> 
     </div>
   </div>
@@ -11,23 +11,25 @@
 import Sidebar from '@/components/sidebar/Sidebar'
 import Header from '@/components/layout/Header'
 import { sidebarWidth } from '@/components/sidebar/state'
+import {useRouter, useRoute} from 'vue-router'
+import {onBeforeMount, ref} from 'vue'
 export default {
   components: { 
     Sidebar,
     Header
   },
   setup() {
-    return { sidebarWidth }
+    return { sidebarWidth };
   },
   computed : {
     teamId() {
-      const teamId = this.$route.params.teamId;
-      return teamId;
+      return this.$route.params.teamId;
     }
   }
 }
 </script>
 <style>
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
