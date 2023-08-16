@@ -1,6 +1,6 @@
 <template>
     <div class="card flex justify-content-center">
-        <Dropdown v-model="selectedStatus" :options="statuses" optionLabel="name" class="w-full md:w-14rem" dropdownIcon=" ">
+        <Dropdown v-model="selectedStatus" :options="statuses" optionLabel="name" v-on:change="change" class="w-full md:w-14rem" dropdownIcon=" ">
             <template #value>
                 <div v-if="selectedStatus && selectedStatus.code != 1" class = "current-status" :style="{background: statusColor[selectedStatus.code]}">
                     <div class="current-status-name">{{ selectedStatus.name }}</div>
@@ -22,10 +22,19 @@
 </template>
 
 <script setup>
+import axios from 'axios';
 import { ref } from "vue";
 
 const props = defineProps({
-    status : Number,
+    status : {
+        type: Number,
+        defaule: 1
+    },
+    workId : {
+        type: Number,
+        default: 0
+    }
+    
 })
 const currentStatus = props.status
 const statuses = ref([
@@ -38,6 +47,13 @@ const statuses = ref([
 const selectedStatus = ref(statuses.value[currentStatus-1]);
 
 const statusColor = ['#DFDFDF', '#DFDFDF', '#5D96DA', '#FF7171', '#99CC8C'];
+
+const change = () => {
+    axios.patch(`http://localhost:3000/work/${props.workId}/status`, {status: selectedStatus.value.code})
+        .then((res) => {
+            console.log(res);
+        })
+}
 
 </script>
 <style scoped>

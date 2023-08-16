@@ -1,5 +1,5 @@
 <template>
-    <VueDatePicker v-model="date" :format-locale="ko" :min-date="new Date()" time-picker-inline>
+    <VueDatePicker v-model="date" :format-locale="ko" :min-date="new Date()" @update:model-value="change" time-picker-inline>
         <template #trigger>
             <div v-if= "isNull == 0" class = "end-date">
                 <p class = "ymd">{{dateFormat.year}}년 {{dateFormat.month}}월 {{dateFormat.day}}일</p>
@@ -14,12 +14,18 @@
 </template>
 
 <script setup>
-import '@vuepic/vue-datepicker/dist/main.css'
+import '@vuepic/vue-datepicker/dist/main.css';
+import dayjs from 'dayjs';
+import axios from 'axios';
 import { ref, computed, defineProps } from 'vue';
 import { ko } from 'date-fns/locale';
 
 const props = defineProps({
     date : String,
+    workId : {
+        type: Number,
+        default: 0
+    }
 })
 let isNull = 0;
 if (props.date == null) {
@@ -44,6 +50,14 @@ dateFormat.month = computed(() => date.value.getMonth() + 1);
 dateFormat.day = computed(() => date.value.getDate());
 dateFormat.hour = computed(() => date.value.getHours());
 dateFormat.minute = computed(() => date.value.getMinutes());
+
+const change = () => {
+    axios.patch(`http://localhost:3000/work/${props.workId}/end_date`, {end_date: dayjs(date.value).format('YYYY-MM-DD HH:mm:ss')})
+        .then((res) => {
+            console.log(res);
+        })
+
+}
 </script>
 
 <style scoped>

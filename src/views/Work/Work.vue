@@ -9,28 +9,25 @@
       <div class = "margin-space">
       </div>
       <tbody>
-        <tr v-for="(work, i) in workInfo" :key="i">
+        <tr v-for="(work, i) in workInfo" :key="i" :id = "work.work_id">
           <td class = "work-name">
-            <textarea v-model="work.work_name" @input="resize($event.target)" class="work-name-input">{{ work.work_name }}</textarea>
+            <textarea v-model="work.work_name" @input="resize($event.target)" v-on:change="textChange(work.work_id, $event.target.value)" class="work-name-input">{{ work.work_name }}</textarea>
           </td>
           <td class = "team-members">
-            <MultiSelect v-if="membersById !== null" :teamMembers="membersById" :workers="work.worker"></MultiSelect>
+            <MultiSelect v-if="membersById !== null" :teamMembers="membersById" :workers="work.worker" :workId = "work.work_id"></MultiSelect>
           </td>
           <td class = "end-date">
-            <DatePicker :date="work.end_date"></DatePicker>
+            <DatePicker :date="work.end_date" :workId = "work.work_id"></DatePicker>
           </td>
           <td class = "importance">
-            <Rating :importance="work.importance"></Rating>
+            <Rating :importance="work.importance" :workId = "work.work_id"></Rating>
           </td>
           <td class = "status">
-            <StatusDropdown :status="work.status"></StatusDropdown>
+            <StatusDropdown :status="work.status" :workId = "work.work_id"></StatusDropdown>
           </td>
           <td class = "more">
             <i class="fi fi-rr-menu-dots-vertical"></i>
           </td>
-        </tr>
-        <tr>
-          <div class = "add-work"></div>
         </tr>
       </tbody>
     </table>
@@ -85,6 +82,13 @@ export default {
     resize(textarea) {
       textarea.style.height = "0.5px";
       textarea.style.height = textarea.scrollHeight + "px";
+    },
+    textChange(workId, value){
+      console.log(value);
+      axios.patch(`http://localhost:3000/work/${workId}/work_name`, {work_name : value})
+        .then((res) => {
+            console.log(res);
+        })
     }
   },
 }
@@ -134,15 +138,12 @@ tbody tr{
   cursor: pointer;
   width: 5%;
   font-size: 13px;
+  min-width: 30px;
 }
 th{
   position: sticky;
 }
-.more{
-  min-width: 30px;
-}
-.add-work {
-}
+
 </style>
 <style global>
 .team-members:hover .p-multiselect-trigger {

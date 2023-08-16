@@ -14,7 +14,7 @@ const MultiSelectCSS = `
                 }
                 .p-checkbox .p-highlight{
                     background-color: #3772FF;
-                    width: 17.5px;
+                    width: 20px;
                     border-radius : 4px;
                     border: 1px solid #3772FF;
                 }
@@ -32,8 +32,8 @@ const MultiSelectCSS = `
                     width: 13px;
                     margin-left: 1.5px;
                 }
-                .p-checkbox{
-                    width: 22px;
+                .p-checkbox-box{
+                    width: 20px;
                     height: 20px;
                     border: 1px solid #8F8F8F;
                     border-radius: 5px;
@@ -105,6 +105,9 @@ const RatingCSS = `
                     min-width: 110px;
                     width: 100%;
                     justify-content : center;
+                }
+                .p-rating-item {
+                    color: #8F8F8F;
                 }
                 .p-rating-item-active{
                     color: #3772FF;

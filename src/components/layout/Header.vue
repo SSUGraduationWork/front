@@ -78,7 +78,6 @@ export default {
     border-bottom: 1.5px solid #F0EFEF;
     height: 3em;
     background-color: white;
-
 }
 .header ul {
     list-style-type: none;

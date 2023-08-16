@@ -1,7 +1,7 @@
 <template>
     <div class = "all">
         <MultiSelect v-model="selectedMembers" :options="teamMembers" filter optionLabel="user_name" display="comma" closeIcon = "false" 
-        v-on:before-show="reset" v-on:before-hide = "lastStatus" :maxSelectedLabels="1" emptyFilterMessage=" " class="multi-select">
+        v-on:before-show="reset" v-on:before-hide = "lastStatus" v-on:update:model-value="change" emptyFilterMessage=" " class="multi-select">
             <template #value>
                 <div>
                     <div v-if="selectedMembers && selectedMembers.length >= 2 && status == 1" class = "multi-value">
@@ -42,7 +42,8 @@
 
 <script setup>
 import "primevue/resources/primevue.min.css"; //core CSS
-import { ref, defineProps, computed } from "vue";
+import axios from 'axios';
+import { ref, defineProps } from "vue";
 import MultiSelect from 'primevue/multiselect';
 
 const props = defineProps({
@@ -52,26 +53,48 @@ const props = defineProps({
     },
     workers : {
         type: String,
-        default: ""
-    }
+        default: null
+    },
+    workId : {
+        type: Number,
+        default: 0
+    },
 });
 const teamMembers = Object.values(props.teamMembers);
-const workers = props.workers.split(";");
+let workers = []
 
 const selectedMembers = ref([]);
 
-for (let id of workers){
-    selectedMembers.value.push(props.teamMembers[id]);
+if (props.workers !== null){
+    workers = props.workers.split(";");
+    for (let id of workers){
+        selectedMembers.value.push(props.teamMembers[id]);
+    }   
 }
 
 let status = -1;
-
+let isChange = false;
+const changeValue = [];
 
 const reset = () => {
+    console.log("hi")
     status = 1;
 }
 let lastStatus = () => {
+    if (isChange == true) {
+        for (let userInfo of selectedMembers.value){
+            changeValue.push(userInfo.user_id);
+        }
+        axios.patch(`http://localhost:3000/work/${props.workId}/worker`, {worker : changeValue})
+        .then((res) => {
+            console.log(res);
+        })
+    }
     status = -1;
+    isChange = false;
+}
+const change = () => {
+    isChange = true;
 }
 
 

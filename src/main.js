@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router/index'
 
 import '@fortawesome/fontawesome-free/js/all'
-import TextareaAutosize from 'vue-textarea-autosize';
 
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -28,7 +27,7 @@ app.use(PrimeVue, {
         }
     }
 });
-app.use(TextareaAutosize);
+
 app.component('VueDatePicker', VueDatePicker);
 app.component('MultiSelect', MultiSelect);
 app.component('Dropdown', Dropdown);
