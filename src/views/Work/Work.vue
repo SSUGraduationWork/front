@@ -9,28 +9,28 @@
       <div class = "margin-space">
       </div>
       <tbody>
-        <tr>
-          <td>
-            <textarea ref = "textArea" @input="resize" class = "work-name-input">로그인 구현</textarea>
+        <tr v-for="(work, i) in workInfo" :key="i">
+          <td class = "work-name">
+            <textarea v-model="work.work_name" @input="resize($event.target)" class="work-name-input">{{ work.work_name }}</textarea>
           </td>
-          <td>
-            <MultiSelect></MultiSelect>
+          <td class = "team-members">
+            <MultiSelect v-if="membersById !== null" :teamMembers="membersById" :workers="work.worker"></MultiSelect>
           </td>
-          <td>
-            <DatePicker :date = "date" id = "end-date"></DatePicker>
+          <td class = "end-date">
+            <DatePicker :date="work.end_date"></DatePicker>
           </td>
-          <td>
-            <div class = "importance">
-            </div>
+          <td class = "importance">
+            <Rating :importance="work.importance"></Rating>
           </td>
-          <td>
-            <div class = "status">
-
-            </div>
+          <td class = "status">
+            <StatusDropdown :status="work.status"></StatusDropdown>
           </td>
           <td class = "more">
             <i class="fi fi-rr-menu-dots-vertical"></i>
           </td>
+        </tr>
+        <tr>
+          <div class = "add-work"></div>
         </tr>
       </tbody>
     </table>
@@ -41,41 +41,50 @@
 import axios from 'axios';
 import DatePicker from './DatePicker';
 import MultiSelect from './MultiSelect';
-import {ref, onBeforeMount} from 'vue';
+import StatusDropdown from './StatusDropdown';
+import textareaAutosize from 'vue-textarea-autosize';
+import Rating from './Rating';
+
+import {ref, onBeforeMount, onMounted} from 'vue';
 import {useRouter, useRoute} from 'vue-router'
 
 export default {
-  props: ['teamId'],
-  components: { DatePicker, MultiSelect },
+  components: { DatePicker, MultiSelect, StatusDropdown, Rating, textareaAutosize },
   
-  setup(props) {
+  setup() {
     const route = useRoute()
     const router = useRouter()
-    const workInfo = ref({});
-
+    const teamMembers = ref();
+    const workInfo = ref();
+    const membersById = {};  // key : user_id, val : 유저 정보 (유저 pk, 이름, 프로필 사진 url)
+    
     onBeforeMount(async () => {
         await router.isReady();
         const {teamId} = route.params;
 
         axios.get(`http://localhost:3000/work/${teamId}`)
         .then((res) => {
-            workInfo.value = {...res.data.result};
-            console.log(workInfo);
+            teamMembers.value = res.data.result.teamMembers;
+            workInfo.value = res.data.result.works;
+
+            //user_id 와 유저 정보 연결
+            (teamMembers.value).forEach((val, i, arr) => {
+              membersById[val.user_id] = val;
+            })
         })
     })
-    return { workInfo }
+    return { workInfo, teamMembers, membersById }
     
   },
   data() {
     return {
       options : ["작업명", "담당자", "마감일", "중요도", "상태"],
-      date : "",
     }
   },
   methods : {
-    resize() {
-      this.$refs.textArea.style.height = "0.5px";
-      this.$refs.textArea.style.height = this.$refs.textArea.scrollHeight + "px";
+    resize(textarea) {
+      textarea.style.height = "0.5px";
+      textarea.style.height = textarea.scrollHeight + "px";
     }
   },
 }
@@ -86,16 +95,19 @@ export default {
   font-family: 'Red Hat Display', sans-serif;
 }
 .work{
-  margin-top: 6em;
+  margin-top: 5em;
 }
 table {
   margin : auto;
-  border-spacing: 0px;
-  border-collapse: collapse;
   width: 90%;
+  border-collapse: separate;
+  border-spacing: 0 13px;
 }
 td{
   width: 17%;
+}
+td:hover{
+  background-color: #F5F6FA;
 }
 tbody tr{
   box-shadow: 0 0 8px rgba(0,0,0,0.2);
@@ -116,7 +128,7 @@ tbody tr{
   outline: none;
 }
 .margin-space{
-  margin: 20px;
+  margin: 5px;
 }
 .more{
   cursor: pointer;
@@ -125,5 +137,15 @@ tbody tr{
 }
 th{
   position: sticky;
+}
+.more{
+  min-width: 30px;
+}
+.add-work {
+}
+</style>
+<style global>
+.team-members:hover .p-multiselect-trigger {
+  color: #8F8F8F;
 }
 </style>

@@ -52,6 +52,10 @@ dateFormat.minute = computed(() => date.value.getMinutes());
 :root {
     --dp-font-family: 'Red Hat Display', sans-serif;
     font-weight: 400;
+    --dp-cell-padding: 10px; /*Padding in the cell*/
+}
+html, body, table, td, div{
+  height: 100%;
 }
 
 .hm{
@@ -72,5 +76,9 @@ p{
     background-color: transparent;
     min-height: 64px;
     border: none;
+}
+.end-date{
+    width: 100%;
+    min-width: 110px;
 }
 </style>
