@@ -76,8 +76,11 @@ export default {
 }
 .header {
     border-bottom: 1.5px solid #F0EFEF;
-    height: 3em;
+    height: 4em;
     background-color: white;
+    position: fixed;
+    top: 0px;
+    width: 100%;
 }
 .header ul {
     list-style-type: none;
@@ -101,6 +104,8 @@ export default {
     float: right;
     width: 320px;
     height: 50px;
+    position: fixed;
+    right: 10px;
 }
 h3 {
     font-weight: 700;

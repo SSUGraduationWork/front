@@ -21,18 +21,21 @@ import { ref, computed, defineProps } from 'vue';
 import { ko } from 'date-fns/locale';
 
 const props = defineProps({
-    date : String,
+    endDate : String,
     workId : {
         type: Number,
         default: 0
     }
 })
 let isNull = 0;
-if (props.date == null) {
+
+const date = ref(new Date())
+if (props.endDate == "null" || props.endDate == null) {
     isNull = 1
+} else{
+    date.value = new Date(props.endDate);
 }
 
-const date = ref(new Date(props.date));
 const dateFormat = {
     year: "",
     month: "",
@@ -43,8 +46,6 @@ const dateFormat = {
 let ampm = 0;
 ampm = computed(() => 12 <= date.value.getHours() ? 0 : 1) //오후이면 0, 오전이면 1
 
-isNull = computed(() => date.value.getFullYear() > 1970 ? 0 : 1);
-
 dateFormat.year = computed(() => date.value.getFullYear());
 dateFormat.month = computed(() => date.value.getMonth() + 1);
 dateFormat.day = computed(() => date.value.getDate());
@@ -52,6 +53,7 @@ dateFormat.hour = computed(() => date.value.getHours());
 dateFormat.minute = computed(() => date.value.getMinutes());
 
 const change = () => {
+    isNull = 0;
     axios.patch(`http://localhost:3000/work/${props.workId}/end_date`, {end_date: dayjs(date.value).format('YYYY-MM-DD HH:mm:ss')})
         .then((res) => {
             console.log(res);

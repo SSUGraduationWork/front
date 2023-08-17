@@ -77,7 +77,6 @@ let isChange = false;
 const changeValue = [];
 
 const reset = () => {
-    console.log("hi")
     status = 1;
 }
 let lastStatus = () => {

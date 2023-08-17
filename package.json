@@ -18,6 +18,7 @@
     "core-js": "^3.8.3",
     "dayjs": "^1.11.9",
     "material-design-icons-iconfont": "^6.7.0",
+    "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
     "primevue": "^3.32.0",
     "sass": "^1.64.1",
