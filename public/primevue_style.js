@@ -63,7 +63,7 @@ const MultiSelectCSS = `
                 }
                 .p-multiselect-filter-container input{
                     margin-right: 5px;
-                    border: 0.2px solid #8F8F8F;
+                    border: 0.1px solid #F0EFEF;
                     box-shadow: 0 0 5px rgba(0,0,0,0.2);
                     border-radius: 5px;
                     height: 30px;
@@ -102,7 +102,6 @@ const DropdownCSS = `
 
 const RatingCSS = `
                 .p-rating{
-                    min-width: 110px;
                     width: 100%;
                     justify-content : center;
                 }
@@ -111,6 +110,9 @@ const RatingCSS = `
                 }
                 .p-rating-item-active{
                     color: #3772FF;
+                }
+                .p-rating-cancel-item {
+                    display: none;
                 }
 `
 const css = MultiSelectCSS+DropdownCSS+RatingCSS

@@ -1,4 +1,6 @@
 <template>
+<div class = "work-page">
+  <WorkDetail v-if="detailButtonClick && membersById !== null && detailWorkId > 0" :teamMembers="membersById" :workId="detailWorkId" @close-detail="detailButtonClick=false"></WorkDetail>
   <div class = "work">
     <div class = "type">
       <button class = "type-list"><i class="fa fa-list-ul" aria-hidden="true"></i></button>
@@ -18,8 +20,8 @@
       </thead>
       <div class = "margin-space">
       </div>
-      <tbody>
-        <tr v-for="(work, i) in workInfo" :key="i" :id = "work.work_id">
+      <tbody v-for="(work, i) in workInfo" :key="i" :id = "work.work_id" class = "work-row">
+        <tr  v-if="deletedWork[work.work_id]!=true">
           <td class = "work-name">
             <textarea v-model="work.work_name" @input="resize($event.target)" v-on:change="textChange(work.work_id, $event.target.value)" class="work-name-input">{{ work.work_name }}</textarea>
           </td>
@@ -35,11 +37,21 @@
           <td class = "status">
             <StatusDropdown :status="work.status" :workId = "work.work_id"></StatusDropdown>
           </td>
-          <td class = "more">
-            <i class="fi fi-rr-menu-dots-vertical"></i>
+          <td class = "more" :class="{active : button[work.work_id]}">
+            <button @click = "buttonClick(work.work_id)" @blur="buttonUnclick(work.work_id)">
+              <i v-if="button[work.work_id]!=true" class="fi fi-rr-menu-dots-vertical"></i>
+              <DeleteButton v-if="button[work.work_id]" :workId = work.work_id @delete-work="deleteWork"></DeleteButton>
+            </button>
+          </td>
+          <td v-if="button[work.work_id]" class = "more-options">
+            <div class="detail" @mousedown="workDetailClick(work.work_id)">
+              <i class="fi fi-rs-search"></i>
+            </div>
           </td>
         </tr>
-        <tr v-for="(work,i) in addedWorks" :key="i">
+      </tbody>
+      <tbody v-for="(work,i) in addedWorks" :key="i">
+        <tr v-if="deletedWork[work.work_id]!=true">
           <td class = "work-name">
             <textarea v-model="work.work_name" @input="resize($event.target)" v-on:change="textChange(work.work_id, $event.target.value)" class="work-name-input"></textarea>
           </td>
@@ -55,13 +67,22 @@
           <td class = "status">
             <StatusDropdown :status="work.status" :workId = "work.work_id"></StatusDropdown>
           </td>
-          <td class = "more">
-            <i class="fi fi-rr-menu-dots-vertical"></i>
+          <td class = "more" :class="{active : button}">
+            <button @click = "buttonClick(work.work_id)" @blur="buttonUnclick(work.work_id)">
+              <i v-if="button[work.work_id]!=true" class="fi fi-rr-menu-dots-vertical"></i>
+              <DeleteButton v-if="button[work.work_id]" :workId = work.work_id @delete-work="deleteWork"></DeleteButton>
+            </button>
+          </td>
+          <td v-if="button[work.work_id]" class = "more-options">
+            <div class="detail" @mousedown="workDetailClick(work.work_id)">
+              <i class="fi fi-rs-search"></i>
+            </div>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
+</div>
 </template>
 
 <script>
@@ -69,14 +90,15 @@ import axios from 'axios';
 import DatePicker from './DatePicker';
 import MultiSelect from './MultiSelect';
 import StatusDropdown from './StatusDropdown';
-import textareaAutosize from 'vue-textarea-autosize';
 import Rating from './Rating';
+import DeleteButton from './DeleteButton';
+import WorkDetail from './WorkDetail';
 
 import {ref, onBeforeMount, onMounted} from 'vue';
 import {useRouter, useRoute} from 'vue-router'
 
 export default {
-  components: { DatePicker, MultiSelect, StatusDropdown, Rating, textareaAutosize },
+  components: { DatePicker, MultiSelect, StatusDropdown, Rating, DeleteButton, WorkDetail },
   
   setup() {
     const route = useRoute()
@@ -107,6 +129,10 @@ export default {
     return {
       options : ["작업명", "담당자", "마감일", "중요도", "상태"],
       addedWorks : [],
+      button : {},
+      deletedWork : {},
+      detailWorkId: 0,
+      detailButtonClick: false
     }
   },
   methods : {
@@ -130,6 +156,19 @@ export default {
           console.log(workId);
         })
       this.addedWorks.push({work_id : workId});
+    },
+    buttonClick(workId){
+      this.button[workId] = true;
+    },
+    buttonUnclick(workId){
+      this.button[workId] = false;
+    },
+    deleteWork(workId){
+      this.deletedWork[workId] = true;
+    },
+    workDetailClick(workId){
+      this.detailWorkId = workId;
+      this.detailButtonClick = true;
     }
   },
 }
@@ -175,11 +214,49 @@ tbody tr{
 .margin-space{
   margin: 5px;
 }
+.active:hover{
+  background: none;
+  width: 4%;
+}
 .more{
-  cursor: pointer;
   width: 5%;
   font-size: 13px;
   min-width: 30px;
+}
+.more button{
+  border: none;
+  background: none;
+  cursor: pointer;
+  width: 100%;
+  min-height: 60px;
+}
+.more i{
+  display: flex;
+}
+.more-options{
+  width: 4%;
+  min-width: 55px;
+}
+.more-options:hover{
+  background : none;
+}
+.detail{
+  cursor: pointer;
+  border: 1px solid #F5F6FA;
+  width: 40px;
+  height: 40px;
+  border-radius: 50px;
+  color:  #2F3545;
+  background: #F5F6FA;
+}
+.detail i {
+  display: flex;
+  margin-top: 11.5px;
+  margin-left: 12px;
+}
+.detail:hover{
+  color:  #F5F6FA;
+  background: #2F3545;
 }
 th{
   position: sticky;

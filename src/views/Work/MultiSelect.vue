@@ -74,10 +74,11 @@ if (props.workers !== null){
 
 let status = -1;
 let isChange = false;
-const changeValue = [];
+let changeValue = [];
 
 const reset = () => {
     status = 1;
+    changeValue = [];
 }
 let lastStatus = () => {
     if (isChange == true) {

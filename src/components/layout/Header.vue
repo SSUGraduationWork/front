@@ -78,6 +78,7 @@ export default {
     border-bottom: 1.5px solid #F0EFEF;
     height: 4em;
     background-color: white;
+    z-index: 2;
     position: fixed;
     top: 0px;
     width: 100%;
