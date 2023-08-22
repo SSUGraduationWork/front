@@ -36,7 +36,7 @@ const routes = [
   {
     path: '/contribution/:teamId',
     name: 'Contribution',
-    component: () => import('../views/Contribution.vue'),
+    component: () => import('../views/Contribution/Contribution.vue'),
     props: true
   }
 ]

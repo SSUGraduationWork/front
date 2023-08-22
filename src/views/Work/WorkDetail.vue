@@ -138,7 +138,7 @@ dateFormat.minute = computed(() => date.value.getMinutes());
   width: 45em; background: white;
   box-sizing: border-box;
   border-radius: 8px;
-  padding: 60px;
+  padding: 65px;
   margin: 0 auto;
   margin-top: 4em;
   height: 40em;
@@ -246,8 +246,8 @@ img{
 }
 .line{
     width: 100%;
-    margin-top: 10px;
-    margin-bottom: 30px;
+    margin-top: 50px;
+    margin-bottom: 50px;
     border-bottom: 0.1px solid #BABABA;
 }
 .posts{

@@ -94,7 +94,7 @@ import Rating from './Rating';
 import DeleteButton from './DeleteButton';
 import WorkDetail from './WorkDetail';
 
-import {ref, onBeforeMount, onMounted} from 'vue';
+import {ref, onBeforeMount} from 'vue';
 import {useRouter, useRoute} from 'vue-router'
 
 export default {
