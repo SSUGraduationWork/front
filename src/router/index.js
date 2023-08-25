@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-import Work from '../views/Work.vue'
+import Dashboard from '../views/Dashboard/Dashboard.vue'
+import Work from '../views/Work/Work.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/work',
-    name: 'Home',
-    component: Home
+    redirect: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard
   },
   {
     path: '/work/:teamId',
@@ -18,25 +18,25 @@ const routes = [
   {
     path: '/file/:teamId',
     name: 'File',
-    component: () => import('../views/File.vue'),
+    component: () => import('../views/File/File.vue'),
     props: true
   },
   {
     path: '/calendar/:teamId',
     name: 'Calendar',
-    component: () => import('../views/Calendar.vue'),
+    component: () => import('../views/Calendar/Calendar.vue'),
     props: true
   },
   {
     path: '/chatting/:teamId',
     name: 'Chat',
-    component: () => import('../views/Chat.vue'),
+    component: () => import('../views/Chat/Chat.vue'),
     props: true
   },
   {
     path: '/contribution/:teamId',
     name: 'Contribution',
-    component: () => import('../views/Contribution.vue'),
+    component: () => import('../views/Contribution/Contribution.vue'),
     props: true
   }
 ]

@@ -21,8 +21,7 @@ export default {
   },
   computed : {
     teamId() {
-      const teamId = this.$route.params.teamId;
-      return teamId;
+      return this.$route.params.teamId;
     }
   }
 }

@@ -70,4 +70,13 @@ export default {
   width: 25px;
   margin-right: 10px;
 }
+.icon{
+  margin-top: 5px;
+  font-size : 18px;
+  color: #1F1F22;
+}
+.active i{
+  color: white;
+}
+
 </style>

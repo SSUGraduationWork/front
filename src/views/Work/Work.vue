@@ -1,23 +1,5 @@
 <template>
   <div class = "work">
-    <div class = "view-type">
-      <ul>
-        <li><i class="fas fa-list" /></li>
-        <li><i class ="fas fa-table" color = "#BEBEBE"/></li>
-      </ul>
-    </div>
-    <div class = "options">
-      <ul>
-        <li v-for="op in options" :key = "op">{{op}}</li>
-      </ul>
-    </div>
-    <div class = "work-table">
-      <!--<input class = "work-name">
-      <input class = "worker">
-      <input class = "end-date">
-      <input class = "importance">
-      <input class = "status"> -->
-    </div>
   </div>
 </template>
 

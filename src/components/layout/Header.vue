@@ -1,46 +1,150 @@
 <template>
     <div class ="header">
-        <div>
-            <h2>{{state.data.team_name}}</h2>
+        <div class = "header-info">
+            <ul>
+                <div class = "header-right-div">
+                    <li class = "header-right">
+                        <div class = "circle-profile">
+                            <img :src = "headerInfo.picture_url" class = "profile-user-img">
+                        </div>
+                    </li>
+                    <li class = "header-right">
+                        <div class = "user-info">
+                            <h4>{{headerInfo.student_number}} {{headerInfo.user_name}}</h4>
+                            <h5>{{headerInfo.department}}</h5>
+                        </div>
+                    </li>
+                    <li class = "header-right">
+                        <div class = "circle-notification">
+                            <div class = "icon">
+                                <i class="fi fi-ss-bell"></i>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+                <div class = "header-left-div">
+                    <li class = "header-left">
+                        <h3>{{headerInfo.team_name}}</h3>
+                    </li>
+                </div>
+            </ul>
         </div>
     </div>
 </template>
 
 <script>
-import {reactive} from 'vue'
+import {ref, onBeforeMount} from 'vue'
 import axios from 'axios';
+import {useRouter, useRoute} from 'vue-router'
 
 export default {
-    setup() {
-        const state = reactive({
-            data: "",
-        });
-        const add = () => {
-
-        };
-        axios.get('http://localhost:3000/work/1')
-        .then((res) => {
-            state.data = res;
-            console.log(state.data);
-        })
-        return {state};
+    props: {
+        teamId : {
+            type: String,
+        },
     },
+    data() {
+        return {
+        
+        }
+    },
+    setup() {
+        const route = useRoute()
+        const router = useRouter()
+        const headerInfo = ref({});
+
+        onBeforeMount(async () => {
+            await router.isReady();
+            const {teamId} = route.params;
+
+            axios.get(`http://localhost:3000/header`, {
+                params : {userId : 10, teamId : teamId}
+            })
+            .then((res) => {
+                headerInfo.value = {...res.data.result};
+            })
+        })
+        return { headerInfo }
+  },
 }
 </script>
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700&display=swap');
-.header {
-    top:0;
-    right: 0;
-    border-bottom: 1.5px solid #F0EFEF;
-    height: 4.5em;
-    display: flex;
-    flex-direction: column;
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
+@import "~@flaticon/flaticon-uicons/css/all/all";
+* {
+    font-family: 'Red Hat Display', sans-serif;
 }
-.header h2{
-    color: black;
-    margin-right:30em;
-    width: 300px;
-    font-family: 'Gothic A1', sans-serif;
+.header {
+    border-bottom: 1.5px solid #F0EFEF;
+    height: 4em;
+    background-color: white;
+    z-index: 2;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+}
+.header ul {
+    list-style-type: none;
+}
+.header-left {
+    float: left;
+    font-weight: 700;
+}
+.header-right{
+    float: right;
+    margin-right: 2em;
+    font-weight: 300;
+}
+.header-left-div{
+    float: left;
+    width: 250px;
+    height: 50px;
+    position: fixed;
+}
+.header-right-div{
+    float: right;
+    width: 320px;
+    height: 50px;
+    position: fixed;
+    right: 10px;
+}
+h3 {
+    font-weight: 700;
+    margin-top: 5px;
+}
+h4 {
+    margin-top: -3px;
+    font-weight: 600;
+}
+h5 {
+    margin-top: -20px;
+    margin-bottom: 0px;
+    font-weight: 500;
+}
+.circle-profile,
+.circle-notification {
+    cursor: pointer;
+    margin-top: -3px;
+    width: 40px;
+    height: 40px;
+    border-radius: 70%;
+    overflow: hidden;
+    position: relative;
+    background : #F5F6FA; 
+}
+.profile-user-img{
+    width: 100%;
+    object-fit: cover;
+}
+.icon{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+    font-size: 20px;
+}
+.circle-notification:hover{
+    background-color : #3772FF;
+    color: white;
 }
 </style>
