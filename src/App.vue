@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Sidebar v-if="['Contribution', 'Work','File', 'Chat', 'Calendar'].includes($route.name)" :teamId="teamId" />
-    <div v-if="['Contribution', 'Work','File', 'Chat', 'Calendar'].includes($route.name)" :style="{ 'margin-left': sidebarWidth }">
+    <Sidebar v-if="['Account','SignIn','SignUp'].includes($route.name)==false" :teamId="teamId" />
+    <div v-if="['Account','SignIn','SignUp'].includes($route.name)==false" :style="{ 'margin-left': sidebarWidth }">
       <Header /> 
       <router-view :teamId="teamId"></router-view> 
     </div>
@@ -14,8 +14,7 @@
 import Sidebar from '@/components/sidebar/Sidebar'
 import Header from '@/components/layout/Header'
 import { sidebarWidth } from '@/components/sidebar/state'
-import {useRouter, useRoute} from 'vue-router'
-import {onBeforeMount, ref} from 'vue'
+
 export default {
   components: { 
     Sidebar,
