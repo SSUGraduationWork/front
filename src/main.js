@@ -16,7 +16,7 @@ import Rating from 'primevue/rating';
 import RadioButton from 'primevue/radiobutton';
 import PrimeVueCSS from '../public/primevue_style'
 
-import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap 5 CSS
+//import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap 5 CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Bootstrap 5 JavaScrip
 
 const app = createApp(App)
