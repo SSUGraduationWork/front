@@ -58,7 +58,7 @@ export default {
             const {teamId} = route.params;
 
             axios.get(`http://localhost:3000/header`, {
-                params : {userId : 10, teamId : teamId}
+                params : {userId : 11, teamId : teamId}
             })
             .then((res) => {
                 headerInfo.value = {...res.data.result};

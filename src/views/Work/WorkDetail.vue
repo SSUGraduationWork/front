@@ -150,14 +150,14 @@ dateFormat.minute = computed(() => date.value.getMinutes());
 }
 .header h2{
     float: left;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 .close-icon{
     cursor: pointer;
     width: 40px;
     height: 40px;
     border-radius: 30px;
-    line-height: 40px;
+    line-height: 42px;
     font-size: 15px;
     float: right;
 

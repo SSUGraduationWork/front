@@ -13,9 +13,7 @@ import PrimeVue from 'primevue/config';
 import MultiSelect from 'primevue/multiselect';
 import Dropdown from 'primevue/dropdown';
 import Rating from 'primevue/rating';
-import DynamicDialog from 'primevue/dynamicdialog';
-import DialogService from 'primevue/dialogservice';
-
+import RadioButton from 'primevue/radiobutton';
 import PrimeVueCSS from '../public/primevue_style'
 
 
@@ -28,12 +26,11 @@ app.use(PrimeVue, {
         }
     }
 });
-app.use(DialogService);
 
 app.component('VueDatePicker', VueDatePicker);
 app.component('MultiSelect', MultiSelect);
 app.component('Dropdown', Dropdown);
 app.component('Rating', Rating);
-app.component('DynamicDialog', DynamicDialog);
+app.component('RadioButton', RadioButton);
 
 app.mount('#app')

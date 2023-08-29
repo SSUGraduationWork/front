@@ -115,5 +115,22 @@ const RatingCSS = `
                     display: none;
                 }
 `
-const css = MultiSelectCSS+DropdownCSS+RatingCSS
+const RadioButtonCSS = `
+                .p-radiobutton{
+                    border: 1.5px solid #BFBFBF;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 20px;
+                    margin-bottom: 3px;
+                    text-align: center;
+                }
+                .p-radiobutton:hover{
+                    border: 1.5px solid #3772FF;
+                }
+                .p-radiobutton-checked{
+                    border: 1.5px solid #3772FF;
+                    background-color: #3772FF;
+                }
+`
+const css = MultiSelectCSS+DropdownCSS+RatingCSS+RadioButtonCSS
 export default css;

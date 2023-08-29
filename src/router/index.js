@@ -10,6 +10,26 @@ const routes = [
     component: Home
   },
   {
+    path: '/accounts',
+    name: 'Account',
+    component: () => import('../views/Account/Account.vue'),
+    props: true,
+    children: [
+      {
+        // /accounts/signin과 일치할 때
+        path: 'signin', 
+        name: 'SignIn',
+        component: () => import('../views/Account/SignIn.vue'),
+      },
+      {
+        // /accounts/signup과 일치할 때
+        path: 'signup', 
+        name: 'SignUp',
+        component: () => import('../views/Account/SignUp.vue')
+      }
+    ]
+  },
+  {
     path: '/work/:teamId',
     name: 'Work',
     component: Work,

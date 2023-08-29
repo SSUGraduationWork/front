@@ -1,9 +1,12 @@
 <template>
   <div>
-    <Sidebar :teamId="teamId" />
-    <div :style="{ 'margin-left': sidebarWidth }">
+    <Sidebar v-if="['Contribution', 'Work','File', 'Chat', 'Calendar'].includes($route.name)" :teamId="teamId" />
+    <div v-if="['Contribution', 'Work','File', 'Chat', 'Calendar'].includes($route.name)" :style="{ 'margin-left': sidebarWidth }">
       <Header /> 
       <router-view :teamId="teamId"></router-view> 
+    </div>
+    <div v-else>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -25,7 +28,8 @@ export default {
     teamId() {
       return this.$route.params.teamId;
     }
-  }
+  },
+
 }
 </script>
 <style>

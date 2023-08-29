@@ -3,24 +3,26 @@
     <span v-if="collapsed" 
       class="collapse-icon"
       @click="toggleSidebar">
-      <i class="fas fa-bars" /> 
+      <i class="fi fi-rr-menu-burger" /> 
   
     </span>
     <span v-else
       class="collapse-icon"
       @click="toggleSidebar"
     >
-      <i class="fas fa-bars" />
+      <i class="fi fi-rr-menu-burger" />
         <h1 class = "logo">Co<span>Work</span></h1>
     </span>
 
     <div class="margin-block"></div>
-    <SidebarLink :to="workUrl" icon="fas fa-rectangle-list" class = "sidebar-name">작업</SidebarLink>
-    <SidebarLink :to="fileUrl" icon="fas fa-file-lines">파일</SidebarLink>
-    <SidebarLink :to="calendarUrl" icon="fas fa-calendar-days">달력</SidebarLink>
-    <SidebarLink :to="chattingUrl" icon="fas fa-comment-dots">채팅</SidebarLink>
-    <SidebarLink :to="contributionUrl" icon="fas fa-chart-bar">기여도</SidebarLink>
-</div>
+    <SidebarLink :to="workUrl" icon="fi fi-rr-rectangle-list"><span class = "list">작업</span></SidebarLink>
+    <SidebarLink :to="fileUrl" icon="fi fi-rr-document"><span class = "list">파일</span></SidebarLink>
+    <SidebarLink :to="calendarUrl" icon="fi fi-rr-calendar"><span class = "list">달력</span></SidebarLink>
+    <SidebarLink :to="chattingUrl" icon="fi fi-rr-comment-alt"><span class = "list">채팅</span></SidebarLink>
+    <SidebarLink :to="contributionUrl" icon="fi fi-rs-chart-pie-alt"><span class = "list">기여도</span></SidebarLink>
+
+
+  </div>
 </template>
 
 <script>
@@ -56,7 +58,6 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=REM:ital,wght@1,800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
 
 .sidebar {
   color: rgb(0, 0, 0);
@@ -107,5 +108,13 @@ export default {
   color: rgb(47, 47, 47);
   transition: 0.2s linear;
 
+}
+.list{
+  margin-left: 20px;
+
+}
+i{
+  margin-top: 6px;
+  font-size : 18px;
 }
 </style>

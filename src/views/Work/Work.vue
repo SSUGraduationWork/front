@@ -81,6 +81,8 @@
         </tr>
       </tbody>
     </table>
+    <div class="footer">
+    </div>
   </div>
 </div>
 </template>
@@ -314,6 +316,9 @@ th{
   -ms-transform: scale(1.1,1.1);
   -webkit-transform: scale(1.1,1.1);
   box-shadow: 0px 5px 5px -2px rgba(0, 0, 0, 0.25);
+}
+.footer{
+  height: 300px;
 }
 </style>
 <style global>

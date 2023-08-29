@@ -2,7 +2,7 @@
     <div class="contribution-graph">
         <div class = "explanation">
             <h3>기여도 그래프</h3>
-            <i class="fi fi-ss-interrogation"></i>
+            <i class="fi fi-ss-interrogation" @click="$emit('openEx')"></i>
         </div>
         <div class="contribution">
             <div v-for="(m, i) in contribution" :key="i" class="member">
@@ -30,11 +30,9 @@ const props = defineProps({
 });
 
 const totalContribution = props.contribution.reduce((pv, cv, idx, val) => {
-    if(idx == 1){
-        pv = pv.contribution;
-    }
     return pv + cv.contribution;
-})
+}, 0)
+
 const contributions = [];
 for (let c of props.contribution) {
     contributions.push(c.contribution/totalContribution * 160 + '%');
@@ -64,6 +62,7 @@ i{
     float: left;
     margin-left: 20px;
     font-size: 20px;
+    cursor: pointer;
 }
 .contribution{
     margin-top: 20px;
