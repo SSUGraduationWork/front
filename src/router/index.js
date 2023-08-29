@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import WritePage from '../views/WritePage.vue'
-import UpdatePage from '../views/UpdatePage.vue'
-import BoardDetailPage from '../views/BoardDetailPage.vue'
-import SideBarPage from '../views/SideBarPage.vue'
-import AlarmPage from '../views/AlarmPage.vue'
+import HomeView from '../views/File/HomeView.vue'
+import WritePage from '../views/File/WritePage.vue'
+import UpdatePage from '../views/File/UpdatePage.vue'
+import BoardDetailPage from '../views/File/BoardDetailPage.vue'
+import SideBarPage from '../views/File/SideBarPage.vue'
+import AlarmPage from '../views/File/AlarmPage.vue'
 const routes = [
   {
     path: '/board/list/:memberId/:teamId',

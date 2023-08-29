@@ -40,7 +40,7 @@
 import axios from 'axios';
 
 import Sidebar from './SideBarPage.vue';
-import UpdatePage from "@/views/UpdatePage";
+import UpdatePage from "@/views/File/UpdatePage";
 export default {
   props: ['boardId','memberId'],
   components: {
