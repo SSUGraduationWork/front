@@ -84,6 +84,8 @@ import axios from 'axios';
 import Dropdown from './Dropdown.vue';
 
 import WritePage from './WritePage.vue';
+
+
 export default {
   props: ['memberId', 'teamId'], // props로 받을 파라미터 이름을 선언
 

@@ -102,9 +102,6 @@ export default {
     const memberId = this.$route.params.memberId;
 
     try {
-
-
-
       const response = await axios.get(`http://localhost:8080/board/view/${boardId}/${memberId}`);
       if (response.data.status.code === 200) {
         this.boardContent = response.data.content;
@@ -169,13 +166,11 @@ export default {
         console.log('수정 성공:', response.data);
 
 
-
-
         alert("수정 성공");
+        this.$router.push({ name: 'HomeView' });
       } catch (error) {
-        // 에러 처리
+        // 에러 처리,//예외처리에 문제 있음-->추후에 수정해야함
         console.error('수정 오류:', error);
-        alert("수정 오류");
       } finally {
         this.loading = false; // 로딩 상태를 false로 설정
       }
