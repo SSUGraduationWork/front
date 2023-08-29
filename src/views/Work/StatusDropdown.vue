@@ -49,7 +49,7 @@ const selectedStatus = ref(statuses.value[currentStatus-1]);
 const statusColor = ['#DFDFDF', '#DFDFDF', '#5D96DA', '#FF7171', '#99CC8C'];
 
 const change = () => {
-    axios.patch(`http://localhost:3000/work/${props.workId}/status`, {status: selectedStatus.value.code})
+    axios.patch(`http://34.226.148.91/${props.workId}/status`, {status: selectedStatus.value.code})
         .then((res) => {
             console.log(res);
         })

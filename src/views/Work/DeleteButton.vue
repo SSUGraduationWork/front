@@ -16,7 +16,7 @@ const props = defineProps({
 })
 const clickDelete = () => {
     console.log("delete " + props.workId);
-    axios.delete(`http://localhost:3000/work/${props.workId}`)
+    axios.delete(`http://34.226.148.91/work/${props.workId}`)
         .then((res) => {
             console.log(res);
         })

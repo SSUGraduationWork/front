@@ -42,12 +42,7 @@ const routes = [
     component: Work,
     props:true
   },
-  {
-    path: '/file/:teamId',
-    name: 'File',
-    component: () => import('../views/File.vue'),
-    props: true
-  },
+
   {
     path: '/calendar',
     name: 'Calendar',

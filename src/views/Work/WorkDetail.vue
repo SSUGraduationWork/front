@@ -79,7 +79,7 @@ const board = ref();
 const importance = ref();
 
 if (props.workId > 0) {
-    axios.get(`http://localhost:3000/work/detail/${props.workId}`)
+    axios.get(`http://34.226.148.91/work/detail/${props.workId}`)
     .then((res) => {
         workDetail.value = res.data.result;
         if(workDetail.value.worker){

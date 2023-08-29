@@ -85,7 +85,7 @@ let lastStatus = () => {
         for (let userInfo of selectedMembers.value){
             changeValue.push(userInfo.user_id);
         }
-        axios.patch(`http://localhost:3000/work/${props.workId}/worker`, {worker : changeValue})
+        axios.patch(`http://34.226.148.91/work/${props.workId}/worker`, {worker : changeValue})
         .then((res) => {
             console.log(res);
         })

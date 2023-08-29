@@ -23,7 +23,7 @@ const progress = ref();
 const contribution = ref();
 let ex = ref(false);
 
-axios.get(`http://localhost:3000/contribution/${teamId}`)
+axios.get(`http://34.226.148.91/contribution/${teamId}`)
     .then((res) => {
         progress.value = res.data.result.progress;
         contribution.value = res.data.result.contribution;

@@ -23,7 +23,7 @@ const value = ref(props.importance);
 
 const change = () => {
     console.log(value.value);
-    axios.patch(`http://localhost:3000/work/${props.workId}/importance`, {importance: value.value})
+    axios.patch(`http://34.226.148.91/work/${props.workId}/importance`, {importance: value.value})
         .then((res) => {
             console.log(res);
         })

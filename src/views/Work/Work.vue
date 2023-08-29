@@ -113,7 +113,7 @@ export default {
         await router.isReady();
         const {teamId} = route.params;
 
-        axios.get(`http://localhost:3000/work/${teamId}`)
+        axios.get(`http://34.226.148.91/work/${teamId}`)
         .then((res) => {
             teamMembers.value = res.data.result.teamMembers;
             workInfo.value = res.data.result.works;
@@ -144,14 +144,14 @@ export default {
     },
     textChange(workId, value){
       console.log(value);
-      axios.patch(`http://localhost:3000/work/${workId}/work_name`, {work_name : value})
+      axios.patch(`http://34.226.148.91/work/${workId}/work_name`, {work_name : value})
         .then((res) => {
             console.log(res);
         })
     },
     addWork(){
       const workId = ref();
-      axios.post(`http://localhost:3000/work/${this.$route.params.teamId}`)
+      axios.post(`http://34.226.148.91/work/${this.$route.params.teamId}`)
         .then((res) => {
           console.log(res);
           workId.value = res.data.result.work_id;
