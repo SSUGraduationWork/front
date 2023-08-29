@@ -10,7 +10,7 @@ export default {
   },
   setup(props) {
     const route = useRoute()
-    const isActive = computed(() => route.path === props.to)
+    const isActive = computed(() => route.path.split('/')[1] === props.to.split('/')[1])
     return { isActive, collapsed }
   }
 }
