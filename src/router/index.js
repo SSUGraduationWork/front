@@ -50,6 +50,12 @@ const routes = [
     props: true
   },
   {
+    path: '/dashboard/:professorId',
+    name: 'Dashboard',
+    component: () => import('../views/Dashboard/Dashboard.vue'),
+    props: true
+  },
+  {
     path: '/chatting/:teamId',
     name: 'Chat',
     component: () => import('../views/Chat.vue'),

@@ -57,7 +57,7 @@ export default {
             await router.isReady();
             const {teamId} = route.params;
 
-            axios.get(`http://34.226.148.91/header`, {
+            axios.get(`http://44.219.162.63:3000/header`, {
                 params : {userId : 11, teamId : teamId}
             })
             .then((res) => {
