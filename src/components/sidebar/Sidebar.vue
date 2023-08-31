@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       workUrl: computed(() => '/work/' + this.teamId),
-      fileUrl: computed(() => '/file/' + this.teamId),
+      fileUrl: computed(() => '/board/list/11/' + this.teamId),
       calendarUrl: computed(() => '/calendar/' + this.teamId),
       chattingUrl: computed(() => '/chatting/' + this.teamId),
       contributionUrl: computed(() => '/contribution/' + this.teamId)

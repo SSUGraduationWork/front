@@ -6,37 +6,38 @@
   <div v-else class="container">
     <div class="feedback-status">
       <div class="feedback-completed">
-        <span class="icon-blue"><i class="fa-solid fa-square-check"></i></span>
-        <p class="feedback-count-label">피드백 완료</p>
+        <div class="icon-blue i-completed"><i class="fi fi-br-check"></i></div>
+        <div class="feedback-count-label">완료한 피드백 <i class="fi fi-bs-menu-dots"></i></div>
 
-        <p class="feedback-count">{{ feedbackCompletedCount }}</p>
+        <div class="feedback-count">{{ feedbackCompletedCount }}</div>
       </div>
       <div class="feedback-incomplete">
-        <span class="icon-blue"><i class="fa-solid fa-comment-dots"></i></span>
-        <p class="feedback-count-label">미완료</p>
+        <div class="icon-blue"><i class="fi fi-rs-comment-dots"></i></div>
+        <div class="feedback-count-label">남은 피드백 <i class="fi fi-bs-menu-dots"></i></div>
 
-        <p class="feedback-count">{{ feedbackIncompleteCount }}</p>
+        <div class="feedback-count">{{ feedbackIncompleteCount }}</div>
       </div>
     </div>
     <div class="table-container">
 
       <!-- 검색 입력창 -->
       <div class="search-container">
-        <p class="file-letter">파일</p>
-        <button class="write-button" @click="goToWritePage">글쓰기</button> <!-- "글쓰기" 버튼 추가 -->
-        <div class="search-input-container">
+      <div class="file-letter">파일</div>
+      <div class="write-button-container"><button class="write-button" @click="goToWritePage">글쓰기</button></div> <!-- "글쓰기" 버튼 추가 -->
 
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input
-              v-model="searchKeyword"
-              @keyup.enter="search"
-              placeholder="  검색"
-              class="search-input"
-          />
-        </div>
-        <!-- dropdown-->
-        <dropdown :options="dropdownOptions" class="search-dropdown" />
+      <!-- dropdown-->
+      <div  class="search-dropdown"><dropdown :options="dropdownOptions" /></div>
+      <div class="search-input-container">
+
+        <i class="fi fi-br-search"></i>
+        <input
+            v-model="searchKeyword"
+            @keyup.enter="search"
+            placeholder="  검색"
+            class="search-input"
+        />
       </div>
+    </div>
       <table class="table custom-table">
 
         <thead>
@@ -69,11 +70,11 @@
     </div>
     <!-- 페이지 버튼 표시 -->
     <div class="pagination">
-      <button @click="showPreviousPages" > ◀</button>
+      <button @click="showPreviousPages" > <i class= "fi fi-rr-angle-small-left"></i></button>
       <button v-for="page in visiblePageRange" :key="page" @click="goToPage(page - 1)">
         {{ page }}
       </button>
-      <button @click="showNextPages" >▶</button>
+      <button @click="showNextPages" ><i class= "fi fi-rr-angle-small-right"></i></button>
     </div>
   </div>
 </template>
@@ -192,16 +193,24 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
+@import "~@flaticon/flaticon-uicons/css/all/all";
+*{
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 14px;
+}
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 150px 0 0 0px;
+  margin: 0 auto;
+  min-width: 78em;
+  width: 90%;
+  height: 80vh;
+  margin-top: 6.5em;
 }
 
 .table {
-
+  margin-top: 20px;
+  border-bottom: 1px solid #3e3e3e;
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
@@ -209,9 +218,8 @@ export default {
 }
 
 .table-container {
-  width: 70%;
-  margin: -100px 0 0 300px;
-  overflow-x: auto; /* 가로 스크롤 사용 가능하도록 */
+  margin: 0 auto;
+  width: 90%;
 
 }
 
@@ -225,40 +233,54 @@ export default {
 }
 
 .pagination {
-  display: flex;
-  justify-content: center;
-  margin: 50px 0 0 250px;
+  margin-top: 20px;
 }
 .pagination button {
+  cursor: pointer;
   margin: -10px 5px;
+  background-color: #F5F6FA;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  line-height: 30px;
 }
 
 .text-green {
-  color: green; /* 초록색으로 설정 */
+  color: #99CC8C; /* 초록색으로 설정 */
 }
 
 .text-red {
-  color: red; /* 빨간색으로 설정 */
+  color: #EE6C6C; /* 빨간색으로 설정 */
 }
 
 /* 검색창 */
 .search-container {
-  display: flex;
-  margin: 130px 0 0 5px;
+  margin-top: 30px;
+  width: 100%;
+  height: 50px;
 }
 
 .search-input-container {
+  float: right;
   display: flex;
   align-items: center;
-  background-color: #f0f0f0; /* 검색창과 이모티콘 부분만 회색 배경색 */
-  border-radius: 5px;
-  height: 30px;
-  width: 200px; /* 검색 입력창 너비 조절 */
-  margin: 0px 0 0 230px;
+  background-color: #F5F6FA; /* 검색창과 이모티콘 부분만 회색 배경색 */
+  border-radius: 7px;
+  height: 37px;
+  width: 230px; /* 검색 입력창 너비 조절 */
+  margin-right: 50px;
+}
+.fi-br-search{
+  color: #3e3e3e;
+  margin-left: 15px;
+  font-size: 15px;
+  margin-top: 2px;
+  margin-right: 3px;
 }
 
-
 .search-input {
+  margin-left: 3px;
   border: none;
   background: none;
   font-size: 14px;
@@ -267,7 +289,8 @@ export default {
 }
 /* 드롭다운 */
 .search-dropdown {
-  margin-left: 50px; /* 드롭다운과의 간격을 설정 */
+  float: right;
+  margin-right: 30px;
 }
 
 
@@ -293,61 +316,89 @@ export default {
 
 
 .feedback-status {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px;
-  color: #cccccc;
-  margin: 0 10px 0 190px; /* 남은 피드백, 완료 간격 조정 */
+  height: 100px;
+  margin: 0 auto;
 }
-
+.feedback-completed{
+  margin-right: 100px;
+  float: right;
+}
+.feedback-incomplete{
+  float: left;
+  margin-left: 100px;
+}
 .feedback-completed,
 .feedback-incomplete {
-  display: flex;
+  cursor: pointer;
   align-items: center;
-  padding: 30px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 10px;
   text-align: center;
-  width: 280px;
-  height: 50px;
-  background-color: #f0f0f0;
-  color: darkgrey;
-  margin: 0 10px 0 100px; /* 남은 피드백, 완료 간격 조정 */
+  width: 380px;
+  height: 85px;
+  background-color: #F5F6FA;
+  color: #BFBFBF;
 }
 
 .icon-blue {
-  color: dodgerblue;
-  margin-right: 5px; /* 아이콘과 텍스트 간격 조정 */
+  margin-left: 40px;
+  float: left;
+  width: 50px;
+  height: 50px;
+  border-radius: 45px;
+  position: relative;
+  margin-top: 17px;
+  background-color: #3772ff;
+  color: white;
+  transform: scaleX(-1);
 }
-
+.i-completed{
+  transform: none;
+}
+.icon-blue i{
+  line-height: 54px;
+  font-size: 17px;
+}
 .feedback-count-label {
-  font-weight: bold;
-  margin-left: 28px;
-  margin-top: 15px; /* 여기에 margin-top 값을 조정 */
+  font-size: 18px;
+  margin-left: 30px;
+  line-height: 85px;
+  float: left;
+  font-weight: 600;
+}
+.fi-bs-menu-dots{
+  font-size: 15px;
+  margin-left: 20px;
 }
 
 .feedback-count {
+  line-height: 85px;
+  font-weight: 600;
+  color: black;
   font-size: 24px;
-  margin-top: 15px;
-  flex: 1;
+  float: right;
+  margin-right: 55px;
 }
 
 .file-letter{
+  float: left;
+  font-weight: 700;
   margin-right: 20px;
   margin-top: 5px;
   width: 100px;
   height: 30px;
+  font-size: 17px;
+}
+.write-button-container{
+  float: left;
 }
 .write-button{
-  margin-right: 70px;
-  margin-top: 2px;
+  cursor: pointer;
   width: 100px;
-  height: 30px;
-  background-color: dodgerblue; /* 배경색을 파란색으로 설정 */
-  border: 1px solid dodgerblue; /* 테두리를 파란색으로 설정 */
+  height: 36px;
+  background-color: #3772ff;
+  border: none;
   color: white; /* 글자색을 흰색으로 설정 */
-  font-weight: bold; /* 글자를 두껍게 설정 */
-  border-radius: 5px; /* 테두리를 둥글게 만들기 */
+  font-weight: 600;
+  border-radius: 10px; /* 테두리를 둥글게 만들기 */
 }
 </style>
