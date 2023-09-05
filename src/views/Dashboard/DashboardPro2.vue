@@ -1,16 +1,28 @@
 <template>
     <div class="content">
         <div class="top">
-            <div class="choose">Semester</div>
-            <el-button type="primary" class="new" @click="generate()">새 프로젝트</el-button>
+            <div class="choose">{{this.projectName}}</div>
+            <el-button type="primary" class="new" @click="generate()">팀 생성</el-button>
         </div>
 
-        <ul class="projects">
-            <li v-for="project in projects" :key="project.id" class="project">
-                <div class="projectName">{{project.projectName}}</div>
-                <div class="semester">{{project.semester}}</div>
-                <div class="projectNumber">{{project.projectNumber}}명 참여</div>
+        <!-- <ul class="teams">
+            <li v-for="team in teams" :key="team.id" class="team">
+                <div class="teamName">{{team.teamName}}</div>
+                <div class="teamNumber">{{team.teamNumber}}명 참여</div>
             </li>
+        </ul> -->
+
+        <ul class="teams">
+            <router-link
+            v-for="team in teams"
+            :key="team.teamId"
+            :to="{ name: 'Work', params: { teamId: team.teamId } }"
+            class="team"
+            >
+            <h1>{{team.id}}</h1>
+                <div class="teamName">{{team.teamName}}</div>
+                <div class="teamNumber">{{team.teamNumber}}명 참여</div>
+            </router-link>
         </ul>
     </div>
 
@@ -18,19 +30,13 @@
     <div id="modal" class="modal-overlay" :style="{display:modalDisplay}">
         <div class="modal_window">
             <!--v-model 사용해야 입력된 값이 화면에 보임. v-model 사용하기 위해 해당 변수를 data에 정의해야함-->
-            <el-input placeholder="학기를 입력해 주세요" v-model="postSemester"></el-input>
+            <el-input placeholder="팀명을 입력해 주세요" v-model="postTeamName"></el-input>
 
-            <el-input
-                style="margin-top:10px;"
-                placeholder="프로젝트명을 입력해 주세요."
-                v-model="postProjectName"
-            >
-            </el-input>
                 <!-- dialog footer 영역 -->
                 <!-- <template v-slot:footer> -->
             <div><!--2-->
                 <span class="dialog-footer">
-                    <el-button type="primary" @click="postProjects()">생성</el-button>
+                    <el-button type="primary" @click="postTeams()">생성</el-button>
                     <el-button @click="close()">취소</el-button>
                 </span>
             </div>
@@ -43,17 +49,18 @@ import axios from "axios";
 const url = "http://localhost:3210";
 
 export default {
+    props: ['teams'],
+
     computed: {
-        professorId() {
-            return this.$route.params.professorId; // route.params에서 professorId를 가져옴
+        projectId() {
+            return this.$route.params.projectId; // route.params에서 professorId를 가져옴
         },
 
         postSetParams() {
             const params = {
-                professorId: this.professorId,
-                projectName: this.postProjectName,
-                semester: this.postSemester,
-                projectNumber: 1         
+                projectId: this.projectId,
+                teamName: this.postTeamName,
+                teamNumber: 0 //백엔드에서 카운트해줌
             }
             console.log("params: ",params)
             return params;      
@@ -61,17 +68,17 @@ export default {
     },
 
     mounted() {
-        this.showProjects(); // 컴포넌트가 마운트되면 초기 데이터 표시
+        this.showTeams(); // 컴포넌트가 마운트되면 초기 데이터 표시
     },
 
     data() {
         return {
-            projects: null,
-
+            teams: null,
+            projectName: null,
             //생성
-            postProject: null, //생성할 프로젝트 객체
-            postSemester: null,
-            postProjectName: null,
+            postTeam: null,
+            studentId: 7,
+            postTeamName: null, //생성할 프로젝트 객체
             modalDisplay: "none"
         }
 
@@ -82,13 +89,13 @@ export default {
             this.modalDisplay = "flex";
         },
         //생성
-        postProjects() {
+        postTeams() {
         axios
-            .post(url + '/dashboard/projects', this.postSetParams)
+            .post(url + `/dashboard/teams/${this.studentId}`, this.postSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
-                this.postProject = response.data.data;
-                console.log("postProject: ", this.postProject)
+                this.postTeam = response;
+                console.log("postProject: ", this.postTeam)
                 } 
             this.$router.go(0)  //실행된 후 처음 화면으로
             })
@@ -99,25 +106,27 @@ export default {
         
         close() {
             this.modalDisplay = "none";
-            this.postProject = null;
-            this.postSemester = null;
-            this.postProjectName = null;
+            this.postTeam = null;
+            this.postTeamName = null;
         },
         
-        async getProjects() {
+
+        async getTeams() {
             try {
-                const response = await axios.get(url + `/dashboard/projects/${this.professorId}`);
+                const response = await axios.get(url + `/dashboard/teamsByPro/${this.projectId}`);
                 if (response.data.message === "Success") {
-                    this.projects = response.data.data;
-                    console.log("0" ,this.minutes)
+                    console.log("response", response.data.data);
+                    this.teams = response.data.data.project;
+                    console.log("teams: ", teams )
+                    this.projectName = response.data.data.string;
                 }
             } catch (error) {
                 console.log(error);
             }
         },
 
-        async showProjects() {
-            await this.getProjects();
+        async showTeams() {
+            await this.getTeams();
 
             // this.modalDisplay = "flex";
         },
@@ -130,7 +139,6 @@ export default {
 .top {
     display: flex;
     justify-content: space-between;
-
 }
 
 .choose {
@@ -145,7 +153,7 @@ export default {
     padding: 100px;
 }
 
-.projects {
+.teams {
     display: flex;
     flex-wrap: wrap;
     gap: 20px; /* 옆으로 정렬할 때 간격 설정 */
@@ -153,7 +161,7 @@ export default {
 }
 
 
-.project {
+.team {
     width: 380px;
     background-color: #ffffff;
     border: 1.5px solid #e0e0e0;
@@ -163,11 +171,11 @@ export default {
     cursor: pointer;
 }
 
-.project:hover {
+.team:hover {
     transform: translateY(-5px);
 }
 
-.projectName {
+.teamName {
     font-size: 18px;
     font-weight: bold;
     text-align: left;
@@ -175,15 +183,7 @@ export default {
     padding: 25px;
 }
 
-.semester {
-    margin-top: 8px;
-    font-size: 14px;
-    color: #777777;
-    text-align: left;
-    padding: 20px
-}
-
-.projectNumber {
+.teamNumber {
     margin-top: 8px;
     font-size: 14px;
     color: #777777;
