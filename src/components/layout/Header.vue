@@ -94,6 +94,7 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const headerInfo = ref({});
+    const store = useStore();
     const user_id = ref(store.state.userStore.user_id);
     onBeforeMount(async () => {
       await router.isReady();
