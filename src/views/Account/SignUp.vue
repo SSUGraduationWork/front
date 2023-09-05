@@ -4,7 +4,7 @@
             <div class = "role">
                 <RadioButton @selectedRole="selectedRole"></RadioButton>
             </div>
-            <div v-if="role == '학생'" class = "student-number">
+            <div v-if="role == 'student'" class = "student-number">
                 <input v-model="studentNumber" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '')" maxlength="8" required>
                 <label>학번 :</label>
                 <span></span>
@@ -29,23 +29,44 @@
 </template>
 <script setup>
 import RadioButton from "./components/RadioButton";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import axios from 'axios';
+import { useStore } from 'vuex';
+import { useRouter } from "vue-router";
+
+const store = useStore();
+const router = useRouter();
 
 const role = ref('');
 const studentNumber = ref();
 const univ = ref('');
 const department = ref('');
 const name = ref('');
+const userEmail = ref(store.state.registerStore.user_email);
+const pictureUrl = ref(store.state.registerStore.picture_url);
+
+const userStore = 'userStore';
 
 const selectedRole = (r) => {
     role.value = r;
 }
 const register = () => {
     axios.post('http://localhost:3210/accounts/signup', 
-    {user_name: name.value, role: role.value, student_number: studentNumber.value, university: univ.value, department: department.value})
+        {   user_email : userEmail.value,
+            user_name: name.value, 
+            role: role.value, 
+            student_number: studentNumber.value, 
+            university: univ.value, 
+            department: department.value,
+            picture_url : pictureUrl.value
+        })
         .then((res) => {
-            console.log(res);
+            if(res.data.code == 200){
+                store.commit(`${userStore}/setUserId`, res.data.result.user_id );
+                store.commit(`${userStore}/setJwtToken`, res.data.result.jwtToken);
+
+                router.push(`/dashboard/${res.data.result.user_id}`);
+            }
         })
 }
 </script>

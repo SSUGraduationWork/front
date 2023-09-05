@@ -14,11 +14,15 @@
 <script setup>
 import axios from 'axios';
 import GoogleLoginButton from './components/GoogleLoginButton.vue'
+const google_uri = process.env.VUE_APP_GOOGLE_URI;
+const client_id = process.env.VUE_APP_GOOGLE_CLIENT_ID;
+const redirect_uri = process.env.VUE_APP_GOOGLE_REDIRECT_URI
+const scope = process.env.VUE_APP_GOOGLE_SCOPE;
 
-
-const googleLogin = () => {
-    console.log("hello");
-    window.open("http://localhost:3210/accounts/oauth2/google","_self")
+const uri = `${google_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}`
+console.log(uri);
+const googleLogin = () => { 
+    window.open(uri,"_self")
 }
 </script>
 <style scoped>

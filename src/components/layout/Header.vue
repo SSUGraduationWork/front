@@ -75,6 +75,7 @@
 import {ref, onBeforeMount} from 'vue'
 import axios from 'axios';
 import {useRouter, useRoute} from 'vue-router'
+import { useStore } from 'vuex';
 
 export default {
   props: {
@@ -93,13 +94,13 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const headerInfo = ref({});
-
+    const user_id = ref(store.state.userStore.user_id);
     onBeforeMount(async () => {
       await router.isReady();
       const {teamId} = route.params;
 
       axios.get(`http://44.219.162.63:3000/header`, {
-        params : {userId : 11, teamId : teamId}
+        params : {userId : user_id.value, teamId : teamId}
       })
           .then((res) => {
             headerInfo.value = {...res.data.result};

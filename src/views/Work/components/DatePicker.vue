@@ -16,9 +16,9 @@
 <script setup>
 import '@vuepic/vue-datepicker/dist/main.css';
 import dayjs from 'dayjs';
-import axios from 'axios';
 import { ref, computed, defineProps } from 'vue';
 import { ko } from 'date-fns/locale';
+import { axiosInstanceNode } from '../../../axios';
 
 const props = defineProps({
     endDate : String,
@@ -54,7 +54,7 @@ dateFormat.minute = computed(() => date.value.getMinutes());
 
 const change = () => {
     isNull = 0;
-    axios.patch(`http://44.219.162.63:3000/work/${props.workId}/end_date`, {end_date: dayjs(date.value).format('YYYY-MM-DD HH:mm:ss')})
+    axiosInstanceNode.patch(`/work/${props.workId}/end_date`, {end_date: dayjs(date.value).format('YYYY-MM-DD HH:mm:ss')})
         .then((res) => {
             console.log(res);
         })

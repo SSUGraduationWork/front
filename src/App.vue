@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Sidebar v-if="['Account','SignIn','SignUp'].includes($route.name)==false" :teamId="teamId" />
-    <div v-if="['Account','SignIn','SignUp'].includes($route.name)==false" :style="{ 'margin-left': sidebarWidth }">
+    <Sidebar v-if="['Account','SignIn','SignUp','CallBack'].includes($route.name)==false" :teamId="teamId" />
+    <div v-if="['Account','SignIn','SignUp','CallBack'].includes($route.name)==false" :style="{ 'margin-left': sidebarWidth }">
       <Header /> 
       <router-view :teamId="teamId"></router-view> 
     </div>

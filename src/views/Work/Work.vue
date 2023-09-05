@@ -89,15 +89,16 @@
 
 <script>
 import axios from 'axios';
-import DatePicker from './DatePicker';
-import MultiSelect from './MultiSelect';
-import StatusDropdown from './StatusDropdown';
-import Rating from './Rating';
-import DeleteButton from './DeleteButton';
-import WorkDetail from './WorkDetail';
+import DatePicker from './components/DatePicker';
+import MultiSelect from './components/MultiSelect';
+import StatusDropdown from './components/StatusDropdown';
+import Rating from './components/Rating';
+import DeleteButton from './components/DeleteButton';
+import WorkDetail from './components/WorkDetail';
 
 import {ref, onBeforeMount} from 'vue';
 import {useRouter, useRoute} from 'vue-router'
+import { axiosInstanceNode } from '../../axios';
 
 export default {
   components: { DatePicker, MultiSelect, StatusDropdown, Rating, DeleteButton, WorkDetail },
@@ -113,7 +114,7 @@ export default {
         await router.isReady();
         const {teamId} = route.params;
 
-        axios.get(`http://44.219.162.63:3000/work/${teamId}`)
+        axiosInstanceNode.get(`/work/${teamId}`)
         .then((res) => {
             teamMembers.value = res.data.result.teamMembers;
             workInfo.value = res.data.result.works;
@@ -144,14 +145,14 @@ export default {
     },
     textChange(workId, value){
       console.log(value);
-      axios.patch(`http://44.219.162.63:3000/work/${workId}/work_name`, {work_name : value})
+      axiosInstanceNode.patch(`/work/${workId}/work_name`, {work_name : value})
         .then((res) => {
             console.log(res);
         })
     },
     addWork(){
       const workId = ref();
-      axios.post(`http://44.219.162.63:3000/work/${this.$route.params.teamId}`)
+      axiosInstanceNode.post(`/work/${this.$route.params.teamId}`)
         .then((res) => {
           console.log(res);
           workId.value = res.data.result.work_id;
