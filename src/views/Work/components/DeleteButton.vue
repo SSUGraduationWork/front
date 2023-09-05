@@ -5,7 +5,7 @@
 </template>
 <script setup>
 import { ref, defineProps } from 'vue';
-import axios from 'axios';
+import { axiosInstanceNode } from "../../../axios";
 
 const emit = defineEmits(["deleteWork"])
 const props = defineProps({
@@ -16,7 +16,7 @@ const props = defineProps({
 })
 const clickDelete = () => {
     console.log("delete " + props.workId);
-    axios.delete(`http://44.219.162.63:3000/work/${props.workId}`)
+    axiosInstanceNode.delete(`/work/${props.workId}`)
         .then((res) => {
             console.log(res);
         })

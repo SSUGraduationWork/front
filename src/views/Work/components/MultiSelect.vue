@@ -42,9 +42,9 @@
 
 <script setup>
 import "primevue/resources/primevue.min.css"; //core CSS
-import axios from 'axios';
 import { ref, defineProps } from "vue";
 import MultiSelect from 'primevue/multiselect';
+import { axiosInstanceNode } from "../../../axios";
 
 const props = defineProps({
     teamMembers : {
@@ -85,7 +85,7 @@ let lastStatus = () => {
         for (let userInfo of selectedMembers.value){
             changeValue.push(userInfo.user_id);
         }
-        axios.patch(`http://44.219.162.63:3000/work/${props.workId}/worker`, {worker : changeValue})
+        axiosInstanceNode.patch(`/work/${props.workId}/worker`, {worker : changeValue})
         .then((res) => {
             console.log(res);
         })

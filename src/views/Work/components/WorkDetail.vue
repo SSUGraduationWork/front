@@ -60,7 +60,7 @@
 </template>
 <script setup>
 import { ref, defineProps, computed, onBeforeMount } from 'vue';
-import axios from 'axios';
+import { axiosInstanceNode } from '../../../axios';
 
 const props = defineProps({
     workId : {
@@ -79,7 +79,7 @@ const board = ref();
 const importance = ref();
 
 if (props.workId > 0) {
-    axios.get(`http://34.226.148.91/work/detail/${props.workId}`)
+    axiosInstanceNode.get(`/work/detail/${props.workId}`)
     .then((res) => {
         workDetail.value = res.data.result;
         if(workDetail.value.worker){

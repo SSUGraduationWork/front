@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref, defineProps } from 'vue';
-import axios from 'axios';
+import { axiosInstanceNode } from '../../../axios';
 
 const props = defineProps({
     importance : {
@@ -23,7 +23,7 @@ const value = ref(props.importance);
 
 const change = () => {
     console.log(value.value);
-    axios.patch(`http://44.219.162.63:3000/work/${props.workId}/importance`, {importance: value.value})
+    axiosInstanceNode.patch(`/work/${props.workId}/importance`, {importance: value.value})
         .then((res) => {
             console.log(res);
         })
