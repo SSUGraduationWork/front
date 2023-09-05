@@ -157,6 +157,7 @@ export default {
     flex-wrap: wrap;
     gap: 20px; /* 옆으로 정렬할 때 간격 설정 */
     list-style: none;
+    color: inherit;
 }
 
 
@@ -169,6 +170,7 @@ export default {
     transition: transform 0.2s;
     cursor: pointer;
     text-decoration: none; /* 링크에 밑줄 제거 */
+    color: inherit; /*색변하지 않도록 */
 }
 
 .project:hover {

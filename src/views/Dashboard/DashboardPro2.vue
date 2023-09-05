@@ -158,6 +158,7 @@ export default {
     flex-wrap: wrap;
     gap: 20px; /* 옆으로 정렬할 때 간격 설정 */
     list-style: none;
+    color: inherit; /*클릭해도 글자색변하지않도록*/
 }
 
 
@@ -169,6 +170,8 @@ export default {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
     cursor: pointer;
+    color: inherit;
+    text-decoration: none;
 }
 
 .team:hover {

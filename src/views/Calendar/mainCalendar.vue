@@ -113,7 +113,7 @@ export default {
       title: null,
       content: null,
       userId: 7,
-      teamId: 28,
+      teamId: this.$route.params.teamId,
 
       //회의록 수정
       update: false,
@@ -307,7 +307,8 @@ export default {
     //조회
     async getMinutes() {
       try {
-        const response = await axios.get(url + `/calendars/minutes/28/` + this.targetDate + `/7`);
+        const response = await axios.get(url + `/calendars/minutes/${this.teamId}/${this.targetDate}/${this.userId}`);
+        console.log("teamId:", this.teamId,"targetDate:",this.targetDate,"userId: ",this.userId);
         if (response.data.message === "Success") {
           this.minutes = response.data.data;
           console.log("getMinutes minutes: ", this.minutes);
@@ -364,7 +365,7 @@ export default {
     //삭제
     deleteMinutes() {
       axios
-        .delete(url + `/calendars/minutes/28/7/` + this.targetDate)
+        .delete(url + `/calendars/minutes/${this.teamId}/${this.userId}/${this.targetDate}`)
         .then((response) => {
           if (response.data.message == "Success") {
             this.close();
@@ -389,6 +390,8 @@ export default {
   margin-top: 150px;
   text-align: center;
   font-family: Arial, sans-serif;
+  margin-left: 70px;
+  margin-right: 70px;
 }
 
 .calendar_header {
@@ -407,6 +410,8 @@ th,
 td {
   padding: 10px;
   border: 1px solid #ccc;
+  width: 30px;
+  height: 50px;
 }
 
 .day {
