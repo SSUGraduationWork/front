@@ -6,7 +6,7 @@ import WritePage from '../views/File/WritePage.vue'
 import UpdatePage from '../views/File/UpdatePage.vue'
 import BoardDetailPage from '../views/File/BoardDetailPage.vue'
 import SideBarPage from '../views/File/SideBarPage.vue'
-import AlarmPage from '../views/File/AlarmPage.vue'
+
 
 const routes = [
 
@@ -77,13 +77,13 @@ const routes = [
     props: true,
   },
   {//글 수정
-    path: '/multiboard/update/:boardId/:memberId',
+    path: '/multiboard/update/:boardId/:memberId/:teamId/:workId?',
     name: 'UpdatePage',
     component: UpdatePage,
     props: true,
   },
   {
-    path: '/board/view/:boardId/:memberId',
+    path: '/board/view/:boardId/:memberId/:teamId',
     name: 'BoardDetailPage',
     component: BoardDetailPage,
     props: true,
@@ -94,12 +94,7 @@ const routes = [
     component: SideBarPage,
     props: true,
   },
-  {
-    path: '/alarmList/view/:memberId',
-    name: 'AlarmPage',
-    component: AlarmPage,
-    props: true,
-  }
+
 ]
 
 const router = createRouter({

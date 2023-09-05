@@ -11,9 +11,14 @@
 
     <!-- ... -->
     <form @submit.prevent="submitForm">
-      <div>
+
+
+
+      <div class="title-style">
+        <div class="workName-box-style">{{boardContent.workName}}</div>
         <input type="text" id="title" v-model="formData.title" required :placeholder="boardContent.title" />
       </div>
+
       <!-- 파일 업로드 부분 생략 -->
       <div
           v-for="(fileDir, index) in boardContent.fileDirs"
@@ -25,12 +30,12 @@
         {{ extractFileName(fileDir) }}
       </div>
 
-      <div>
+      <div class="update-content-box">
         <textarea id="content" v-model="formData.content" required :placeholder="boardContent.content"></textarea>
       </div>
       <div class="button-container">
-        <button type="button" class="cancel-button" @click="cancel">취소</button>
-        <button type="submit" class="submit-button" @click="goToUpdatePage(memberId, boardId)">수정</button>
+        <button type="button" class="cancel-button" @click="goToHomeView">취소</button>
+        <button type="submit" class="submit-button" @click="goToUpdatePage(memberId, boardId,teamId)">수정</button>
       </div>
     </form>
   </div>
@@ -42,7 +47,7 @@ import axios from 'axios';
 import Sidebar from './SideBarPage.vue';
 import UpdatePage from "@/views/File/UpdatePage";
 export default {
-  props: ['boardId','memberId'],
+  props: ['boardId','memberId','teamId'],
   components: {
     Sidebar,
   },
@@ -61,14 +66,17 @@ export default {
   async created() {
     const boardId = this.$route.params.boardId;
     const memberId = this.$route.params.memberId;
-
+    const teamId = this.$route.params.teamId;
     try {
-      const response = await axios.get(`http://localhost:8080/board/view/${boardId}/${memberId}`);
+      const response = await axios.get(`http://localhost:3210/board/view/${boardId}/${memberId}/${teamId}`);
       if (response.data.status.code === 200) {
         this.boardContent = response.data.content;
         this.formData.title = this.boardContent.title;
         this.formData.content = this.boardContent.content;
         this.loading = false;
+
+        // 조회수 증가 로직 실행
+        this.increaseViewCount(boardId);
       } else {
         console.error('올바르지 않은 요청입니다.');
         alert('올바르지 않은 요청입니다.');
@@ -79,8 +87,24 @@ export default {
     }
   },
   methods: {
+    goToHomeView() {
+      this.$router.push({ name: 'HomeView' }); // WritePage의 name을 사용하여 페이지 이동
+    },
+    // 조회수 증가 로직
+    increaseViewCount(boardId) {
+      try {
+        // 조회수를 서버에 증가시키는 API 호출
+        const response = axios.post(`http://localhost:3210/board/upcount/${boardId}`);
+
+        // 요청 성공 시 처리
+        console.log('조회수 증가 성공:');
+      } catch (error) {
+        // 에러 처리
+        console.error('조회수 증가 오류:', error);
+      }
+    },
     goToUpdatePage() {
-      this.$router.push({ name: 'UpdatePage', params: { memberId: this.memberId, boardId: this.boardId } });
+      this.$router.push({ name: 'UpdatePage', params: { memberId: this.memberId, boardId: this.boardId ,teamId: this.teamId} });
     },
     goToSideBarPage() {
       this.$router.push({ name: 'SideBarPage', params: { memberId: this.memberId } });
@@ -105,7 +129,7 @@ export default {
     },
     async downloadFile(fileId, fileDir) {
       try {
-        const response = await axios.get(`http://localhost:8080/downloadFile/${fileId}`, {
+        const response = await axios.get(`http://localhost:3210/downloadFile/${fileId}`, {
           responseType: 'blob',
         });
 
@@ -137,14 +161,37 @@ body {
 
   */
   padding: 8px;
-  width: 70%;
   cursor: pointer;
-  margin: 20px 0 0 435px;
-  width: 850px;
+  margin: 20px 0 0 80px;
+  width: 1000px;
   height: 70px;
   border-radius: 5px;
   border: 1px dashed darkgrey; /* 변경된 부분: 테두리를 점선으로 설정 */
   border-width: 2px; /* 변경된 부분: 테두리 두께 설정 */
 }
+
+.title-style{
+  width: 1110px;
+  margin-right:100px;
+}
+
+.workName-box-style{
+  justify-content: center; /* 수평 가운데 정렬 */
+  display: inline-flex; /* 수직 가운데 정렬을 위해 Flexbox 사용 */
+  border-radius: 7px;
+  width: 120px;
+  height: 30px;
+  background-color: #F5F6FA;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  align-items: center; /* 수직 가운데 정렬 */
+  margin-left: 900px;
+  text-align: center; /* 텍스트 수평 가운데 정렬 */
+  margin-top:100px;
+  position:absolute;
+}
+
 
 </style>

@@ -22,22 +22,23 @@
 
       <!-- 검색 입력창 -->
       <div class="search-container">
-      <div class="file-letter">파일</div>
-      <div class="write-button-container"><button class="write-button" @click="goToWritePage">글쓰기</button></div> <!-- "글쓰기" 버튼 추가 -->
+        <div class="file-letter">파일</div>
+        <div class="write-button-container"><button class="write-button" @click="goToWritePage">글쓰기</button></div> <!-- "글쓰기" 버튼 추가 -->
 
-      <!-- dropdown-->
-      <div  class="search-dropdown"><dropdown :options="dropdownOptions" /></div>
-      <div class="search-input-container">
+        <!-- dropdown-->
+        <div  class="search-dropdown"><BoardDropdown :options="updateSelectedIndex"  @selected="handleDropdownSelect"/></div>
 
-        <i class="fi fi-br-search"></i>
-        <input
-            v-model="searchKeyword"
-            @keyup.enter="search"
-            placeholder="  검색"
-            class="search-input"
-        />
+        <div class="search-input-container">
+
+          <i class="fi fi-br-search"></i>
+          <input
+              v-model="searchKeyword"
+              @keyup.enter="search"
+              placeholder="  검색"
+              class="search-input"
+          />
+        </div>
       </div>
-    </div>
       <table class="table custom-table">
 
         <thead>
@@ -51,27 +52,74 @@
           <th>조회수</th>
         </tr>
         </thead>
-        <tbody>
-        <tr v-for="board in visibleBoardData" :key="board.boardId">
-          <td>{{ board.boardId }}</td>
-          <td>{{ board.workName }}</td>
-          <td>
-          <router-link
-              :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId } }"
-          >{{ board.title }}
-          </router-link></td>
-          <td>{{ board.writerName }}</td>
-          <td>{{ board.createdTime.slice(0, 10) }}</td>
-          <td><i :class="{'fa-solid fa-circle text-green': board.feedbackYn, 'fa-solid fa-circle text-red': !board.feedbackYn}"></i></td>
-          <td>{{ board.viewCount }}</td>
-        </tr>
-        </tbody>
+        <template v-if="selectedIndex === 1">
+          <template v-for="(board, index) in feedbackTrueItems" :key="index">
+            <tr v-if="board.feedbackYn">
+              <td>{{ index + currentPage * itemsPerPage + 1 }}</td>
+              <td>{{ board.workName }}</td>
+              <td>
+                <router-link
+                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                >{{ board.title }}
+                </router-link>
+              </td>
+              <td>
+                <img :src="board.pictureUrl" alt="사용자 이미지" style="max-width: 25px; max-height: 25px;" class="spaced">
+                <span> {{ board.writerName }}</span>
+              </td>
+              <td>{{  formatDateFromArray(board.createdTime) }}</td>
+              <td :key="board.feedbackYn"><i class="fa-solid fa-circle text-green"></i></td>
+              <td>{{ board.viewCount }}</td>
+            </tr>
+          </template>
+        </template>
+        <template v-else-if="selectedIndex === 2">
+          <template v-for="(board, index) in feedbackFalseItems" :key="index">
+            <tr v-if="!board.feedbackYn">
+              <td>{{ index + currentPage * itemsPerPage + 1 }}</td>
+              <td>{{ board.workName }}</td>
+              <td>
+                <router-link
+                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                >{{ board.title }}
+                </router-link>
+              </td>
+              <td>
+                <img :src="board.pictureUrl" alt="사용자 이미지" style="max-width: 25px; max-height: 25px;" class="spaced">
+                <span> {{ board.writerName }}</span>
+              </td>
+              <td>{{  formatDateFromArray(board.createdTime) }}</td>
+              <td :key="board.feedbackYn"><i class="fa-solid fa-circle text-red"></i></td>
+              <td>{{ board.viewCount }}</td>
+            </tr>
+          </template>
+        </template>
+        <template v-else>
+          <tbody>
+          <tr v-for="(board, index) in visibleBoardData" :key="index">
+            <td>{{ index + currentPage * itemsPerPage + 1 }}</td>
+            <td>{{ board.workName }}</td>
+            <td>
+              <router-link
+                  :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+              >{{ board.title }}
+              </router-link></td>
+            <td>
+              <img :src="board.pictureUrl" alt="사용자 이미지" style="max-width: 25px; max-height: 25px;" class="spaced">
+              <span> {{ board.writerName }}</span></td>
+            <td>{{  formatDateFromArray(board.createdTime) }}</td>
+            <td :key="board.feedbackYn"><i :class="{'fa-solid fa-circle text-green': board.feedbackYn, 'fa-solid fa-circle text-red': !board.feedbackYn}"></i></td>
+            <td>{{ board.viewCount }}</td>
+          </tr>
+          </tbody>
+        </template>
       </table>
     </div>
+
     <!-- 페이지 버튼 표시 -->
     <div class="pagination">
       <button @click="showPreviousPages" > <i class= "fi fi-rr-angle-small-left"></i></button>
-      <button v-for="page in visiblePageRange" :key="page" @click="goToPage(page - 1)">
+      <button v-for="page in visiblePageRange" :key="page" @click="goToPage(page - 1)" :class="{ 'active-page': page - 1 === currentPage }">
         {{ page }}
       </button>
       <button @click="showNextPages" ><i class= "fi fi-rr-angle-small-right"></i></button>
@@ -82,8 +130,8 @@
 <script>
 import axios from 'axios';
 
-import Dropdown from './Dropdown.vue';
 
+import BoardDropdown from './BoardDropdown.vue';
 import WritePage from './WritePage.vue';
 
 
@@ -95,16 +143,21 @@ export default {
       boardList: [],
       currentPage: 0, // 현재 페이지 번호
       visibleBoardData: [], // 보여줄 데이터 배열 추가
+      feedbackTrueItems: [],  // 피드백이 true인 항목을 저장할 배열
+      feedbackFalseItems: [], // 피드백이 false인 항목을 저장할 배열
       totalPages: 0, // 전체 페이지 수
+      feedbackTrueItemCount:0,
+      feedbackFalseItemCount:0,
       visiblePagesStart: 1, // 현재 보이는 페이지 숫자 범위 시작
       visiblePagesEnd: 3,   // 현재 보이는 페이지 숫자 범위 끝
       dropdownOptions: ['Option 1', 'Option 2', 'Option 3'],
-      itemsPerPage: 6, // 한 페이지에 보여줄 항목 수 추가
+      itemsPerPage: 7, // 한 페이지에 보여줄 항목 수 추가
       loading: true, // 초기 로딩 상태를 true로 설정
+      selectedIndex: null, // 선택된 인덱스를 저장할 데이터
     };
   },
   components: {
-    Dropdown,
+    BoardDropdown,
     WritePage,
   },
   mounted() {
@@ -135,14 +188,47 @@ export default {
     },
   },
   methods: {
+    updateSelectedIndex(index) {
+      this.selectedIndex = index;
+    },
+    handleDropdownSelect(index) {
+      // BoardDropdown 컴포넌트로부터 선택된 인덱스를 받아서 처리
+      this.selectedIndex = index;
+    },
+    formatDateFromArray(dateArray) {
+      // 배열에서 연도, 월, 일 요소 추출
+      const [year, month, day] = dateArray.slice(0, 3);
+
+      // 월과 일이 한 자릿수인 경우 앞에 0을 추가하여 두 자리로 만듭니다.
+      const formattedMonth = month.toString().padStart(2, '0');
+      const formattedDay = day.toString().padStart(2, '0');
+
+      // YYYY-MM-DD 형식으로 날짜 문자열 생성
+      const formattedDate = `${year}-${formattedMonth}-${formattedDay}`;
+
+      return formattedDate;
+    },
+
+
     async fetchBoardList(memberId, teamId) {
       try {
-        const url = `http://localhost:8080/board/list/${memberId}/${teamId}`;
+        const url = `http://localhost:3210/board/list/${memberId}/${teamId}`;
         const response = await axios.get(url);
 
         if (response.data && response.data.content && Array.isArray(response.data.content)) {
           // 서버에서 받아온 데이터를 boardList에 저장
           this.boardList = response.data.content;
+
+          // boardId를 기준으로 내림차순으로 정렬
+          this.boardList.sort((a, b) => b.boardId - a.boardId);
+
+          // 피드백이 true인 항목과 false인 항목을 분류
+          this.feedbackTrueItems = this.boardList.filter(board => board.feedbackYn === true);
+          this.feedbackFalseItems = this.boardList.filter(board => board.feedbackYn === false);
+
+
+          this.feedbackTrueItemCount = this.feedbackTrueItems.length;
+          this.feedbackFalseItemCount = this.feedbackFalseItems.length;
 
           // 전체 페이지 수 계산
           this.totalPages = Math.ceil(this.boardList.length / this.itemsPerPage);
@@ -163,6 +249,9 @@ export default {
       const startIndex = this.currentPage * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
       this.visibleBoardData = this.boardList.slice(startIndex, endIndex);
+      // 피드백이 true인 항목과 false인 항목을 분류
+      this.feedbackTrueItems = this.boardList.filter(board => board.feedbackYn === true).slice(startIndex, endIndex);
+      this.feedbackFalseItems = this.boardList.filter(board => board.feedbackYn === false).slice(startIndex, endIndex);
     },
     goToPage(pageNumber) {
       this.currentPage = pageNumber;
@@ -189,7 +278,7 @@ export default {
     goToWritePage() {
       this.$router.push({ name: 'WritePage' }); // WritePage의 name을 사용하여 페이지 이동
     },
-    },
+  },
 };
 </script>
 
@@ -269,7 +358,7 @@ export default {
   border-radius: 7px;
   height: 37px;
   width: 230px; /* 검색 입력창 너비 조절 */
-  margin-right: 50px;
+  margin-right: 150px;
 }
 .fi-br-search{
   color: #3e3e3e;
@@ -290,7 +379,7 @@ export default {
 /* 드롭다운 */
 .search-dropdown {
   float: right;
-  margin-right: 30px;
+  margin-right: 130px;
 }
 
 
@@ -400,5 +489,11 @@ export default {
   color: white; /* 글자색을 흰색으로 설정 */
   font-weight: 600;
   border-radius: 10px; /* 테두리를 둥글게 만들기 */
+}
+
+.pagination button.active-page {
+  background-color: #3e3e3e; /* 원하는 찐 회색 색상으로 변경 */
+  color: white; /* 글자색을 흰색으로 설정 */
+  font-weight: bold; /* 폰트 굵기 설정 (원하는 스타일로 변경) */
 }
 </style>

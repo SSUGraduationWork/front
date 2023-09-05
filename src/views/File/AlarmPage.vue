@@ -6,8 +6,8 @@
       <div class="modal-content" @click.stop>
         <!-- 모달 내용 -->
         <div v-for="item in content" :key="item.alarmId" class="alarm-item">
-          <template v-if="(item.alarmKind === 'requestFeedback' ) || item.alarmKind === 'newWrite'||item.alarmKind==='agreeFeedback'||item.alarmKind==='denyFeedback'">
-            <span class="small-text">{{ formatDateTime(item.createdTime) }}</span>
+          <template v-if="(item.alarmKind === 'requestFeedback' ) || item.alarmKind === 'newWrite'||item.alarmKind==='agreeFeedback'||item.alarmKind==='denyFeedback'||(item.alarmKind === 'complUpdate' && item.feedbackYn)">
+            <span class="small-text">{{ item.createdTime }}</span>
             <div class="image-container">
               <i v-if="!item.seen" class="fa-solid fa-circle icon-circle"></i>
               <img :src="item.pictureUrl" alt="이미지" style="max-width: 35px; max-height: 35px;" class="spaced">
@@ -16,7 +16,7 @@
             <a :href="item.redirectUrl + '/' + $route.params.memberId" @click="handleLinkClick(item.alarmId)" class="direct"><i class="fa-solid fa-arrow-up-right-from-square" style="max-width: 23px; max-height: 23px;"></i>바로가기</a>
           </template>
           <template v-else-if="item.alarmKind === 'complUpdate' && !item.feedbackYn">
-            <span class="small-text">{{ formatDateTime(item.createdTime) }}</span>
+            <span class="small-text">{{ item.createdTime }}</span>
             <div class="image-container">
               <i v-if="!item.seen" class="fa-solid fa-circle icon-circle"></i>
               <img :src="item.pictureUrl" alt="이미지" style="max-width: 35px; max-height: 35px;" class="spaced">
@@ -28,7 +28,7 @@
             </div>
           </template>
           <template v-if="item.alarmKind === 'complFeedback'">
-            <span class="small-text">{{ formatDateTime(item.createdTime) }}</span>
+            <span class="small-text">{{ item.createdTime }}</span>
             <div class="image-container">
               <i v-if="!item.seen" class="fa-solid fa-circle icon-circle"></i>
               <div class="content-font-size" v-html="item.content"></div>
@@ -54,7 +54,7 @@ export default {
   methods: {
     async handleReapprove(boardId, writerId, isApproved) {
       try {
-        await axios.post(`http://localhost:8080/recomment/${boardId}/${writerId}/${isApproved}`);
+        await axios.post(`http://localhost:3210/recomment/${boardId}/${writerId}/${isApproved}`);
         // 재수락 또는 거절 요청을 보낸 후에, 필요한 업데이트를 수행할 수 있습니다.
       } catch (error) {
         console.error('Error reapproving:', error);
@@ -63,7 +63,7 @@ export default {
     async handleLinkClick(alarmId) {
       // 1. API 호출
       try {
-        const response = await axios.get(`http://localhost:8080/alarm/view/${alarmId}`);
+        const response = await axios.get(`http://localhost:3210/alarm/view/${alarmId}`);
         // 처리할 로직 작성 (예: 상세 정보 표시)
       } catch (error) {
         console.error('Error fetching alarm detail:', error);
@@ -99,7 +99,7 @@ export default {
 
           try {
             // 서버에 업데이트 요청 보내기
-            await axios.put(`http://localhost:8080/updateSeenStatus/${item.alarmId}`, {
+            await axios.put(`http://localhost:3210/updateSeenStatus/${item.alarmId}`, {
               seen: true
             });
           } catch (error) {
@@ -111,7 +111,7 @@ export default {
     async fetchAndShowAlarms() {
       try {
         const memberId = this.$route.params.memberId; // 동적 라우트 매개변수 사용
-        const response = await axios.get(`http://localhost:8080/alarmList/view/${memberId}`);
+        const response = await axios.get(`http://localhost:3210/alarmList/view/${memberId}`);
         this.content = response.data.content;
         this.isModalOpen = true;
       } catch (error) {
@@ -137,6 +137,7 @@ export default {
   margin-top: 30px;
   margin-left: 580px;
   overflow-y:  auto;
+  z-index: 10; /* 내용 위로 올라오도록 설정 */
 }
 
 .modal-content {
@@ -147,6 +148,7 @@ width: 20%;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   overflow-y:  auto;
   padding: 10px;
+  z-index: 10; /* 내용 위로 올라오도록 설정 */
 }
 
 .modal-box {
@@ -154,6 +156,7 @@ width: 20%;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 10; /* 내용 위로 올라오도록 설정 */
 }
 
 /* 버튼 스타일 */
@@ -161,6 +164,7 @@ width: 20%;
   background-color: white;
   border: none;
   cursor: pointer;
+  margin-top:100px;
 }
 
 /*

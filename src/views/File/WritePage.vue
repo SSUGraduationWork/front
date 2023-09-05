@@ -1,37 +1,37 @@
 <template>
-<div v-if="loading" class="loading-container">
-<i class="fa-solid fa-spinner"></i> 로딩 중...
-</div>
-<div v-else class="write-page">
-<form @submit.prevent="submitForm">
-  <!-- dropdown-->
-  <dropdown :options="formData.dropdownOptions" class="search-dropdown" @selected="updateSelectedWorkId" />
-  <div>
-    <input type="text" id="title" v-model="formData.title" required placeholder="제목을 입력하세요"/>
+  <div v-if="loading" class="loading-container">
+    <i class="fa-solid fa-spinner"></i> 로딩 중...
   </div>
-  <div>
-    <div v-for="(file, index) in formData.files" :key="index" class="file-input-container">
-      <label :for="'file-input-' + index" class="custom-file-label">
-        <div class="custom-icon-container">
-          <i class="fa-solid fa-file-arrow-up custom-icon"></i> <span class="label-text">{{ file ? file.name : '파일 선택' }}</span>
+  <div v-else class="write-page">
+
+      <!-- dropdown-->
+      <dropdown :options="formData.dropdownOptions" class="search-dropdown" @selected="updateSelectedWorkId" />
+      <div>
+        <input type="text" id="title" v-model="formData.title" required placeholder="제목을 입력하세요"/>
+      </div>
+      <div>
+        <div v-for="(file, index) in formData.files" :key="index" class="file-input-container-write">
+          <label :for="'file-input-' + index" class="custom-file-label">
+            <div class="custom-icon-container">
+              <i class="fa-solid fa-file-arrow-up custom-icon"></i> <span class="label-text">{{ file ? file.name : '파일 선택' }}</span>
+            </div>
+          </label>
+          <input :id="'file-input-' + index" type="file" ref="fileInput" @change="handleFileChange(index)" class="custom-file-input-write" style="display: none;"/>
+          <button type="button" class="custom-file-input-write" @click="openFileInput(index)" style="position: absolute;  width: 100%; height: 100%;"></button>
         </div>
-      </label>
-      <input :id="'file-input-' + index" type="file" ref="fileInput" @change="handleFileChange(index)" class="custom-file-input" style="display: none;"/>
-      <button type="button" class="custom-file-input" @click="openFileInput(index)" style="position: absolute; opacity: 0; width: 100%; height: 100%;"></button>
-    </div>
+      </div>
+      <button type="button" @click="addFileInput" class="add-file-button">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+      <div>
+        <textarea id="content" v-model="formData.content" required placeholder="본문을 입력하세요"></textarea>
+      </div>
+      <div class="button-container">
+        <button type="button" class="cancel-button" @click="goToHomePage">취소</button>
+        <button type="submit" class="submit-button" @click="submitForm">확인</button>
+      </div>
+
   </div>
-  <button type="button" @click="addFileInput" class="add-file-button">
-    <i class="fa-solid fa-plus"></i>
-  </button>
-  <div>
-    <textarea id="content" v-model="formData.content" required placeholder="본문을 입력하세요"></textarea>
-  </div>
-  <div class="button-container">
-    <button type="button" class="cancel-button" >취소</button>
-    <button type="submit" class="submit-button">확인</button>
-  </div>
-</form>
-</div>
 </template>
 
 
@@ -44,6 +44,7 @@ export default {
   props: ['memberId', 'teamId'], // 프롭스 정의
   data() {
     return {
+      workName: 'ValueFromUpdatePage', // 전달할 데이터
       formData: {
         title: '',
         content: '',
@@ -67,6 +68,7 @@ export default {
     },
   },
   methods: {
+
     handleFileChange(index) {
       const input = this.$refs.fileInput[index];
       this.formData.files.splice(index, 1, input.files[0]);
@@ -92,7 +94,7 @@ export default {
 
       try {
         const response = await axios.post(
-            `http://localhost:8080/board/multiWrite/${memberId}/${teamId}/${selectedWorkId}`,
+            `http://localhost:3210/board/multiWrite/${memberId}/${teamId}/${selectedWorkId}`,
             formData,
             {
               headers: {
@@ -102,7 +104,7 @@ export default {
         );
 
         // 요청 성공 시 처리
-        console.log('글 작성 성공:', response.data);
+      //  console.log('글 작성 성공:', response.data);
         alert("글 작성 성공")
       } catch (error) {
         // 에러 처리
@@ -125,7 +127,7 @@ export default {
     },
     async loadDropdownOptions(teamId) {
       try {
-        const response = await axios.get(`http://localhost:8080/work/list/${teamId}`);
+        const response = await axios.get(`http://localhost:3210/work/list/${teamId}`);
         this.formData.dropdownOptions = response.data.content;
       } catch (error) {
         console.error('Dropdown options load error:', error);
@@ -146,44 +148,43 @@ export default {
 
 
 
-
 <style>
 #title {
-  width: 60%;
+  width: 90%;
   padding: 10px;
   font-size: 16px;
   border: none;
   border-bottom: 1px solid #ccc;
   outline: none;
   background-size: auto 100%;
-  margin: 150px 0 0 300px;
+  margin: 150px 0 0 50px;
 }
 
 #content {
-  width: 60%;
+  width: 90%;
   padding: 10px;
   font-size: 16px;
   border: none;
   outline: none;
   background-size: auto 100%;
-  margin: 0px 0 0 300px;
+  margin: 0px 0 0 50px;
   height: 300px; /* 원하는 높이로 조정 */
 }
 
-.file-input-container {
+.file-input-container-write {
   position: relative;
   display: inline-block;
   overflow: hidden;
   border-radius: 5px;
   border: 1px solid gray;
-  margin: 20px 0 0 300px;
-  width: 850px;
+  margin: 20px 0 0 50px;
+  width: 90%;
   height: 70px;
   border: 1px dashed #ccc; /* 회색 점선 테두리 추가 */
   cursor: pointer; /* 커서를 손가락 모양으로 변경 */
 }
 
-.custom-file-input {
+.custom-file-input-write {
   background-color: white;
   border-radius: 10px;
   border: 1px dashed #ccc; /* 회색 점선 테두리 추가 */

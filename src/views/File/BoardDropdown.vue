@@ -1,15 +1,17 @@
 <template>
-  <div class="dropdown">
-    <button @mouseenter="openDropdown" @mouseleave="closeDropdown" class="dropdown-button">{{ selectedOption }}<i class="fi fi-rr-angle-small-down"></i></button>
-    <ul v-show="isOpen" class="dropdown-list" @mouseenter="openDropdown" @mouseleave="closeDropdown">
-      <li v-for="(option, index) in options" :key="index" @click="selectOption(option)">
-        {{ option.workName }}
+  <div class="dropdown2">
+    <button @mouseenter="openDropdown" @mouseleave="closeDropdown" class="dropdown-button2">{{ selectedOption }}<i class="fi fi-rr-angle-small-down"></i></button>
+    <ul v-show="isOpen" class="dropdown-list2" @mouseenter="openDropdown" @mouseleave="closeDropdown">
+      <li v-for="(option, index) in options" :key="index" @click="selectOption(index)">
+        {{ option }}
+
+        <i
+            :class="{'fa-solid fa-circle text-green':  index === 1, 'fa-solid fa-circle text-red': index === 2}"
+        ></i>
       </li>
     </ul>
   </div>
 </template>
-
-
 
 <script>
 export default {
@@ -20,6 +22,8 @@ export default {
     return {
       isOpen: false,
       selectedOption: '전체',
+      // options 데이터를 배열로 변경하고 각각 다른 값을 가지도록 수정
+      options: ['전체','피드백', '피드백'],
     };
   },
   methods: {
@@ -29,12 +33,13 @@ export default {
     closeDropdown() {
       this.isOpen = false;
     },
-    selectOption(option) {
-      this.selectedOption = option.workName;
+    selectOption(index) {
+      // 선택된 인덱스를 기반으로 옵션을 선택합니다.
+      this.selectedOption = this.options[index];
       this.isOpen = false;
 
-      // 선택한 작업의 workId를 부모 컴포넌트로 전달
-      this.$emit('selected', option.workId);
+      // 선택한 작업의 index를 부모 컴포넌트로 전달
+      this.$emit('selected', index);
     },
   },
 };
@@ -45,16 +50,15 @@ export default {
 *{
   font-family: 'Red Hat Display', sans-serif;
 }
-.dropdown {
+.dropdown2 {
 
   display: inline-block;
-  margin-top: 100px;
-  margin-left: 400px;
+
   position: absolute;
-  z-index: 2; /* 다른 요소보다 위에 나타나도록 설정 */
+  z-index: 1; /* 다른 요소보다 위에 나타나도록 설정 */
 }
 
-.dropdown-button {
+.dropdown-button2 {
   border-radius: 7px;
   width: 120px;
   height: 37px;
@@ -66,7 +70,7 @@ export default {
   font-size: 14px;
 }
 
-.dropdown-list {
+.dropdown-list2 {
 
   top: 100%; /* 선택된 옵션 아래에 배치 */
   left: 0;
@@ -84,7 +88,7 @@ export default {
   overflow-y: auto; /* 세로 스크롤 적용 */
 }
 
-.dropdown-list li {
+.dropdown-list2 li {
   height: 23px;
   font-weight: 600;
   font-size: 14px;
@@ -93,12 +97,20 @@ export default {
   transition: background-color 0.2s;
 }
 
-.dropdown-list li:hover {
+.dropdown-list2 li:hover {
   background-color: #f0f0f0;
 }
 .fi-rr-angle-small-down{
   float: right;
   margin-right: 10px;
   margin-top: 2px;
+}
+
+.text-green {
+  color: #99CC8C; /* 초록색으로 설정 */
+}
+
+.text-red {
+  color: #EE6C6C; /* 빨간색으로 설정 */
 }
 </style>

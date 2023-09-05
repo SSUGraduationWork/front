@@ -11,7 +11,7 @@
         <img :src="feedback.pictureUrl" alt="이미지" style="max-width: 25px; max-height: 25px;" class="spaced">
         <span class="small-text spaced1">{{ feedback.studentNumber }}</span>
         <span class="small-text  spaced2">{{ feedback.userName }}</span>
-        <span class="small-text">{{ formatDateTime(feedback.createdAt) }}</span>
+        <span class="small-text">{{ formatDate( feedback.createdAt) }}</span>
 
         <br>
         <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
@@ -22,7 +22,7 @@
     </div>
     <div v-for="feedback in addComments" :key="feedback" class="feedback-item">
       <div class="feedback-comment">
-        <span class="small-text">{{ formatDateTime(feedback.date) }}</span>
+        <span class="small-text">{{ formatDate2( feedback.date )}}</span>
 
         <br>
         <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
@@ -70,22 +70,45 @@ export default {
     this.fetchFeedbackComments();
   },
   methods: {
-    formatDateTime(dateTime) {
-      const date = new Date(dateTime);
-      const options = {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      };
+    formatDate(dateArray) {
+      // 주어진 배열에서 연, 월, 일, 시, 분, 초를 추출합니다.
+      const [year, month, day, hours, minutes, seconds] = dateArray;
 
-      return date.toLocaleString('en-US', options);
+      // 월(month)은 0부터 시작하므로 1을 더해줍니다.
+      const formattedMonth = (month < 9 ? '0' : '') + (month + 1);
+
+      // 오전(AM) 또는 오후(PM) 여부를 판단합니다.
+      const ampm = hours < 12 ? '오전' : '오후';
+
+      // 시간을 12시간 형식으로 변환합니다.
+      const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+
+      // 나머지 정보를 형식에 맞게 조합합니다.
+      const formattedDate = `${year}.${formattedMonth}.${day} ${ampm} ${formattedHours}:${minutes}`;
+
+      return formattedDate;
+    }
+    ,
+    formatDate2(inputDate) {
+      const date = new Date(inputDate);
+
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+
+      const ampm = hours < 12 ? '오전' : '오후';
+      const formattedHours = hours % 12 || 12;
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+
+      const formattedDate = `${year}.${month}.${day} ${ampm} ${formattedHours}:${formattedMinutes}`;
+
+      return formattedDate;
     },
     async fetchFeedbackComments() {
       try {
-        const response = await axios.get(`http://localhost:8080/comment/${this.boardId}`);
+        const response = await axios.get(`http://localhost:3210/comment/${this.boardId}`);
         this.feedbackList = response.data.content;
       } catch (error) {
         console.error('Error fetching feedback comments:', error);
@@ -107,7 +130,7 @@ export default {
         formData.append('comment', this.comment); // 코멘트 데이터 추가
 
         const response = await axios.post(
-            `http://localhost:8080/comment/${this.boardId}/${this.memberId}/${approvalStatus}`,
+            `http://localhost:3210/comment/${this.boardId}/${this.memberId}/${approvalStatus}`,
             formData, // FormData 객체를 전송
             {
               headers: {
@@ -140,16 +163,17 @@ export default {
   transition: right 0.2s ease-in-out;
   top: 73.4722px; /* 아래로 이동하는 값 설정 */
   overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤바 추가 */
+  z-index: 3; /* 내용 위로 올라오도록 설정 */
 }
 .sidebar-open {
-  right: -400px; /* 토글로 열 때의 위치 설정 */
+  right: -420px; /* 토글로 열 때의 위치 설정 */
 }
 
 
 .toggle-button {
 
   top: 73px; /* 수정: 초기 위치 */
-  right: 400px; /* 수정: 초기 위치 */
+  right: 420px; /* 수정: 초기 위치 */
   border: none;
   color: #3772FF;
   transition: right 0.2s ease-in-out, top 0.2s ease-in-out; /* 애니메이션 설정 */
@@ -165,16 +189,17 @@ export default {
   padding: 3px;
   border: 1px solid #ccc;
   background-color: white;
-  height: 200px;
+  height: 194px;
   top: 0;
-  right: 0px; /* 초기에는 사이드바가 숨겨져 있도록 위치 설정 */
-  width: 400px;
-  height: 30%;
+  right: 13px; /* 초기에는 사이드바가 숨겨져 있도록 위치 설정 */
+  width: 430px;
+  margin-right: -30px;
   position: fixed;
   transition: right 0.2s ease-in-out, top 0.2s ease-in-out; /* 애니메이션 설정 */
+  z-index: 4; /* 내용 위로 올라오도록 설정 */
 }
 .sidebar-open2 {
-  right: -400px; /* 토글로 열 때의 위치 설정 */
+  right: -420px; /* 토글로 열 때의 위치 설정 */
 }
 .comment-input{
   width: 90%;
