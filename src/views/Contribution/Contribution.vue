@@ -10,7 +10,7 @@
   </div>
 </template>
 <script setup>
-import Progress from './components/Progress2'
+import Progress from './components/Progress'
 import Graph from './components/Graph'
 import Explanation from './components/Explanation.vue'
 import axios from 'axios'

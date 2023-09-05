@@ -89,12 +89,12 @@
 
 <script>
 import axios from 'axios';
-import DatePicker from './DatePicker';
-import MultiSelect from './MultiSelect';
-import StatusDropdown from './StatusDropdown';
-import Rating from './Rating';
-import DeleteButton from './DeleteButton';
-import WorkDetail from './WorkDetail';
+import DatePicker from './components/DatePicker';
+import MultiSelect from './components/MultiSelect';
+import StatusDropdown from './components/StatusDropdown';
+import Rating from './components/Rating';
+import DeleteButton from './components/DeleteButton';
+import WorkDetail from './components/WorkDetail';
 
 import {ref, onBeforeMount} from 'vue';
 import {useRouter, useRoute} from 'vue-router'

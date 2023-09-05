@@ -1,21 +1,27 @@
 <template>
     <div class="progress">
         <div class = "content">
-            <p>전체 작업 :</p>
-            <div class = "bar bar-yellow"><span>36</span></div>
+            <span class = "title">전체 작업 <i class="fi fi-bs-menu-dots"></i></span>
+            <div class = "circle circle-all"><span>{{ progress.totalWorks }}</span></div>
+        </div>    
+        <div class = "content">
+            <span class = "title">진행 중 <i class="fi fi-bs-menu-dots"></i></span>
+            <div class = "circle circle-inprogress"><span>{{ progress.inProgress }}</span></div>
         </div>
         <div class = "content">
-            <p>진행중 :</p>
-            <div class = "bar bar-blue"><span>4</span></div>
-        </div>
-        <div class = "content">
-            <p>완료 :</p>
-            <div class = "bar bar-purple"><span>32</span></div>
+            <span class = "title">완료 <i class="fi fi-bs-menu-dots"></i></span>
+            <div class = "circle circle-done"><span>{{ progress.done }}</span></div>
         </div>
     </div>
 </template>
 <script setup>
-
+import { defineProps } from 'vue';
+const props = defineProps({
+    progress : {
+        type: Object,
+        default: {"totalWorks": 0, "notStarted": 0, "inProgress": 0, "done": 0}
+    },
+})
 
 </script>
 <style scoped>
@@ -24,33 +30,50 @@
   font-family: 'Red Hat Display', sans-serif;
   font-size:15px;
 }
-.bar{
-    margin-left: 2px;
-    width: 5px;
-    height: 40px;
-    border-radius: 3px;
+.progress{
+    display: flex;
+    width: 80%;
+    height: 90px;
+    margin: 0 auto;
 }
 .content{
+    display: flex;
+    border-radius : 12px;
+    margin: 0 auto;
+    background: #F5F6FA;
+    margin-right: 10px;
+    margin-left: 10px;
+    display: inline;
+    width : 33.3333%;
+    height: 90px;
+    min-width: 18em;
+}
+.title{
     float: left;
-    margin-left: 6em;
-    margin-right: 8em;
-}
-.progress{
-    height: 110px;
-}
-.bar span{
-    line-height: 40px;
-    margin-left: 20px;
+    margin-left: 50px;
+    line-height: 90px;
+    text-align: center;
+    color: #2F3545;
+    font-size: 17px;
     font-weight: 700;
+}
+.circle{
+    float: right;
+    margin-right: 40px;
+    border-radius: 30px;
+    width: 60px;
+    height: 60px;
+    margin-top: 15px;
+    background-color: #3772FF;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.08), 0 8px 12px rgba(0,0,0,0.22);
+}
+.circle span{
+    line-height: 60px;
     font-size: 20px;
 }
-.bar-yellow{
-    background-color: #FABB18;
-}
-.bar-blue{
-    background-color: #6C81CC;
-}
-.bar-purple{
-    background-color: #BD86E9;
+i{
+    margin-left: 20px;
 }
 </style>

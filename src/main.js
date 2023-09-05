@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router/index'
+import store from './store/index'
 
 import '@fortawesome/fontawesome-free/js/all'
 
@@ -28,6 +29,7 @@ app.use(PrimeVue, {
         }
     }
 });
+app.use(store);
 
 app.component('VueDatePicker', VueDatePicker);
 app.component('MultiSelect', MultiSelect);

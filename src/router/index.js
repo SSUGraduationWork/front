@@ -33,6 +33,11 @@ const routes = [
         path: 'signup',
         name: 'SignUp',
         component: () => import('../views/Account/SignUp.vue')
+      },
+      {
+        path: 'oauth2/google/callback',
+        name: 'CallBack',
+        component: () => import('../views/Account/GoogleOAuthCallback')
       }
     ]
   },

@@ -137,7 +137,7 @@ export default {
   methods: {
     async fetchBoardList(memberId, teamId) {
       try {
-        const url = `http://localhost:8080/board/list/${memberId}/${teamId}`;
+        const url = `http://localhost:3210/board/list/${memberId}/${teamId}`;
         const response = await axios.get(url);
 
         if (response.data && response.data.content && Array.isArray(response.data.content)) {
