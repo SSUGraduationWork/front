@@ -1,6 +1,6 @@
 <template>
 <div class = "work-page">
-  <WorkDetail v-if="detailButtonClick && membersById !== null && detailWorkId > 0" :teamMembers="membersById" :workId="detailWorkId" @close-detail="detailButtonClick=false"></WorkDetail>
+  <WorkDetail v-if="detailButtonClick && membersById !== null && detailWorkId > 0" :teamMembers="membersById" :workId="detailWorkId" :teamId="teamId" @close-detail="detailButtonClick=false"></WorkDetail>
   <div class = "work">
     <div class = "type">
       <button class = "type-list"><i class="fa fa-list-ul" aria-hidden="true"></i></button>
@@ -26,21 +26,21 @@
             <textarea v-model="work.work_name" @input="resize($event.target)" v-on:change="textChange(work.work_id, $event.target.value)" class="work-name-input">{{ work.work_name }}</textarea>
           </td>
           <td class = "team-members">
-            <MultiSelect v-if="membersById !== null" :teamMembers="membersById" :workers="work.worker" :workId = "work.work_id"></MultiSelect>
+            <MultiSelect v-if="membersById !== null" :teamMembers="membersById" :workers="work.worker" :workId = "work.work_id" :teamId="teamId"></MultiSelect>
           </td>
           <td class = "end-date">
-            <DatePicker :endDate="work.end_date" :workId = "work.work_id"></DatePicker>
+            <DatePicker :endDate="work.end_date" :workId = "work.work_id" :teamId="teamId"></DatePicker>
           </td>
           <td class = "importance">
-            <Rating :importance="work.importance" :workId = "work.work_id"></Rating>
+            <Rating :importance="work.importance" :workId = "work.work_id" :teamId="teamId"></Rating>
           </td>
           <td class = "status">
-            <StatusDropdown :status="work.status" :workId = "work.work_id"></StatusDropdown>
+            <StatusDropdown :status="work.status" :workId = "work.work_id" :teamId="teamId"></StatusDropdown>
           </td>
           <td class = "more" :class="{active : button[work.work_id]}">
             <button @click = "buttonClick(work.work_id)" @blur="buttonUnclick(work.work_id)">
               <i v-if="button[work.work_id]!=true" class="fi fi-rr-menu-dots-vertical"></i>
-              <DeleteButton v-if="button[work.work_id]" :workId = work.work_id @delete-work="deleteWork"></DeleteButton>
+              <DeleteButton v-if="button[work.work_id]" :workId = work.work_id :teamId="teamId" @delete-work="deleteWork"></DeleteButton>
             </button>
           </td>
           <td v-if="button[work.work_id]" class = "more-options">
@@ -56,21 +56,21 @@
             <textarea v-model="work.work_name" @input="resize($event.target)" v-on:change="textChange(work.work_id, $event.target.value)" class="work-name-input"></textarea>
           </td>
           <td class = "team-members">
-            <MultiSelect :teamMembers="membersById" :workId = "work.work_id"></MultiSelect>
+            <MultiSelect :teamMembers="membersById" :workId = "work.work_id" :teamId="teamId"></MultiSelect>
           </td>
           <td class = "end-date">
-            <DatePicker :endDate="work.end_date" :workId = "work.work_id"></DatePicker>
+            <DatePicker :endDate="work.end_date" :workId = "work.work_id" :teamId="teamId"></DatePicker>
           </td>
           <td class = "importance">
-            <Rating :importance="work.importance" :workId = "work.work_id"></Rating>
+            <Rating :importance="work.importance" :workId = "work.work_id" :teamId="teamId"></Rating>
           </td>
           <td class = "status">
-            <StatusDropdown :status="work.status" :workId = "work.work_id"></StatusDropdown>
+            <StatusDropdown :status="work.status" :workId = "work.work_id" :teamId="teamId"></StatusDropdown>
           </td>
           <td class = "more" :class="{active : button}">
             <button @click = "buttonClick(work.work_id)" @blur="buttonUnclick(work.work_id)">
               <i v-if="button[work.work_id]!=true" class="fi fi-rr-menu-dots-vertical"></i>
-              <DeleteButton v-if="button[work.work_id]" :workId = work.work_id @delete-work="deleteWork"></DeleteButton>
+              <DeleteButton v-if="button[work.work_id]" :workId = work.work_id :teamId="teamId" @delete-work="deleteWork"></DeleteButton>
             </button>
           </td>
           <td v-if="button[work.work_id]" class = "more-options">
@@ -98,7 +98,7 @@ import WorkDetail from './components/WorkDetail';
 
 import {ref, onBeforeMount} from 'vue';
 import {useRouter, useRoute} from 'vue-router'
-import { axiosInstanceNode } from '../../axios';
+import { axiosInstanceNode, axiosInstance } from '../../axios';
 
 export default {
   components: { DatePicker, MultiSelect, StatusDropdown, Rating, DeleteButton, WorkDetail },
@@ -108,14 +108,16 @@ export default {
     const router = useRouter()
     const teamMembers = ref();
     const workInfo = ref();
+    const teamId = ref();
     const membersById = {};  // key : user_id, val : 유저 정보 (유저 pk, 이름, 프로필 사진 url)
     
     onBeforeMount(async () => {
         await router.isReady();
-        const {teamId} = route.params;
+        teamId.value = route.params.teamId;
 
-        axiosInstanceNode.get(`/work/${teamId}`)
+        axiosInstance.get(`/work/${teamId.value}`)
         .then((res) => {
+            console.log(res);
             teamMembers.value = res.data.result.teamMembers;
             workInfo.value = res.data.result.works;
 
@@ -123,9 +125,13 @@ export default {
             (teamMembers.value).forEach((val, i, arr) => {
               membersById[val.user_id] = val;
             })
+            
         })
-    })
-    return { workInfo, teamMembers, membersById }
+        .catch((error) => {
+
+        })
+    });
+    return { workInfo, teamMembers, membersById, teamId }
     
   },
   data() {
@@ -144,19 +150,25 @@ export default {
       textarea.style.height = textarea.scrollHeight + "px";
     },
     textChange(workId, value){
-      console.log(value);
-      axiosInstanceNode.patch(`/work/${workId}/work_name`, {work_name : value})
+
+      axiosInstance.post(`/work/${this.teamId}/${workId}/work_name`, {work_name : value})
         .then((res) => {
             console.log(res);
+        })
+        .catch((err) => {
+
         })
     },
     addWork(){
       const workId = ref();
-      axiosInstanceNode.post(`/work/${this.$route.params.teamId}`)
+      axiosInstance.post(`/work/${this.teamId}`)
         .then((res) => {
           console.log(res);
           workId.value = res.data.result.work_id;
           console.log(workId);
+        })
+        .catch((err) => {
+
         })
       this.addedWorks.push({work_id : workId});
     },

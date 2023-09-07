@@ -60,7 +60,7 @@
 </template>
 <script setup>
 import { ref, defineProps, computed, onBeforeMount } from 'vue';
-import { axiosInstanceNode } from '../../../axios';
+import { axiosInstance } from '../../../axios';
 
 const props = defineProps({
     workId : {
@@ -71,6 +71,10 @@ const props = defineProps({
         type: Object,
         default: {}
     },
+    teamId : {
+        type: Number,
+        default: 0
+    }
 })
 const workDetail = ref();
 let workers = [];
@@ -79,7 +83,7 @@ const board = ref();
 const importance = ref();
 
 if (props.workId > 0) {
-    axiosInstanceNode.get(`/work/detail/${props.workId}`)
+    axiosInstance.get(`/work/detail/${props.teamId}/${props.workId}`)
     .then((res) => {
         workDetail.value = res.data.result;
         if(workDetail.value.worker){

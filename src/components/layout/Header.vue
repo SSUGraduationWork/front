@@ -15,12 +15,11 @@
             </div>
           </li>
           <li class = "header-right">
-            <button @click="toggleModal"  class = "circle-notification alarm">
-              <!--guyujung alarm-->
+            <div @click="toggleModal"  class = "circle-notification alarm">
               <div class = "icon">
                 <div  class="button-style"><i class="fa-solid fa-bell icon-style"></i></div>
               </div>
-            </button>
+            </div>
           </li>
           <!-- 모달 -->
           <div v-if="isModalOpen" class="modal" @click="closeModalOutside">
@@ -261,20 +260,18 @@ h5 {
   width: 100%;
   object-fit: cover;
 }
-.icon-style{
 
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -40%);
-  font-size: 25px;
-}
 .circle-notification:hover{
   background-color : #3772FF;
   color: white;
 }
-
-/*guyujung alarm*/
+.icon{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 22px;
+}
 
 /* 모달 스타일 */
 .modal {

@@ -5,7 +5,7 @@
 </template>
 <script setup>
 import { ref, defineProps } from 'vue';
-import { axiosInstanceNode } from "../../../axios";
+import { axiosInstance } from "../../../axios";
 
 const emit = defineEmits(["deleteWork"])
 const props = defineProps({
@@ -13,12 +13,19 @@ const props = defineProps({
         type: Number,
         default: 0
     },
+    teamId : {
+        type: Number,
+        default: 0
+    }
 })
 const clickDelete = () => {
     console.log("delete " + props.workId);
-    axiosInstanceNode.delete(`/work/${props.workId}`)
+    axiosInstance.delete(`/work/${props.teamId}/${props.workId}`)
         .then((res) => {
             console.log(res);
+        })
+        .catch((err) => {
+            
         })
     emit('deleteWork', props.workId);
 };

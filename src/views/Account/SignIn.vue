@@ -14,13 +14,26 @@
 <script setup>
 import axios from 'axios';
 import GoogleLoginButton from './components/GoogleLoginButton.vue'
+import {useRoute} from 'vue-router';
+import { useStore } from 'vuex';
+
+const store = useStore();
+const route = useRoute();
+const redirectURL = route.query.redirectURI;  //로그인 후 redirect할 uri
+if(redirectURL){
+    const url_list = redirectURL.split('/');
+    const url = '/'+url_list[1] +'/'+ url_list[2];
+    console.log(url);
+    store.commit('setRedirectURL', url );
+}
+
 const google_uri = process.env.VUE_APP_GOOGLE_URI;
 const client_id = process.env.VUE_APP_GOOGLE_CLIENT_ID;
 const redirect_uri = process.env.VUE_APP_GOOGLE_REDIRECT_URI
 const scope = process.env.VUE_APP_GOOGLE_SCOPE;
 
 const uri = `${google_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}`
-console.log(uri);
+
 const googleLogin = () => { 
     window.open(uri,"_self")
 }

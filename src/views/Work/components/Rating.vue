@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref, defineProps } from 'vue';
-import { axiosInstanceNode } from '../../../axios';
+import { axiosInstance } from '../../../axios';
 
 const props = defineProps({
     importance : {
@@ -16,16 +16,23 @@ const props = defineProps({
     workId : {
         type: Number,
         default: 0
+    },
+    teamId : {
+        type: Number,
+        default: 0
     }
 })
 
 const value = ref(props.importance);
 
 const change = () => {
-    console.log(value.value);
-    axiosInstanceNode.patch(`/work/${props.workId}/importance`, {importance: value.value})
+
+    axiosInstance.post(`/work/${props.teamId}/${props.workId}/importance`, {importance: value.value})
         .then((res) => {
             console.log(res);
         })
+        .catch((err) => {
+
+        });
 }
 </script>

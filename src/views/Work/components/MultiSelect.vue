@@ -44,7 +44,7 @@
 import "primevue/resources/primevue.min.css"; //core CSS
 import { ref, defineProps } from "vue";
 import MultiSelect from 'primevue/multiselect';
-import { axiosInstanceNode } from "../../../axios";
+import { axiosInstance } from "../../../axios";
 
 const props = defineProps({
     teamMembers : {
@@ -59,6 +59,10 @@ const props = defineProps({
         type: Number,
         default: 0
     },
+    teamId : {
+        type: Number,
+        default: 0
+    }
 });
 const teamMembers = Object.values(props.teamMembers);
 let workers = []
@@ -85,9 +89,12 @@ let lastStatus = () => {
         for (let userInfo of selectedMembers.value){
             changeValue.push(userInfo.user_id);
         }
-        axiosInstanceNode.patch(`/work/${props.workId}/worker`, {worker : changeValue})
+        axiosInstance.post(`/work/${props.teamId}/${props.workId}/worker`, {worker : changeValue})
         .then((res) => {
             console.log(res);
+        })
+        .catch((err) => {
+
         })
     }
     status = -1;

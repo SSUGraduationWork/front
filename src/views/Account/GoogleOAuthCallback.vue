@@ -4,9 +4,10 @@
     </div>
 </template>
 <script setup>
-import axios from 'axios'
+import { axiosInstance } from '../../axios';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import { ref } from 'vue';
 import Loader from '../../components/Loader.vue'
 
 const route = useRoute();
@@ -15,8 +16,9 @@ const store  = useStore();
 
 const registerStore = 'registerStore';
 const userStore = 'userStore';
+const redirectURL = ref(store.state.redirectURL);  //로그인 후 redirect할 uri
 
-axios.get(`http://localhost:3210/accounts/oauth2/google/callback?code=${route.query.code}`)
+axiosInstance.get(`/accounts/oauth2/google/callback?code=${route.query.code}`)
     .then((res) => {
         if(res.data.result) {
             if (res.data.result.user_id == null) {
@@ -28,8 +30,13 @@ axios.get(`http://localhost:3210/accounts/oauth2/google/callback?code=${route.qu
             } else {
                 store.commit(`${userStore}/setUserId`, res.data.result.user_id );
                 store.commit(`${userStore}/setJwtToken`, res.data.result.jwtToken);
-
-                router.push(`/dashboard/${res.data.result.user_id}`)
+                
+                if (redirectURL.value != null){
+                    store.commit('setRedirectURL', null);
+                    router.push(`${redirectURL.value}`);
+                } else{
+                    router.push(`/dashboard/${res.data.result.user_id}`);
+                }
             }
         }
        

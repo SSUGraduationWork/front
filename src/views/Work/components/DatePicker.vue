@@ -18,11 +18,15 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import dayjs from 'dayjs';
 import { ref, computed, defineProps } from 'vue';
 import { ko } from 'date-fns/locale';
-import { axiosInstanceNode } from '../../../axios';
+import { axiosInstance } from '../../../axios';
 
 const props = defineProps({
     endDate : String,
     workId : {
+        type: Number,
+        default: 0
+    },
+    teamId : {
         type: Number,
         default: 0
     }
@@ -54,9 +58,12 @@ dateFormat.minute = computed(() => date.value.getMinutes());
 
 const change = () => {
     isNull = 0;
-    axiosInstanceNode.patch(`/work/${props.workId}/end_date`, {end_date: dayjs(date.value).format('YYYY-MM-DD HH:mm:ss')})
+    axiosInstance.post(`/work/${props.teamId}/${props.workId}/end_date`, {end_date: dayjs(date.value).format('YYYY-MM-DD HH:mm:ss')})
         .then((res) => {
             console.log(res);
+        })
+        .catch((err) => {
+
         })
 
 }
