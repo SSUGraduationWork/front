@@ -1,6 +1,6 @@
 <template>
 <div class = "work-page">
-  <WorkDetail v-if="detailButtonClick && membersById !== null && detailWorkId > 0" :teamMembers="membersById" :workId="detailWorkId" :teamId="teamId" @close-detail="detailButtonClick=false"></WorkDetail>
+  <WorkDetail v-if="detailButtonClick && membersById !== null && detailWorkId > 0" :teamMembers="membersById" :workId="detailWorkId" :teamId="teamId" @close-detail="detailButtonClick=false" @open-detail="detailButtonClick=true"></WorkDetail>
   <div class = "work">
     <div class = "type">
       <button class = "type-list"><i class="fa fa-list-ul" aria-hidden="true"></i></button>

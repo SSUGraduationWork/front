@@ -1,6 +1,6 @@
 <template>
   <div class="contribution">
-    <Explanation v-if="ex==true" @close="closeEx"></Explanation>
+    <Explanation v-if="ex==true" @close-ex="closeEx" @open-ex="openEx"></Explanation>
     <Progress v-if="progress" :progress="progress"></Progress>
     <div class = "margin-space"></div>
     <div class="contribution-graph">

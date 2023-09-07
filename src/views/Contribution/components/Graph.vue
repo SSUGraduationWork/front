@@ -99,7 +99,7 @@ img{
     max-width: 90%;
     animation: moving-bars 1.5s forwards;
     background-color: #3772FF;
-    box-shadow: 0 19px 38px rgba(0,0,0,0.08), 0 8px 12px rgba(0,0,0,0.22);
+    box-shadow: 0 19px 38px rgba(0,0,0,0.08), 0 8px 12px rgba(0,0,0,0.1);
 }
 .c-number{
     float: left;
