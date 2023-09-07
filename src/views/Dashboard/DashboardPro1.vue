@@ -1,8 +1,18 @@
 <template>
     <div class="content">
         <div class="top">
-            <div class="choose">Semester</div>
-            <el-button type="primary" class="new" @click="generate()">새 프로젝트</el-button>
+            <div class="choose">
+                <form>
+                <select name="watchBySemester" v-model="watchBySemester" @change="this.showProjects()">
+                    <option value="All">All</option>
+                    <option value="2022-1">2022-1</option>
+                    <option value="2022-2">2022-2</option>
+                    <option value="2023-1">2023-1</option>
+                    <option value="2023-2">2023-2</option>
+                </select>
+                </form>
+            </div>
+            <el-button type="primary" class="new" @click="postGenerate()">새 프로젝트</el-button>
         </div>
 
         <ul class="projects">
@@ -12,7 +22,10 @@
             :to="{ name: 'DashboardPro2', params: { projectId: project.id } }"
             class="project"
             >
-                <div class="projectName">{{project.projectName}}</div>
+                <div class="container1">
+                    <div class="projectName">{{project.projectName}}</div>
+                    <div @click="updateGenerate(project)"><i class="fi fi-rs-menu-dots-vertical"></i></div>
+                </div>
                 <div class="semester">{{project.semester}}</div>
                 <div class="projectNumber">{{project.projectNumber}}명 참여</div>
             </router-link>
@@ -20,23 +33,61 @@
     </div>
 
 <!--post 모달창-->
-    <div id="modal" class="modal-overlay" :style="{display:modalDisplay}">
-        <div class="modal_window">
+    <div id="modal" class="post-modal-overlay" :style="{display:postModalDisplay}">
+        <div class="post-modal-window">
             <!--v-model 사용해야 입력된 값이 화면에 보임. v-model 사용하기 위해 해당 변수를 data에 정의해야함-->
-            <el-input placeholder="학기를 입력해 주세요" v-model="postSemester"></el-input>
-
+            <!-- <el-input placeholder="학기를 입력해 주세요" v-model="postSemester"></el-input> -->
+            <form>
+            <select name="selectSemester" v-model="postSemester" required>
+                <option value="2022-1">2022-1</option>
+                <option value="2022-2">2022-2</option>
+                <option value="2023-1">2023-1</option>
+                <option value="2023-2">2023-2</option>
+            </select>
+            </form>
             <el-input
                 style="margin-top:10px;"
                 placeholder="프로젝트명을 입력해 주세요."
                 v-model="postProjectName"
+                class="custom-input-style"
             >
             </el-input>
                 <!-- dialog footer 영역 -->
                 <!-- <template v-slot:footer> -->
-            <div><!--2-->
+            <div class="footer"><!--2-->
                 <span class="dialog-footer">
                     <el-button type="primary" @click="postProjects()">생성</el-button>
-                    <el-button @click="close()">취소</el-button>
+                    <el-button @click="postClose()">취소</el-button>
+                </span>
+            </div>
+        </div>
+    </div>
+
+<!--update/delete 모달창-->
+    <div id="modal" class="update-modal-overlay" :style="{display:updateModalDisplay}">
+        <div class="update-modal-window">
+            <!--v-model 사용해야 입력된 값이 화면에 보임. v-model 사용하기 위해 해당 변수를 data에 정의해야함-->
+            <!-- <el-input placeholder="학기를 입력해 주세요" v-model="postSemester"></el-input> -->
+            <form>
+            <select name="selectSemester" v-model="postSemester" required>
+                <option value="2022-1">2022-1</option>
+                <option value="2022-2">2022-2</option>
+                <option value="2023-1">2023-1</option>
+                <option value="2023-2">2023-2</option>
+            </select>
+            </form>
+            <el-input
+                style="margin-top:10px;"
+                v-model="postProjectName"
+                class="custom-input-style"
+            >
+            </el-input>
+                <!-- dialog footer 영역 -->
+                <!-- <template v-slot:footer> -->
+            <div class="footer"><!--2-->
+                <span class="dialog-footer">
+                    <el-button type="primary" @click="updateProjects()">수정</el-button>
+                    <el-button @click="updateClose()">취소</el-button>
                 </span>
             </div>
         </div>
@@ -64,6 +115,17 @@ export default {
             }
             console.log("params: ",params)
             return params;      
+        },
+
+        updateSetParams() {
+            const params = {
+                professorId: this.professorId,
+                projectName: this.postProjectName,
+                semester: this.postSemester,
+                projectNumber: this.projects.projectNumber        
+            }
+        console.log("params: ",params)
+        return params;
         }
     },
 
@@ -74,19 +136,23 @@ export default {
     data() {
         return {
             projects: null,
-
+            watchBySemester: 'All',
             //생성
             postProject: null, //생성할 프로젝트 객체
-            postSemester: null,
+            postSemester: "2023-2",
             postProjectName: null,
-            modalDisplay: "none"
+            postModalDisplay: "none",
+
+            //수정
+            updateModalDisplay: "none",
+            originProject: null
         }
 
     },
 
     methods: {
-        generate() {
-            this.modalDisplay = "flex";
+        postGenerate() {
+            this.postModalDisplay = "flex";
         },
         //생성
         postProjects() {
@@ -104,10 +170,10 @@ export default {
             });
         },
         
-        close() {
-            this.modalDisplay = "none";
+        postClose() {
+            this.postModalDisplay = "none";
             this.postProject = null;
-            this.postSemester = null;
+            this.postSemester = "2023-2";
             this.postProjectName = null;
         },
         
@@ -116,7 +182,20 @@ export default {
                 const response = await axios.get(url + `/dashboard/projects/${this.professorId}`);
                 if (response.data.message === "Success") {
                     this.projects = response.data.data;
-                    console.log("0" ,this.minutes)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async getProjectsBySemester() {
+            try {
+                const response = await axios.get(url + `/dashboard/projects/${this.professorId}/${this.watchBySemester}`);
+                if (response.data.message == null) {
+                    this.projects = null
+                }
+                if (response.data.message === "Success") {
+                    this.projects = response.data.data;
                 }
             } catch (error) {
                 console.log(error);
@@ -124,9 +203,49 @@ export default {
         },
 
         async showProjects() {
-            await this.getProjects();
+            if (this.watchBySemester == 'All') {
+                await this.getProjects();
+            }
+            else {
+                await this.getProjectsBySemester();
+            }
 
             // this.modalDisplay = "flex";
+        },
+        handleIconClick(projectId, event) {
+            console.log("handleIconClick")
+            event.stopPropagation();
+
+        },
+
+        updateGenerate(project) {
+            this.updateModalDisplay = "flex";
+            this.originProject = project;
+            console.log("update project: ", this.originProject);
+            console.log("update project.projectName: ", this.originProject.projectName);
+
+        },
+        //수정
+        updateProjects() {
+        axios
+            .post(url + '/dashboard/projects', this.updateSetParams)
+            .then((response) => {
+            if (response.data.message == "Success") {
+                this.postProject = response.data.data;
+                console.log("postProject: ", this.postProject)
+                } 
+            this.$router.go(0)  //실행된 후 처음 화면으로
+            })
+            .catch((e) => {
+            console.log(e);
+            });
+        },
+        
+        updateClose() {
+            this.updateModalDisplay = "none";
+            this.updateProject = null;
+            this.updateSemester = "2023-2";
+            this.updateProjectName = null;
         },
     }
 }
@@ -146,6 +265,13 @@ export default {
 
 .new {
     text-align: right;
+    width: 160px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    height: 40px;
 }
 
 .content {
@@ -156,8 +282,10 @@ export default {
     display: flex;
     flex-wrap: wrap;
     gap: 20px; /* 옆으로 정렬할 때 간격 설정 */
+    
     list-style: none;
     color: inherit;
+    padding-top: 30px;
 }
 
 
@@ -172,6 +300,16 @@ export default {
     text-decoration: none; /* 링크에 밑줄 제거 */
     color: inherit; /*색변하지 않도록 */
 }
+.container1 {
+    display: flex;
+    justify-content: space-between; /* 왼쪽과 오른쪽에 정렬되도록 설정 */
+    align-items: center; /* 수직 가운데 정렬 */
+    padding: 30px; /* 여백을 설정 (원하는 여백으로 조절) */
+}
+
+.fi fi-rs-menu-dots-vertical::before {
+    text-align: right;
+}
 
 .project:hover {
     transform: translateY(-5px);
@@ -182,7 +320,6 @@ export default {
     font-weight: bold;
     text-align: left;
 
-    padding: 25px;
 }
 
 .semester {
@@ -213,23 +350,53 @@ export default {
     justify-content: center;
 }
 
-.modal_window {
+.post-modal-window {
     background-color: white;
-    width: 40%;
-    height: 10%;
+    width: 500px;
+    height: 150px;
     padding: 20px;
     border-radius: 8px;
 }
 
 .dialog-footer {
-    margin-top: 20px;
+    margin-top: 40px;
     padding: 20px;
+    padding-top: 10px;
     text-align: right;
 }
 
 /* Button Styles */
 .el-button {
     margin-left: 10px;
+}
+        
+form {
+    text-align: center;
+}
+
+select {
+    width: 200px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+        /* 선택된 옵션의 스타일 */
+select:focus {
+    border-color: #007bff; /* 포커스 시 파란색 테두리 */
+}
+
+.custom-input-style {
+    width: 400px; /* 너비 조절 */
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    outline: none;
+    height: 65px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 

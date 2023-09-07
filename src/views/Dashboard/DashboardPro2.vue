@@ -1,7 +1,7 @@
 <template>
     <div class="content">
         <div class="top">
-            <div class="choose">{{this.projectName}}</div>
+            <div class="watchProjectName">{{this.projectName}}</div>
             <el-button type="primary" class="new" @click="generate()">팀 생성</el-button>
         </div>
 
@@ -28,13 +28,13 @@
 
 <!--post 모달창-->
     <div id="modal" class="modal-overlay" :style="{display:modalDisplay}">
-        <div class="modal_window">
+        <div class="modal_window2">
             <!--v-model 사용해야 입력된 값이 화면에 보임. v-model 사용하기 위해 해당 변수를 data에 정의해야함-->
-            <el-input placeholder="팀명을 입력해 주세요" v-model="postTeamName"></el-input>
+            <el-input placeholder="팀명을 입력해 주세요" v-model="postTeamName" class="custom-input-style"></el-input>
 
                 <!-- dialog footer 영역 -->
                 <!-- <template v-slot:footer> -->
-            <div><!--2-->
+            <div class="footer"><!--2-->
                 <span class="dialog-footer">
                     <el-button type="primary" @click="postTeams()">생성</el-button>
                     <el-button @click="close()">취소</el-button>
@@ -115,9 +115,7 @@ export default {
             try {
                 const response = await axios.get(url + `/dashboard/teamsByPro/${this.projectId}`);
                 if (response.data.message === "Success") {
-                    console.log("response", response.data.data);
                     this.teams = response.data.data.project;
-                    console.log("teams: ", teams )
                     this.projectName = response.data.data.string;
                 }
             } catch (error) {
@@ -141,12 +139,26 @@ export default {
     justify-content: space-between;
 }
 
-.choose {
+.watchProjectName {
     text-align: left;
+    width: 200px;
+    padding: 10px;
+    font-size: 20px;
+    /* border: 1px solid #ccc;
+    border-radius: 5px; */
+    outline: none;
+    font-weight: bold;
 }
 
 .new {
     text-align: right;
+    width: 160px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    height: 40px;
 }
 
 .content {
@@ -158,7 +170,8 @@ export default {
     flex-wrap: wrap;
     gap: 20px; /* 옆으로 정렬할 때 간격 설정 */
     list-style: none;
-    color: inherit; /*클릭해도 글자색변하지않도록*/
+    color: inherit;
+    padding-top: 30px;
 }
 
 
@@ -206,17 +219,22 @@ export default {
     justify-content: center;
 }
 
-.modal_window {
+.modal_window2 {
     background-color: white;
-    width: 40%;
-    height: 10%;
+    width: 500px;
+    height: 100px;
     padding: 20px;
     border-radius: 8px;
+    padding-bottom: 30px;
 }
-
+.footer {
+    padding: 10px;
+}
 .dialog-footer {
-    margin-top: 20px;
+    margin-top: 40px;
+    padding-top: 30px;
     padding: 20px;
+    padding-top: 10px;
     text-align: right;
 }
 
