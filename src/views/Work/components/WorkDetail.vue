@@ -1,6 +1,6 @@
 <template>
-    <div v-if ="workDetail" class="black-bg">
-        <div class = "white-bg">
+    <div v-if ="workDetail" class="black-bg" @mousedown="handleBlackBgClick">
+        <div class = "white-bg" @mousedown="handleWhiteBgClick">
             <div class="header">
                 <h2>{{workDetail.work_name}}</h2>
                 <div class="close-icon" @click="$emit('closeDetail')"><i class="fi fi-sr-cross"></i></div>
@@ -59,7 +59,7 @@
     </div>
 </template>
 <script setup>
-import { ref, defineProps, computed, onBeforeMount } from 'vue';
+import { ref, defineProps, computed, onBeforeMount, defineEmits } from 'vue';
 import { axiosInstance } from '../../../axios';
 
 const props = defineProps({
@@ -81,6 +81,7 @@ let workers = [];
 let date = ref();
 const board = ref();
 const importance = ref();
+const emit = defineEmits(["closeDetail", "openDetail"]);
 
 if (props.workId > 0) {
     axiosInstance.get(`/work/detail/${props.teamId}/${props.workId}`)
@@ -118,6 +119,14 @@ dateFormat.month = computed(() => date.value.getMonth() + 1);
 dateFormat.day = computed(() => date.value.getDate());
 dateFormat.hour = computed(() => date.value.getHours());
 dateFormat.minute = computed(() => date.value.getMinutes());
+
+const handleWhiteBgClick = (event) => {
+    event.stopPropagation();
+    emit('openDetail');
+}
+const handleBlackBgClick = () => {
+    emit('closeDetail');
+}
 </script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
