@@ -16,12 +16,15 @@ import Dropdown from 'primevue/dropdown';
 import Rating from 'primevue/rating';
 import RadioButton from 'primevue/radiobutton';
 import PrimeVueCSS from '../public/primevue_style'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
 //import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap 5 CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Bootstrap 5 JavaScrip
 
 const app = createApp(App)
 app.use(router);
+app.use(ElementPlus);
 app.use(PrimeVue, {
     pt: {
         global: {

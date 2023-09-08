@@ -39,6 +39,7 @@
           />
         </div>
       </div>
+    </div>
       <table class="table custom-table">
 
         <thead>
@@ -376,13 +377,12 @@ export default {
   width: 100%;
   outline: none;
 }
+
 /* 드롭다운 */
 .search-dropdown {
   float: right;
   margin-right: 130px;
 }
-
-
 
 /* ... (스타일 설정) ... */
 
@@ -427,7 +427,6 @@ export default {
   background-color: #F5F6FA;
   color: #BFBFBF;
 }
-
 .icon-blue {
   margin-left: 40px;
   float: left;

@@ -3,7 +3,7 @@
     <button @mouseenter="openDropdown" @mouseleave="closeDropdown" class="dropdown-button">{{ selectedOption }}<i class="fi fi-rr-angle-small-down"></i></button>
     <ul v-show="isOpen" class="dropdown-list" @mouseenter="openDropdown" @mouseleave="closeDropdown">
       <li v-for="(option, index) in options" :key="index" @click="selectOption(option)">
-        {{ option.workName }}
+        {{ option }}
       </li>
     </ul>
   </div>
@@ -90,6 +90,9 @@ export default {
   font-size: 14px;
   padding: 5px; /* 더 작은 패딩값으로 조정 */
   cursor: pointer;
+  height: 23px;
+  font-weight: 600;
+  font-size: 14px;
   transition: background-color 0.2s;
 }
 

@@ -49,10 +49,27 @@ const routes = [
   },
 
   {
-    path: '/calendar',
+    path: '/calendar/:teamId',
     name: 'Calendar',
     component: () => import('../views/Calendar/mainCalendar.vue'),
     props: true
+  },
+  {
+    path: '/dashboardPro1/projects/:professorId',
+    name: 'DashboardPro1',
+    component: () => import('../views/Dashboard/DashboardPro1.vue'),
+    props: true
+  },
+  {
+    path: '/dashboardPro2/teams/:projectId',
+    name: 'DashboardPro2',
+    component: () => import('../views/Dashboard/DashboardPro2.vue'),
+    props: true
+  },
+  {
+    path: '/dashboardStu/:studentId',
+    name: 'DashboardStu',
+    component: () => import('../views/Dashboard/DashboardStu.vue')
   },
   {
     path: '/chatting/:teamId',
