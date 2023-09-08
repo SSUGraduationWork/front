@@ -106,10 +106,11 @@ export default {
         // 요청 성공 시 처리
       //  console.log('글 작성 성공:', response.data);
         alert("글 작성 성공")
-      } catch (error) {
+      } catch (error ) {
         // 에러 처리
-        console.error('글 작성 오류:', error);
-        alert("글 작성 오류")
+          // 예외가 발생한 경우 처리
+        console.error(error.message);
+
       }finally {
         {
           this.loading = false; // 로딩 상태를 false로 설정
@@ -125,9 +126,9 @@ export default {
     goToHomePage() {
       this.$router.push({ name: 'HomeView' }); // WritePage의 name을 사용하여 페이지 이동
     },
-    async loadDropdownOptions(teamId) {
+    async loadDropdownOptions(memberId,teamId) {
       try {
-        const response = await axios.get(`http://localhost:3210/work/list/${teamId}`);
+        const response = await axios.get(`http://localhost:3210/work/list/${memberId}/${teamId}`);
         this.formData.dropdownOptions = response.data.content;
       } catch (error) {
         console.error('Dropdown options load error:', error);
@@ -139,7 +140,7 @@ export default {
   },
   created() {
     this.addFileInput(); // 페이지 로드 시에 파일 입력 요소 추가
-    this.loadDropdownOptions(this.teamId);
+    this.loadDropdownOptions(this.memberId,this.teamId);
   },
 
 };

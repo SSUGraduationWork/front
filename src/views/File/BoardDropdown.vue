@@ -6,7 +6,7 @@
         {{ option }}
 
         <i
-            :class="{'fa-solid fa-circle text-green':  index === 1, 'fa-solid fa-circle text-red': index === 2}"
+            :class="{'fa-solid fa-circle text-green':  index === 1, 'fa-solid fa-circle text-red': index === 2,'fa-solid fa-circle text-gray': index === 3}"
         ></i>
       </li>
     </ul>
@@ -18,12 +18,13 @@ export default {
   props: {
     options: Array,
   },
+
   data() {
     return {
       isOpen: false,
       selectedOption: '전체',
       // options 데이터를 배열로 변경하고 각각 다른 값을 가지도록 수정
-      options: ['전체','피드백', '피드백'],
+      options: ['전체','피드백', '피드백','본인'],
     };
   },
   methods: {

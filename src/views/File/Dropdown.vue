@@ -3,7 +3,7 @@
     <button @mouseenter="openDropdown" @mouseleave="closeDropdown" class="dropdown-button">{{ selectedOption }}<i class="fi fi-rr-angle-small-down"></i></button>
     <ul v-show="isOpen" class="dropdown-list" @mouseenter="openDropdown" @mouseleave="closeDropdown">
       <li v-for="(option, index) in options" :key="index" @click="selectOption(option)">
-        {{ option }}
+        {{ option.workName }}
       </li>
     </ul>
   </div>
@@ -15,6 +15,11 @@
 export default {
   props: {
     options: Array,
+   initialWorkName: null,
+  },
+
+  mounted() {
+    this.selectedOption = this.initialWorkName ? this.initialWorkName : "선택";
   },
   data() {
     return {
@@ -58,12 +63,13 @@ export default {
   border-radius: 7px;
   width: 120px;
   height: 37px;
-  background-color: #F5F6FA;
+  background-color: #3772FF;
   border: none;
   cursor: pointer;
   font-weight: 600;
   margin: 0 auto;
   font-size: 14px;
+  color: white; /* 글자 색상을 흰색으로 설정 */
 }
 
 .dropdown-list {
@@ -73,8 +79,8 @@ export default {
   list-style: none;
   padding: 0;
   margin: 0;
-  background-color:#F5F6FA;
-  border: 1px solid #f0f0f0;
+  background-color: #3772FF;
+  border: 1px solid #3772FF;
   border-radius: 6px;
   white-space: nowrap;
   overflow-x: auto;
@@ -90,14 +96,12 @@ export default {
   font-size: 14px;
   padding: 5px; /* 더 작은 패딩값으로 조정 */
   cursor: pointer;
-  height: 23px;
-  font-weight: 600;
-  font-size: 14px;
   transition: background-color 0.2s;
+  color: white; /* 글자 색상을 흰색으로 설정 */
 }
 
 .dropdown-list li:hover {
-  background-color: #f0f0f0;
+  background-color: #3772FF;
 }
 .fi-rr-angle-small-down{
   float: right;

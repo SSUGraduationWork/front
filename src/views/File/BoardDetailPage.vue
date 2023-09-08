@@ -31,12 +31,14 @@
       </div>
 
       <div class="update-content-box">
-        <textarea id="content" v-model="formData.content" required :placeholder="boardContent.content"></textarea>
+        <textarea id="content2" v-model="formData.content" required :placeholder="boardContent.content"></textarea>
       </div>
+      <template v-if="boardContent.writerId.toString() === memberId.toString()">
       <div class="button-container">
         <button type="button" class="cancel-button" @click="goToHomeView">취소</button>
         <button type="submit" class="submit-button" @click="goToUpdatePage(memberId, boardId,teamId)">수정</button>
       </div>
+      </template>
     </form>
   </div>
 </template>
@@ -166,7 +168,8 @@ body {
   width: 1000px;
   height: 70px;
   border-radius: 5px;
-  border: 1px dashed darkgrey; /* 변경된 부분: 테두리를 점선으로 설정 */
+
+  box-shadow: 3px 3px 2px 3px darkgrey; /* 그림자 설정 */
   border-width: 2px; /* 변경된 부분: 테두리 두께 설정 */
 }
 
@@ -191,6 +194,17 @@ body {
   text-align: center; /* 텍스트 수평 가운데 정렬 */
   margin-top:100px;
   position:absolute;
+}
+
+#content2 {
+  width: 90%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  background-size: auto 100%;
+  margin: 30px 0 0 50px;
+  height: 400px; /* 원하는 높이로 조정 */
 }
 
 

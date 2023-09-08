@@ -1,7 +1,7 @@
 <template>
 
-  <button :class="['toggle-button', { 'sidebar-open1': isOpen }]" @click="toggleSidebar">{{ '<<' }}</button>
-  <div :class="['sidebar', { 'sidebar-open': isOpen }]">
+  <button :class="['toggle-button', { 'sidebar-open1': !isOpen }]" @click="toggleSidebar">{{ '<<' }}</button>
+  <div :class="['sidebar', { 'sidebar-open': !isOpen }]">
     <!-- 사이드바 내용 -->
 
 
@@ -15,18 +15,23 @@
 
         <br>
         <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
-        <div :class="['feedback-comment-box', { 'blue-background': !feedback.modReq }]">
+        <div :class="['feedback-comment-box', { 'blue-background': feedback.modReq==2}]">
           {{ feedback.comment }}
         </div>
       </div>
     </div>
+
+    <br>
     <div v-for="feedback in addComments" :key="feedback" class="feedback-item">
       <div class="feedback-comment">
+      <img :src="addPictureUrl" alt="이미지" style="max-width: 25px; max-height: 25px;" class="spaced">
+        <span class="small-text spaced1">{{ addStudentNumber }}</span>
+        <span class="small-text  spaced2">{{ addUserName}}</span>
         <span class="small-text">{{ formatDate2( feedback.date )}}</span>
 
         <br>
         <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
-        <div :class="['feedback-comment-box', { 'blue-background': !feedback.isApproved }]">
+        <div :class="['feedback-comment-box', { 'blue-background': addApproved==2 }]">
           {{ feedback.comment }}
         </div>
 
@@ -34,7 +39,7 @@
     </div>
     <!-- You can display other feedback information here -->
   </div>
-  <div :class="['comment-box', { 'sidebar-open2': isOpen }]">
+  <div :class="['comment-box', { 'sidebar-open2': !isOpen }]">
     <div class="approve-mod-container">
       <button @click="toggleApproval" class="approve-toggle">
         <div  v-show="isApproved" class="approve-icon approve-false"><i class="fa-regular fa-square-check"></i></div>
@@ -60,9 +65,13 @@ export default {
       isOpen: false,
       comment: '', // 코멘트를 저장할 데이터
       addComments: [],
-      isApproved: true, // 승인 여부를 저장할 데이터
+      isApproved: 0, // 승인 여부를 저장할 데이터
       feedbackList: [], // To store the feedback comments
-
+      saveApproved:0,
+      addApproved:0,
+      addPictureUrl:[],
+      addUserName:[],
+      addStudentNumber:[],
     };
 
   },
@@ -108,8 +117,12 @@ export default {
     },
     async fetchFeedbackComments() {
       try {
-        const response = await axios.get(`http://localhost:3210/comment/${this.boardId}`);
+        const response = await axios.get(`http://localhost:3210/comment/${this.boardId}/${this.memberId}`);
         this.feedbackList = response.data.content;
+        this.addApproved=response.data.feedbackYn;
+        this.addPictureUrl=response.data.pictureUrl;
+        this.addUserName=response.data.userName;
+        this.addStudentNumber=response.data.studentNumber;
       } catch (error) {
         console.error('Error fetching feedback comments:', error);
       }
@@ -124,7 +137,7 @@ export default {
       try {
         const date = new Date();
         this.addComments.push({comment: this.comment, date: date, isApproved: this.isApproved});
-        let approvalStatus = this.isApproved ? 1 : 0;
+        let approvalStatus = this.isApproved ? 1 : 2;
 
         const formData = new FormData(); // FormData 객체 생성
         formData.append('comment', this.comment); // 코멘트 데이터 추가
@@ -157,11 +170,11 @@ export default {
   top: 0;
   right: 0px; /* 초기에는 사이드바가 숨겨져 있도록 위치 설정 */
   width: 400px;
-  height: 62%;
+  height: 57.5%;
   background-color: #f0f0f0;
   padding: 10px;
   transition: right 0.2s ease-in-out;
-  top: 73.4722px; /* 아래로 이동하는 값 설정 */
+  top: 65px; /* 아래로 이동하는 값 설정 */
   overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤바 추가 */
   z-index: 3; /* 내용 위로 올라오도록 설정 */
 }

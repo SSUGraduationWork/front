@@ -1,9 +1,17 @@
+<!--
+[board.feedbackYn에 대한 설명]
+0->피드백을 아예 안한 경우
+1->피드백을 하고 승인한 경우
+2->피드백을 하고 거절한 경우
+3->게시판 작성자 본인일 경우
+-->
+
 <template>
   <div v-if="loading" class="loading-container">
     <i class="fa-solid fa-spinner"></i> 로딩 중...
   </div>
-
-  <div v-else class="container">
+<div v-else>
+  <div  class="container">
     <div class="feedback-status">
       <div class="feedback-completed">
         <div class="icon-blue i-completed"><i class="fi fi-br-check"></i></div>
@@ -54,7 +62,7 @@
         </thead>
         <template v-if="selectedIndex === 1">
           <template v-for="(board, index) in feedbackTrueItems" :key="index">
-            <tr v-if="board.feedbackYn">
+            <tr v-if="(board.feedbackYn===1)">
               <td>{{ index + currentPage * itemsPerPage + 1 }}</td>
               <td>{{ board.workName }}</td>
               <td>
@@ -68,14 +76,14 @@
                 <span> {{ board.writerName }}</span>
               </td>
               <td>{{  formatDateFromArray(board.createdTime) }}</td>
-              <td :key="board.feedbackYn"><i class="fa-solid fa-circle text-green"></i></td>
+              <td :key="(board.feedbackYn===1)"><i class="fa-solid fa-circle text-green"></i></td>
               <td>{{ board.viewCount }}</td>
             </tr>
           </template>
         </template>
         <template v-else-if="selectedIndex === 2">
           <template v-for="(board, index) in feedbackFalseItems" :key="index">
-            <tr v-if="!board.feedbackYn">
+            <tr v-if="(board.feedbackYn===0||board.feedbackYn===2)">
               <td>{{ index + currentPage * itemsPerPage + 1 }}</td>
               <td>{{ board.workName }}</td>
               <td>
@@ -89,7 +97,28 @@
                 <span> {{ board.writerName }}</span>
               </td>
               <td>{{  formatDateFromArray(board.createdTime) }}</td>
-              <td :key="board.feedbackYn"><i class="fa-solid fa-circle text-red"></i></td>
+              <td :key="(board.feedbackYn===0||board.feedbackYn===2)"><i class="fa-solid fa-circle text-red"></i></td>
+              <td>{{ board.viewCount }}</td>
+            </tr>
+          </template>
+        </template>
+        <template v-else-if="selectedIndex === 3">
+          <template v-for="(board, index) in myfeedbackItems" :key="index">
+            <tr v-if="(board.feedbackYn===3)">
+              <td>{{ index + currentPage * itemsPerPage + 1 }}</td>
+              <td>{{ board.workName }}</td>
+              <td>
+                <router-link
+                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                >{{ board.title }}
+                </router-link>
+              </td>
+              <td>
+                <img :src="board.pictureUrl" alt="사용자 이미지" style="max-width: 25px; max-height: 25px;" class="spaced">
+                <span> {{ board.writerName }}</span>
+              </td>
+              <td>{{  formatDateFromArray(board.createdTime) }}</td>
+              <td :key="(board.feedbackYn===3)"><i class="fa-solid fa-circle text-gray"></i></td>
               <td>{{ board.viewCount }}</td>
             </tr>
           </template>
@@ -108,7 +137,7 @@
               <img :src="board.pictureUrl" alt="사용자 이미지" style="max-width: 25px; max-height: 25px;" class="spaced">
               <span> {{ board.writerName }}</span></td>
             <td>{{  formatDateFromArray(board.createdTime) }}</td>
-            <td :key="board.feedbackYn"><i :class="{'fa-solid fa-circle text-green': board.feedbackYn, 'fa-solid fa-circle text-red': !board.feedbackYn}"></i></td>
+            <td :key="(board.feedbackYn)"><i :class="{'fa-solid fa-circle text-green': (board.feedbackYn===1), 'fa-solid fa-circle text-red': (board.feedbackYn===0||board.feedbackYn===2),'fa-solid fa-circle text-gray': (board.feedbackYn===3)}"></i></td>
             <td>{{ board.viewCount }}</td>
           </tr>
           </tbody>
@@ -116,15 +145,17 @@
       </table>
     </div>
 
-    <!-- 페이지 버튼 표시 -->
-    <div class="pagination">
-      <button @click="showPreviousPages" > <i class= "fi fi-rr-angle-small-left"></i></button>
-      <button v-for="page in visiblePageRange" :key="page" @click="goToPage(page - 1)" :class="{ 'active-page': page - 1 === currentPage }">
-        {{ page }}
-      </button>
-      <button @click="showNextPages" ><i class= "fi fi-rr-angle-small-right"></i></button>
-    </div>
+
   </div>
+  <!-- 페이지 버튼 표시 -->
+  <div class="pagination">
+    <button @click="showPreviousPages" > <i class= "fi fi-rr-angle-small-left"></i></button>
+    <button v-for="page in visiblePageRange" :key="page" @click="goToPage(page - 1)" :class="{ 'active-page': page - 1 === currentPage }">
+      {{ page }}
+    </button>
+    <button @click="showNextPages" ><i class= "fi fi-rr-angle-small-right"></i></button>
+  </div>
+</div>
 </template>
 
 <script>
@@ -145,6 +176,7 @@ export default {
       visibleBoardData: [], // 보여줄 데이터 배열 추가
       feedbackTrueItems: [],  // 피드백이 true인 항목을 저장할 배열
       feedbackFalseItems: [], // 피드백이 false인 항목을 저장할 배열
+      myfeedbackItems: [] ,// 본이이 작성한 게시판일 경우의 피드백
       totalPages: 0, // 전체 페이지 수
       feedbackTrueItemCount:0,
       feedbackFalseItemCount:0,
@@ -173,10 +205,16 @@ export default {
       return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
     },
     feedbackCompletedCount() {
-      return this.boardList.filter(board => board.feedbackYn && board.userId !== this.memberId).length;
+      //board.feedbackYn===4는 게시판 작성자가 본인이 쓴 글이면 4
+      //board.feedbackYn===1는 게시판 작성자가 피드백을한 경우(수락)
+      return this.boardList.filter(board => (board.feedbackYn===1)).length;
     },
     feedbackIncompleteCount() {
-      return this.boardList.filter(board => !board.feedbackYn || (board.userId === this.memberId && !board.feedbackYn)).length;
+
+      //피드백 수정요청을 한 사람도 피드백 완료 개수에 세야할지 정해야함
+      //board.feedbackYn===0는 게시판 작성자가 피드백을 아예 안한 경우
+      //board.feedbackYn===2는 게시판 작성자가 피드백을 했는데 거절한 경우(거절)
+      return this.boardList.filter((board => (board.feedbackYn===0||board.feedbackYn===2))).length;
     },
   },
   watch: {
@@ -222,9 +260,6 @@ export default {
           // boardId를 기준으로 내림차순으로 정렬
           this.boardList.sort((a, b) => b.boardId - a.boardId);
 
-          // 피드백이 true인 항목과 false인 항목을 분류
-          this.feedbackTrueItems = this.boardList.filter(board => board.feedbackYn === true);
-          this.feedbackFalseItems = this.boardList.filter(board => board.feedbackYn === false);
 
 
           this.feedbackTrueItemCount = this.feedbackTrueItems.length;
@@ -250,8 +285,9 @@ export default {
       const endIndex = startIndex + this.itemsPerPage;
       this.visibleBoardData = this.boardList.slice(startIndex, endIndex);
       // 피드백이 true인 항목과 false인 항목을 분류
-      this.feedbackTrueItems = this.boardList.filter(board => board.feedbackYn === true).slice(startIndex, endIndex);
-      this.feedbackFalseItems = this.boardList.filter(board => board.feedbackYn === false).slice(startIndex, endIndex);
+      this.feedbackTrueItems = this.boardList.filter(board => board.feedbackYn === 1).slice(startIndex, endIndex);
+      this.feedbackFalseItems = this.boardList.filter(board => (board.feedbackYn === 2||board.feedbackYn===0)).slice(startIndex, endIndex);
+      this.myfeedbackItems = this.boardList.filter(board => (board.feedbackYn ===3)).slice(startIndex, endIndex);
     },
     goToPage(pageNumber) {
       this.currentPage = pageNumber;
@@ -322,7 +358,9 @@ export default {
 }
 
 .pagination {
-  margin-top: 20px;
+  margin-top: 0px;
+  margin-left: 520px;
+  position:fixed;
 }
 .pagination button {
   cursor: pointer;
@@ -342,7 +380,9 @@ export default {
 .text-red {
   color: #EE6C6C; /* 빨간색으로 설정 */
 }
-
+.text-gray{
+  color: #BABABA;
+}
 /* 검색창 */
 .search-container {
   margin-top: 30px;
