@@ -56,7 +56,7 @@ export default {
   margin-top: 100px;
   margin-left: 400px;
   position: absolute;
-  z-index: 2; /* 다른 요소보다 위에 나타나도록 설정 */
+
 }
 
 .dropdown-button {

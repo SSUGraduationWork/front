@@ -108,9 +108,11 @@ export default {
 
   async created() {
     this.loadDropdownOptions(this.memberId,this.teamId);
+
     const boardId = this.$route.params.boardId;
     const memberId = this.$route.params.memberId;
     const teamId = this.$route.params.teamId;
+
     try {
       const response = await axios.get(`http://localhost:3210/board/view/${boardId}/${memberId}/${teamId}`);
       if (response.data.status.code === 200) {
@@ -118,6 +120,7 @@ export default {
         this.formData.title = this.boardContent.title;
         this.formData.content = this.boardContent.content;
         this.allFileIds = this.boardContent.fileId; // fileId 배열 저장
+        this.formData.selectedWorkId=this.boardContent.workId;
         this.loading = false;
       } else {
         console.error('올바르지 않은 요청입니다.');
@@ -150,6 +153,7 @@ export default {
       const boardId = this.boardId; // props로 전달된 값 사용
       const memberId = this.memberId; // props로 전달된 값 사용
       const teamId = this.teamId; // props로 전달된 값 사용
+
       const request = {
         title,
         content,
