@@ -185,7 +185,7 @@ export default {
   font-size: 27px;
 }
 #content {
-  width: 98%;
+  width: 98.5%;
   resize: none;
   margin: 0 auto;
   margin-top: 13px;

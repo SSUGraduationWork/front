@@ -19,8 +19,11 @@
         <div class = "title">{{ boardContent.title }}</div>
         <div class = "info">
           <div><img :src="boardContent.pictureURL"></div>
-          <div class = "writer">{{boardContent.studentNumber}} &nbsp;{{ boardContent.writer }}</div>
-          <div class ="more-icon"><i class="fi fi-br-menu-dots-vertical"></i></div>
+          <div class = "writer">{{boardContent.studentNumber}} &nbsp;{{ boardContent.writer }}</div> 
+          <div class ="more-icon" @click="viewMod">
+            <ModButton v-if="mod"></ModButton>
+            <i class="fi fi-br-menu-dots-vertical"></i>
+          </div>
           <div class = "workName-box-style" :style="{ backgroundColor: color }">
                 <i class="fa-solid fa-tag"></i><span>{{ boardContent.workName }}</span>
           </div>
@@ -57,14 +60,16 @@ import axios from 'axios';
 
 import Sidebar from './SideBarPage.vue';
 import UpdatePage from "@/views/File/UpdatePage";
-import Loader from '../../components/Loader.vue'
+import Loader from '../../components/Loader.vue';
+import ModButton from './ModButton.vue';
 import { sidebarWidth } from './state';
 
 export default {
   props: ['boardId','memberId','teamId'],
   components: {
     Sidebar,
-    Loader
+    Loader,
+    ModButton,
   },
   setup() {
     return { sidebarWidth };
@@ -80,6 +85,7 @@ export default {
       },
       loading: true,
       color: this.$route.params.color,
+      mod: false,
     };
   },
   async created() {
@@ -163,6 +169,9 @@ export default {
         console.error('Error downloading file:', error);
       }
     },
+    viewMod() {
+      this.mod = !this.mod;
+    }
   }
 };
 </script>
@@ -174,11 +183,10 @@ export default {
   font-size: 15px;
   font-weight: 500;
 }
-body {
-  overflow-x: hidden; /* Prevent horizontal scrolling */
-}
+
 .write-page{
   width: 85%;
+  min-width: 80vh;
   margin: 0 auto;
   padding-left: 10px;
 }
@@ -276,6 +284,8 @@ body {
 .more-icon{
   float: right;
   cursor: pointer;
+  border: 1px solid black;
+  position: relative;
 }
 .created-at{
   float: right;
