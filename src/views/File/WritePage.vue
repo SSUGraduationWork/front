@@ -38,7 +38,7 @@
 <script>
 import axios from 'axios';
 
-import Dropdown from './Dropdown.vue';
+import Dropdown from './components/Dropdown.vue';
 
 export default {
   props: ['memberId', 'teamId'], // 프롭스 정의

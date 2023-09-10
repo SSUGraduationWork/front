@@ -59,7 +59,7 @@
 </template>
   
 <script>
-import { collapsed, toggleSidebar, sidebarWidth, sidebarHeight } from './state'
+import { collapsed, toggleSidebar, sidebarWidth, sidebarHeight } from './components/state'
 import axios from 'axios';
 
 export default {
