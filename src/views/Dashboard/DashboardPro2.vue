@@ -167,7 +167,7 @@ export default {
             try {
                 const response = await axios.get(url + `/dashboard/teamsByPro/${this.projectId}`);
                 if (response.data.message === "Success") {
-                    this.teams = response.data.data.project;
+                    this.teams = response.data.data.object1;
                     this.projectName = response.data.data.string;
                 }
             } catch (error) {
@@ -367,6 +367,7 @@ el-input {
 .footer {
     padding: 10px;
 }
+
 .dialog-footer {
     margin-top: 40px;
     padding-top: 30px;
