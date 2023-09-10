@@ -198,7 +198,7 @@ export default {
 }
 .header {
   border-bottom: 1.5px solid #F0EFEF;
-  height: 4em;
+  height: 8.5vh;
   background-color: white;
   z-index: 2;
   position: fixed;

@@ -1,81 +1,88 @@
 <template>
+<div>
+    <div class="sidebar" :style="{ width: sidebarWidth, height: sidebarHeight }">
+        <span v-if="collapsed" 
+            class="collapse-icon"
+            @click="toggleSidebar">
+            <i class="fi fi-rr-angle-double-small-left"></i>
+        </span>
+        <span v-else class="collapse-icon" @click="toggleSidebar">
+            <i class="fi fi-rr-angle-double-small-right"></i>
+        </span>
 
-  <button :class="['toggle-button', { 'sidebar-open1': !isOpen }]" @click="toggleSidebar">{{ '<<' }}</button>
-  <div :class="['sidebar', { 'sidebar-open': !isOpen }]">
-    <!-- 사이드바 내용 -->
+        <div v-if="!collapsed" class = "comment-container">
+            <div v-for="feedback in feedbackList" :key="feedback.feedbackId" class="feedback-item">
+                <div class="feedback-comment">
+                    <div class = "profile"><img :src="feedback.pictureUrl" alt="이미지" class="spaced"></div>
+                    <div class = "student-info"><span class="spaced1">{{ feedback.studentNumber }}&nbsp; {{ feedback.userName }}</span></div>
+                    <div class = "created-at"><span class="small-text">{{ formatDate( feedback.createdAt) }}</span></div>
+                </div>
+                <div class = "content">
+                    <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
+                    <div :class="['feedback-comment-box', { 'blue-background': feedback.modReq==2}]">
+                    {{ feedback.comment }}
+                    </div>
+                </div>
+            </div>
+            <div v-for="feedback in addComments" :key="feedback" class="feedback-item">
+                <div class="feedback-comment">
+                    <div class = "profile"><img :src="addPictureUrl" alt="이미지"  class="spaced"></div>
+                    <div class = "student-info"><span class="spaced1">{{ addStudentNumber }}&nbsp; {{ addUserName }}</span></div>
+                    <div class = "created-at"><span class="small-text">{{ formatDate2( feedback.date )}}</span></div>
 
-
-    <!-- Display feedback comments -->
-    <div v-for="feedback in feedbackList" :key="feedback.feedbackId" class="feedback-item">
-      <div class="feedback-comment">
-        <img :src="feedback.pictureUrl" alt="이미지" style="max-width: 25px; max-height: 25px;" class="spaced">
-        <span class="small-text spaced1">{{ feedback.studentNumber }}</span>
-        <span class="small-text  spaced2">{{ feedback.userName }}</span>
-        <span class="small-text">{{ formatDate( feedback.createdAt) }}</span>
-
-        <br>
-        <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
-        <div :class="['feedback-comment-box', { 'blue-background': feedback.modReq==2}]">
-          {{ feedback.comment }}
+                    <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
+                    <div class = "content">
+                    <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
+                        <div :class="['feedback-comment-box', { 'blue-background': addApproved==2}]">
+                        {{ feedback.comment }}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
+        <div v-if="!collapsed" class="comment-box" :style="{ width: sidebarWidth }">
+            <div class="approve-mod-container">
+                <button @click="toggleApproval" class="approve-toggle">
+                    <div v-show="isApproved" class="approve-icon approve-true"><i class="fi fi-sr-checkbox"></i></div>
+                    <div v-show="!isApproved"  class="approve-icon approve-false"  ><i class="fi fi-rr-checkbox"></i></div>
+                </button>
 
-    <br>
-    <div v-for="feedback in addComments" :key="feedback" class="feedback-item">
-      <div class="feedback-comment">
-      <img :src="addPictureUrl" alt="이미지" style="max-width: 25px; max-height: 25px;" class="spaced">
-        <span class="small-text spaced1">{{ addStudentNumber }}</span>
-        <span class="small-text  spaced2">{{ addUserName}}</span>
-        <span class="small-text">{{ formatDate2( feedback.date )}}</span>
+                <div class="mod_request" @click="toggleApproval">수정 요청</div>
+            </div>
+            <!-- 코멘트 입력 메시지 창 추가 -->
+            <textarea v-model="comment" class="comment-input" placeholder="Add a comment..."></textarea>
+            <button @click="submitComment" class="comment-summit">저장</button>
 
-        <br>
-        <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
-        <div :class="['feedback-comment-box', { 'blue-background': addApproved==2 }]">
-          {{ feedback.comment }}
         </div>
-
-      </div>
     </div>
-    <!-- You can display other feedback information here -->
-  </div>
-  <div :class="['comment-box', { 'sidebar-open2': !isOpen }]">
-    <div class="approve-mod-container">
-      <button @click="toggleApproval" class="approve-toggle">
-        <div  v-show="isApproved" class="approve-icon approve-false"><i class="fa-regular fa-square-check"></i></div>
-        <div v-show="!isApproved"  class="approve-icon approve-true"  ><i class="fa-solid fa-square-check"></i></div>
-      </button>
-
-      <div class="mod_request">수정 요청</div>
-    </div>
-    <!-- 코멘트 입력 메시지 창 추가 -->
-    <textarea v-model="comment" class="comment-input" placeholder="  Add a comment.."></textarea>
-    <button @click="submitComment" class="comment-summit">저장</button>
-
-  </div>
+</div>
 </template>
-
+  
 <script>
+import { collapsed, toggleSidebar, sidebarWidth, sidebarHeight } from './state'
 import axios from 'axios';
-export default {
-  props: ['boardId','memberId'],
-  name: 'Sidebar',
-  data() {
-    return {
-      isOpen: false,
-      comment: '', // 코멘트를 저장할 데이터
-      addComments: [],
-      isApproved: 0, // 승인 여부를 저장할 데이터
-      feedbackList: [], // To store the feedback comments
-      saveApproved:0,
-      addApproved:0,
-      addPictureUrl:[],
-      addUserName:[],
-      addStudentNumber:[],
-    };
 
-  },
-  created() {
+export default {
+    props: ['boardId','memberId'],
+    name: 'Sidebar',
+    setup() {
+        return { collapsed, toggleSidebar, sidebarWidth, sidebarHeight }
+    },
+    data() {
+        return {
+        isOpen: false,
+        comment: '', // 코멘트를 저장할 데이터
+        addComments: [],
+        isApproved: 0, // 승인 여부를 저장할 데이터
+        feedbackList: [], // To store the feedback comments
+        saveApproved:0,
+        addApproved:0,
+        addPictureUrl:[],
+        addUserName:[],
+        addStudentNumber:[],
+        };
+    },
+    created() {
     this.fetchFeedbackComments();
   },
   methods: {
@@ -91,9 +98,11 @@ export default {
 
       // 시간을 12시간 형식으로 변환합니다.
       const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+      
+      const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
 
       // 나머지 정보를 형식에 맞게 조합합니다.
-      const formattedDate = `${year}.${formattedMonth}.${day} ${ampm} ${formattedHours}:${minutes}`;
+      const formattedDate = `${year}.${formattedMonth}.${day} ${ampm} ${formattedHours}:${formattedMinutes}`;
 
       return formattedDate;
     }
@@ -118,6 +127,7 @@ export default {
     async fetchFeedbackComments() {
       try {
         const response = await axios.get(`http://localhost:3210/comment/${this.boardId}/${this.memberId}`);
+        console.log(response);
         this.feedbackList = response.data.content;
         this.addApproved=response.data.feedbackYn;
         this.addPictureUrl=response.data.pictureUrl;
@@ -126,9 +136,6 @@ export default {
       } catch (error) {
         console.error('Error fetching feedback comments:', error);
       }
-    },
-    toggleSidebar() {
-      this.isOpen = !this.isOpen;
     },
     toggleApproval() {
       this.isApproved = !this.isApproved;
@@ -161,63 +168,80 @@ export default {
       }
     },
   },
-};
+}
 </script>
-
+  
+  
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=REM:ital,wght@1,800&display=swap');
+*{
+    font-size: 15px;
+    font-family: 'Red Hat Display', sans-serif;
+}
+
 .sidebar {
-  position: fixed;
-  top: 0;
-  right: 0px; /* 초기에는 사이드바가 숨겨져 있도록 위치 설정 */
-  width: 400px;
-  height: 57.5%;
-  background-color: #f0f0f0;
-  padding: 10px;
-  transition: right 0.2s ease-in-out;
-  top: 65px; /* 아래로 이동하는 값 설정 */
-  overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤바 추가 */
-  z-index: 3; /* 내용 위로 올라오도록 설정 */
+margin-top: 8.5vh;
+background-color: var(--sidebar-bg-color);
+float: right;
+position: fixed;
+z-index: 1;
+top: 0;
+right: 0;
+bottom: 0;
+transition: 0.3s ease;
+display: flex;
+flex-direction: column;
+border-left: 1px solid var(--sidebar-bg-color);
+height: 61.5vh;
+overflow: scroll;
 }
-.sidebar-open {
-  right: -420px; /* 토글로 열 때의 위치 설정 */
+.collapse-icon i{
+  font-size: 20px;
 }
+.collapse-icon {
+display: flex;
+align-items: center;
 
+cursor: pointer;
+position: relative;
+font-weight: 400;
+user-select: none;
+margin: 0.3em 0;
+padding: 1em;
+height: 1.5em;
 
-.toggle-button {
+text-decoration: none;
+padding: 1.3em;
+color: rgb(47, 47, 47);
+transition: 0.2s linear;
 
-  top: 73px; /* 수정: 초기 위치 */
-  right: 420px; /* 수정: 초기 위치 */
-  border: none;
-  color: #3772FF;
-  transition: right 0.2s ease-in-out, top 0.2s ease-in-out; /* 애니메이션 설정 */
-  position: fixed;
 }
-.sidebar-open1 {
-  right: -0px; /* 토글로 열 때의 위치 설정 */
+.list{
+margin-left: 20px;
+
 }
-
-
+i{
+margin-top: 6px;
+font-size : 18px;
+}
 .comment-box {
-  margin-top: 469px;
-  padding: 3px;
-  border: 1px solid #ccc;
   background-color: white;
-  height: 194px;
-  top: 0;
-  right: 13px; /* 초기에는 사이드바가 숨겨져 있도록 위치 설정 */
-  width: 430px;
-  margin-right: -30px;
+  height: 30vh;
+  bottom: 0;
+  right: 0; /* 초기에는 사이드바가 숨겨져 있도록 위치 설정 */
   position: fixed;
-  transition: right 0.2s ease-in-out, top 0.2s ease-in-out; /* 애니메이션 설정 */
-  z-index: 4; /* 내용 위로 올라오도록 설정 */
-}
-.sidebar-open2 {
-  right: -420px; /* 토글로 열 때의 위치 설정 */
+  z-index: 2; /* 내용 위로 올라오도록 설정 */
+  border-left: 1px solid var(--sidebar-bg-color);
 }
 .comment-input{
+  margin-top: 10px;
+  padding: 12px;
   width: 90%;
-  height: 70%;
+  height: 15vh;
+  outline: none;
+  box-sizing: border-box;
   border: none;
+  resize: none;
 }
 
 .approve-toggle{
@@ -231,15 +255,24 @@ export default {
 }
 
 .comment-summit{
-  margin-left: 270px;
+  cursor: pointer;
+  float: right;
+  margin-right: 15px;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-top: 5px;
   border: none;
+  height: 33px;
+  width: 60px;
   background-color: #3772FF;
   color: white;
-  border-radius: 5px;
 }
 
 .approve-icon {
+  cursor: pointer;
   display: inline-block;
+  margin-top: 5px;
+  margin-left: 10px;
 }
 
 .approve-true {
@@ -247,59 +280,77 @@ export default {
 }
 
 .approve-false {
-  color: #3772FF;
+  color: #BABABA;
 }
 .mod_request{
-  margin-left: 10px;
+  cursor:pointer;
+  margin-left: 15px;
   color: white;
   background-color: #3772FF;
   border-radius: 5px;
   font-size: 14px;
-  width: 70px;
+  width: 77px;
+  height: 27px;
+  line-height: 25px;
 }
 
 .approve-mod-container {
   display: flex;
   align-items: center;
-
+  border: 1px solid var(--sidebar-bg-color);
+  height: 40px;
 }
 
 .small-text {
-  font-size: 10px; /* 작은 텍스트 크기를 설정합니다. */
-}
-.spaced{
-  margin-right: 10px;
-}
-.spaced1{
-  margin-right: 5px;
-}
-.spaced2{
-  margin-right: 110px;
+  font-size: 12px; /* 작은 텍스트 크기를 설정합니다. */
 }
 
 .feedback-item{
-  margin-top: 20px;
-  margin-bottom: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+  display: inline-block;
 }
 
 .feedback-comment-box {
   background-color: white; /* 박스 배경색을 하얀색으로 설정 */
-  padding: 10px; /* 내부 여백 설정 */
-  border: 1px solid #ccc; /* 테두리 설정 */
-  font-size: 13px;
-  width: 80%;
-  margin-top: 5px;
+  min-height: 24px;
+  font-size: 15px;
+  text-align: left;
+  padding: 12px;
+  width: 280px;
   border-radius: 8px;
-  margin-left: 55px;
-  overflow: auto; /* 내용이 넘칠 경우 스크롤바 추가 */
-  white-space: normal; /* 줄 바꿈과 공백 처리 */
-  word-wrap: break-word; /* 단어 끊김 처리 */
-  max-height: 500px; /* 최대 높이 설정 */
-
+  margin-top: 10px;
+  float: right;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  word-break:break-all;
 }
-
 .blue-background {
   background-color: #3772FF; /* 원하는 배경색으로 변경하세요 */
   color: #f0f0f0;
+}
+.comment-container{
+    width: 90%;
+    margin: 0 auto;
+    padding-bottom: 20px;
+}
+.feedback-comment{
+    width: 100%;
+}
+.profile{
+    float: left;
+    margin-left: 5px;
+}
+.profile img{
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+}
+.student-info{
+    float: left;
+    margin-left: 15px;
+}
+.created-at{
+    float: right;
+    margin-right: 3px;
 }
 </style>
