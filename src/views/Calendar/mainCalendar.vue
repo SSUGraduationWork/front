@@ -381,7 +381,7 @@ export default {
     
 </script>
 
-<style>
+<style scoped>
 .prev-or-next-month {
   color: grey;
 }

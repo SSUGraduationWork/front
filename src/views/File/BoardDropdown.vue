@@ -4,10 +4,11 @@
     <ul v-show="isOpen" class="dropdown-list2" @mouseenter="openDropdown" @mouseleave="closeDropdown">
       <li v-for="(option, index) in options" :key="index" @click="selectOption(index)">
         {{ option }}
-
-        <i
-            :class="{'fa-solid fa-circle text-green':  index === 1, 'fa-solid fa-circle text-red': index === 2}"
-        ></i>
+        <div class  = "status-icon">
+            <i
+              :class="{'fa-solid fa-circle text-green':  index === 1, 'fa-solid fa-circle text-red': index === 2,'fa-solid fa-circle text-gray': index === 3}"
+          ></i>
+        </div>
       </li>
     </ul>
   </div>
@@ -18,12 +19,13 @@ export default {
   props: {
     options: Array,
   },
+
   data() {
     return {
       isOpen: false,
       selectedOption: '전체',
       // options 데이터를 배열로 변경하고 각각 다른 값을 가지도록 수정
-      options: ['전체','피드백', '피드백'],
+      options: ['전체','남은 피드백', '완료한 피드백','내가 쓴 글'],
     };
   },
   methods: {
@@ -60,7 +62,7 @@ export default {
 
 .dropdown-button2 {
   border-radius: 7px;
-  width: 120px;
+  width: 140px;
   height: 37px;
   background-color: #F5F6FA;
   border: none;
@@ -108,9 +110,22 @@ export default {
 
 .text-green {
   color: #99CC8C; /* 초록색으로 설정 */
+  font-size: 13px;
 }
 
 .text-red {
   color: #EE6C6C; /* 빨간색으로 설정 */
+  font-size: 13px;
+}
+.text-gray{
+  color: #BABABA;
+  font-size: 13px;
+}
+li{
+  text-align: center;
+}
+.status-icon{
+  float: right;
+  margin-right: 12px;
 }
 </style>

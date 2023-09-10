@@ -13,7 +13,7 @@
               <img :src="item.pictureUrl" alt="이미지" style="max-width: 35px; max-height: 35px;" class="spaced">
               <div class="content-font-size" v-html="item.content"></div>
             </div>
-            <a :href="item.redirectUrl + '/' + $route.params.memberId" @click="handleLinkClick(item.alarmId)" class="direct"><i class="fa-solid fa-arrow-up-right-from-square" style="max-width: 23px; max-height: 23px;"></i>바로가기</a>
+            <a :href="item.redirectUrl + '/' + $route.params.memberId+'/'+$route.params.teamId" @click="handleLinkClick(item.alarmId)" class="direct"><i class="fa-solid fa-arrow-up-right-from-square" style="max-width: 23px; max-height: 23px;"></i>바로가기</a>
           </template>
           <template v-else-if="item.alarmKind === 'complUpdate' && !item.feedbackYn">
             <span class="small-text">{{ item.createdTime }}</span>

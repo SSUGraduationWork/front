@@ -7,7 +7,8 @@
     <!-- ... -->
     <!-- ... -->
     <!-- dropdown-->
-    <dropdown :options="formData.dropdownOptions" class="search-dropdown" @selected="updateSelectedWorkId" />
+
+    <dropdown :options="formData.dropdownOptions" class="search-dropdown" :initialWorkName="boardContent.workName" @selected="updateSelectedWorkId" />
     <sidebar :board-id="boardId" :member-id="memberId"/>
     <!-- ... -->
 
@@ -62,12 +63,10 @@
     <div>
       <textarea id="content" v-model="formData.content" required :placeholder="boardContent.content"></textarea>
     </div>
-
     <div class="button-container">
       <button type="button" class="cancel-button" @click="goToHomeView">취소</button>
       <button type="submit" class="submit-button" @click="submitForm">수정</button>
     </div>
-
   </div>
 </template>
 
@@ -108,10 +107,12 @@ export default {
 
 
   async created() {
-    this.loadDropdownOptions(this.teamId);
+    this.loadDropdownOptions(this.memberId,this.teamId);
+
     const boardId = this.$route.params.boardId;
     const memberId = this.$route.params.memberId;
     const teamId = this.$route.params.teamId;
+
     try {
       const response = await axios.get(`http://localhost:3210/board/view/${boardId}/${memberId}/${teamId}`);
       if (response.data.status.code === 200) {
@@ -119,6 +120,7 @@ export default {
         this.formData.title = this.boardContent.title;
         this.formData.content = this.boardContent.content;
         this.allFileIds = this.boardContent.fileId; // fileId 배열 저장
+        this.formData.selectedWorkId=this.boardContent.workId;
         this.loading = false;
       } else {
         console.error('올바르지 않은 요청입니다.');
@@ -130,9 +132,9 @@ export default {
     }
   },
   methods: {
-    async loadDropdownOptions(teamId) {
+    async loadDropdownOptions(memberId,teamId) {
       try {
-        const response = await axios.get(`http://localhost:3210/work/list/${teamId}`);
+        const response = await axios.get(`http://localhost:3210/work/list/${memberId}/${teamId}`);
         this.formData.dropdownOptions = response.data.content;
       } catch (error) {
         console.error('Dropdown options load error:', error);
@@ -151,6 +153,7 @@ export default {
       const boardId = this.boardId; // props로 전달된 값 사용
       const memberId = this.memberId; // props로 전달된 값 사용
       const teamId = this.teamId; // props로 전달된 값 사용
+
       const request = {
         title,
         content,
@@ -311,7 +314,7 @@ export default {
   margin: 20px 0 0 0;
   width: 90%;
   height: 70px;
-  border: 1px dashed darkgrey; /* 변경된 부분: 테두리를 점선으로 설정 */
+  box-shadow: 3px 3px 2px 3px darkgrey; /* 그림자 설정 */
   border-width: 2px; /* 변경된 부분: 테두리 두께 설정 */
   cursor: pointer; /* 커서를 손가락 모양으로 변경 */
 }
@@ -324,7 +327,6 @@ export default {
   margin: 20px 0 0 0;
   width: 90%;
   height: 70px;
-  border: 1px dashed darkred; /* 변경된 부분: 테두리를 점선으로 설정 */
   border-width: 2px; /* 변경된 부분: 테두리 두께 설정 */
   cursor: pointer; /* 커서를 손가락 모양으로 변경 */
   background: rgba(255, 0, 0, 0.1); /* 투명한 빨간색 (배경색의 알파 값이 0.5로 설정됨) */
@@ -356,5 +358,15 @@ export default {
 .add-file-button{
   margin-left: 50px;
   margin-top: 15px;
+}
+#content {
+  width: 90%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  background-size: auto 100%;
+  margin: 0px 0 0 50px;
+  height: 370px; /* 원하는 높이로 조정 */
 }
 </style>

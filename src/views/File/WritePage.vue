@@ -1,30 +1,30 @@
 <template>
   <div v-if="loading" class="loading-container">
-    <i class="fa-solid fa-spinner"></i> 로딩 중...
+    <Loader></Loader>
   </div>
   <div v-else class="write-page">
-
-      <!-- dropdown-->
-      <dropdown :options="formData.dropdownOptions" class="search-dropdown" @selected="updateSelectedWorkId" />
-      <div>
+      <div class ="search-dropdown">
+        <dropdown :options="formData.dropdownOptions" @selected="updateSelectedWorkId" />
+      </div>
+      <div class = "title">
         <input type="text" id="title" v-model="formData.title" required placeholder="제목을 입력하세요"/>
       </div>
       <div>
         <div v-for="(file, index) in formData.files" :key="index" class="file-input-container-write">
           <label :for="'file-input-' + index" class="custom-file-label">
             <div class="custom-icon-container">
-              <i class="fa-solid fa-file-arrow-up custom-icon"></i> <span class="label-text">{{ file ? file.name : '파일 선택' }}</span>
+              <i class="fi fi-sr-file-upload custom-icon"></i><span class="label-text">{{ file ? file.name : '파일 선택' }}</span>
             </div>
           </label>
           <input :id="'file-input-' + index" type="file" ref="fileInput" @change="handleFileChange(index)" class="custom-file-input-write" style="display: none;"/>
           <button type="button" class="custom-file-input-write" @click="openFileInput(index)" style="position: absolute;  width: 100%; height: 100%;"></button>
         </div>
       </div>
-      <button type="button" @click="addFileInput" class="add-file-button">
-        <i class="fa-solid fa-plus"></i>
-      </button>
+      <div @click="addFileInput" class="add-file-button">
+        <i class="fi fi-sr-add-document"></i>
+      </div>
       <div>
-        <textarea id="content" v-model="formData.content" required placeholder="본문을 입력하세요"></textarea>
+        <textarea id="content" @input="resize($event.target)" v-model="formData.content" required placeholder="본문을 입력하세요"></textarea>
       </div>
       <div class="button-container">
         <button type="button" class="cancel-button" @click="goToHomePage">취소</button>
@@ -106,10 +106,11 @@ export default {
         // 요청 성공 시 처리
       //  console.log('글 작성 성공:', response.data);
         alert("글 작성 성공")
-      } catch (error) {
+      } catch (error ) {
         // 에러 처리
-        console.error('글 작성 오류:', error);
-        alert("글 작성 오류")
+          // 예외가 발생한 경우 처리
+        console.error(error.message);
+
       }finally {
         {
           this.loading = false; // 로딩 상태를 false로 설정
@@ -125,9 +126,9 @@ export default {
     goToHomePage() {
       this.$router.push({ name: 'HomeView' }); // WritePage의 name을 사용하여 페이지 이동
     },
-    async loadDropdownOptions(teamId) {
+    async loadDropdownOptions(memberId,teamId) {
       try {
-        const response = await axios.get(`http://localhost:3210/work/list/${teamId}`);
+        const response = await axios.get(`http://localhost:3210/work/list/${memberId}/${teamId}`);
         this.formData.dropdownOptions = response.data.content;
       } catch (error) {
         console.error('Dropdown options load error:', error);
@@ -136,10 +137,14 @@ export default {
     updateSelectedWorkId(workId) {
       this.formData.selectedWorkId = workId; // 선택한 작업의 workId 업데이트
     },
+    resize(textarea) {
+      textarea.style.height = "350px";
+      textarea.style.height = textarea.scrollHeight + "px";
+    },
   },
   created() {
     this.addFileInput(); // 페이지 로드 시에 파일 입력 요소 추가
-    this.loadDropdownOptions(this.teamId);
+    this.loadDropdownOptions(this.memberId,this.teamId);
   },
 
 };
@@ -148,38 +153,57 @@ export default {
 
 
 
-<style>
-#title {
-  width: 90%;
-  padding: 10px;
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
+*{
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 15px;
+}
+.loading-container{
+  height: 100%;
+}
+.write-page{
+  width: 85%;
+  margin: 0 auto;
+}
+.title {
+  margin-top: 11em;
+  width: 100%;
   font-size: 16px;
-  border: none;
   border-bottom: 1px solid #ccc;
   outline: none;
-  background-size: auto 100%;
-  margin: 150px 0 0 50px;
+  display: flex;
+  margin-bottom: 30px;
 }
-
-#content {
+.title input{
   width: 90%;
   padding: 10px;
-  font-size: 16px;
+  float: left;
+  outline: none;
   border: none;
+  font-weight: 600;
+  font-size: 27px;
+}
+#content {
+  width: 98.5%;
+  resize: none;
+  margin: 0 auto;
+  margin-top: 13px;
+  font-size: 15px;
   outline: none;
   background-size: auto 100%;
-  margin: 0px 0 0 50px;
-  height: 300px; /* 원하는 높이로 조정 */
+  min-height: 150px; /* 원하는 높이로 조정 */
 }
 
 .file-input-container-write {
   position: relative;
   display: inline-block;
   overflow: hidden;
-  border-radius: 5px;
-  border: 1px solid gray;
-  margin: 20px 0 0 50px;
-  width: 90%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  width: 100%;
   height: 70px;
+  line-height: 70px;
   border: 1px dashed #ccc; /* 회색 점선 테두리 추가 */
   cursor: pointer; /* 커서를 손가락 모양으로 변경 */
 }
@@ -200,65 +224,69 @@ export default {
 
 /*버튼*/
 .button-container{
-  margin: 10px 0 0 800px;
+  display: flex;
+  float: right;
 }
 .submit-button,
 .cancel-button {
-  padding: 5px 10px;
   border: none;
   cursor: pointer;
-  border-radius: 30px;
-  width: 130px;
-  margin: 0 0 0 30px;
+  height: 35px;
+  border-radius: 20px;
+  width: 135px;
+  font-weight: 600;
+  margin-bottom: 50px;
 }
 
 .submit-button {
-  background-color: dodgerblue;
+  background-color: #3772FF;
   color: white;
 }
 
 .cancel-button {
-  background-color: lightgray;
+  background-color: #e1e1e1;
+  margin-right: 30px;
 }
 
 
 .custom-icon {
-  margin-top: 20px ;
-  margin-right: 10px; /* 아이콘을 왼쪽으로 약간 이동 */
-  font-size: 30px; /* 아이콘 사이즈 키우기 */
-  color: dodgerblue;
+  font-size: 21px; /* 아이콘 사이즈 키우기 */
+  line-height: 70px;
+  color: #3772FF;
+  display: inline-block;
+  float: left;
 }
-
-.label-text {
-  margin-top: -30px ; /* 텍스트의 상대적인 위치 조정 */
-}
-
 
 .custom-icon-container {
   display: inline-block;
   vertical-align: middle;
   margin-right: 10px;
   cursor: pointer;
+  width: 90%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
-
-
-
-
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  font-size: 18px;
+.custom-icon-container span{
+  float: left;
+  margin-left: 30px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
-
-.fa-spinner {
-  animation: fa-spin 1s infinite linear;
+.search-dropdown{
+  float: right;
+  margin-top: 7em;
 }
-
-@keyframes fa-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.add-file-button{
+  border: 1px solid #3772FF;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  margin: 0 auto;
+  line-height: 43px;
+  background-color: #3772FF;
+  color: white;
+  cursor: pointer;
 }
-
 </style>

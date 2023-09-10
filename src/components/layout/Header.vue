@@ -26,16 +26,16 @@
             <div class="modal-content" @click.stop>
               <!-- 모달 내용 -->
               <div v-for="item in content" :key="item.alarmId" class="alarm-item">
-                <template v-if="(item.alarmKind === 'requestFeedback' ) || item.alarmKind === 'newWrite'||item.alarmKind==='agreeFeedback'||item.alarmKind==='denyFeedback'||(item.alarmKind === 'complUpdate' && item.feedbackYn)">
+                <template v-if="(item.alarmKind === 'requestFeedback' ) || item.alarmKind === 'newWrite'||item.alarmKind==='agreeFeedback'||item.alarmKind==='denyFeedback'||(item.alarmKind === 'complUpdate' && (item.feedbackYn==1||item.feedbackYn==0))">
                   <span class="small-text">{{ formatDateFromArray(item.createdTime) }}</span>
                   <div class="image-container">
                     <i v-if="!item.seen" class="fa-solid fa-circle icon-circle"></i>
                     <img :src="item.pictureUrl" alt="이미지" style="max-width: 35px; max-height: 35px;" class="spaced">
                     <div class="content-font-size" v-html="item.content"></div>
                   </div>
-                  <a :href="item.redirectUrl + '/' + $route.params.memberId" @click="handleLinkClick(item.alarmId)" class="direct"><i class="fa-solid fa-arrow-up-right-from-square" style="max-width: 23px; max-height: 23px;"></i>바로가기</a>
+                  <a :href="item.redirectUrl + '/' + $route.params.memberId+'/'+$route.params.teamId" @click="handleLinkClick(item.alarmId)" class="direct"><i class="fa-solid fa-arrow-up-right-from-square" style="max-width: 23px; max-height: 23px;"></i>바로가기</a>
                 </template>
-                <template v-else-if="item.alarmKind === 'complUpdate' && !item.feedbackYn">
+                <template v-else-if="item.alarmKind === 'complUpdate' && !item.feedbackYn==2">
                   <span class="small-text">{{ formatDateFromArray(item.createdTime) }}</span>
                   <div class="image-container">
                     <i v-if="!item.seen" class="fa-solid fa-circle icon-circle"></i>
@@ -198,7 +198,7 @@ export default {
 }
 .header {
   border-bottom: 1.5px solid #F0EFEF;
-  height: 4em;
+  height: 8.5vh;
   background-color: white;
   z-index: 2;
   position: fixed;
@@ -304,6 +304,7 @@ h5 {
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 5;
 }
 
 /* 버튼 스타일 */
