@@ -75,7 +75,7 @@ import axios from 'axios';
 
 import Sidebar from './SideBarPage.vue';
 import UpdatePage from "@/views/File/UpdatePage";
-import Dropdown from "@/views/File/Dropdown";
+import Dropdown from "@/views/File/components/Dropdown";
 export default {
   props: ['boardId','memberId','teamId'],
   components: {

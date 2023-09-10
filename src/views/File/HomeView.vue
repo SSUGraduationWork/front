@@ -70,7 +70,7 @@
                   <i class="fa-solid fa-tag"></i><span>{{ board.workName }}</span>
                 </div>
               </td>
-              <td>
+              <td class="title">
                 <router-link
                     :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
                 >{{ board.title }}
@@ -95,7 +95,7 @@
                   <i class="fa-solid fa-tag"></i><span>{{ board.workName }}</span>
                 </div>
               </td>
-              <td>
+              <td class="title">
                 <router-link
                     :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
                 >{{ board.title }}
@@ -120,7 +120,7 @@
                   <i class="fa-solid fa-tag"></i><span>{{ board.workName }}</span>
                 </div>
               </td>
-              <td>
+              <td class="title">
                 <router-link
                     :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
                 >{{ board.title }}
@@ -145,7 +145,7 @@
                 <i class="fa-solid fa-tag"></i><span>{{ board.workName }}</span>
               </div>
             </td>
-            <td>
+            <td class = "title">
               <router-link
                   :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
               >{{ board.title }}
@@ -180,7 +180,7 @@
 import axios from 'axios';
 
 
-import BoardDropdown from './BoardDropdown.vue';
+import BoardDropdown from './components/BoardDropdown.vue';
 import WritePage from './WritePage.vue';
 import Loader from '../../components/Loader.vue';
 import bgColors from '../../../public/color';
@@ -607,8 +607,16 @@ a:hover{
   text-overflow: ellipsis;
   overflow: hidden;
   padding-right: 10px;
+  white-space:nowrap;
 }
 .work-name-container{
   width: 140px;
+}
+.title{
+  min-width: 150px;
+  max-width: 230px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space:nowrap;
 }
 </style>
