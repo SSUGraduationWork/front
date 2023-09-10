@@ -18,13 +18,14 @@
         <ul class="projects">
             <router-link
             v-for="project in projects"
-            :key="project.id"
-            :to="{ name: 'DashboardPro2', params: { projectId: project.id } }"
+            :key="project.projectId"
+            :to="{ name: 'DashboardPro2', params: { projectId: project.projectId } }"
             class="project"
             >
                 <div class="container1">
                     <div class="projectName">{{project.projectName}}</div>
-                    <div @click="updateGenerate(project)"><i class="fi fi-rs-menu-dots-vertical"></i></div>
+                    <!-- <div @click="updateGenerate(project)"><i class="fi fi-rs-menu-dots-vertical"></i></div> -->
+                    <i class="fi fi-rs-menu-dots-vertical" v-on:click.prevent @click="updateGenerate(project)"></i>
                 </div>
                 <div class="semester">{{project.semester}}</div>
                 <div class="projectNumber">{{project.projectNumber}}명 참여</div>
@@ -65,11 +66,11 @@
 
 <!--update/delete 모달창-->
     <div id="modal" class="update-modal-overlay" :style="{display:updateModalDisplay}">
-        <div class="update-modal-window">
+        <div class="post-modal-window">
             <!--v-model 사용해야 입력된 값이 화면에 보임. v-model 사용하기 위해 해당 변수를 data에 정의해야함-->
             <!-- <el-input placeholder="학기를 입력해 주세요" v-model="postSemester"></el-input> -->
             <form>
-            <select name="selectSemester" v-model="postSemester" required>
+            <select name="selectSemester" v-model="updateSemester" required>
                 <option value="2022-1">2022-1</option>
                 <option value="2022-2">2022-2</option>
                 <option value="2023-1">2023-1</option>
@@ -78,7 +79,7 @@
             </form>
             <el-input
                 style="margin-top:10px;"
-                v-model="postProjectName"
+                v-model="updateProjectName"
                 class="custom-input-style"
             >
             </el-input>
@@ -88,7 +89,18 @@
                 <span class="dialog-footer">
                     <el-button type="primary" @click="updateProjects()">수정</el-button>
                     <el-button @click="updateClose()">취소</el-button>
+                    <el-button type="danger" @click="deleteConfirm()">삭제</el-button>
                 </span>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="deleteModal" :style="{display:deleteModalDisplay}">
+        <div class="delete-modal-window">
+            <div>해당 project 삭제 후에는 다시 복구할 수 없습니다.</div>
+            <div class="delete-footer">
+                <el-button type="danger" @click="deleteProjects()">삭제</el-button>
+                <el-button type="primary" @click="deleteClose()">취소</el-button>
             </div>
         </div>
     </div>
@@ -119,10 +131,11 @@ export default {
 
         updateSetParams() {
             const params = {
+                projectId: this.updateProjectId, 
                 professorId: this.professorId,
-                projectName: this.postProjectName,
-                semester: this.postSemester,
-                projectNumber: this.projects.projectNumber        
+                projectName: this.updateProjectName,
+                semester: this.updateSemester,
+                projectNumber: this.updateProject.projectNumber
             }
         console.log("params: ",params)
         return params;
@@ -144,8 +157,13 @@ export default {
             postModalDisplay: "none",
 
             //수정
+            updateProject: null,
+            updateProjectId: null,
             updateModalDisplay: "none",
-            originProject: null
+            updateProjectName: null,
+            updateSemester: "",
+            //삭제
+            deleteModalDisplay: "none"
         }
 
     },
@@ -212,27 +230,26 @@ export default {
 
             // this.modalDisplay = "flex";
         },
-        handleIconClick(projectId, event) {
-            console.log("handleIconClick")
-            event.stopPropagation();
 
-        },
+        // handleIconClick(projectId, event) {
+        //     console.log("handleIconClick")
+        //     event.stopPropagation();
+        // },
 
         updateGenerate(project) {
             this.updateModalDisplay = "flex";
-            this.originProject = project;
-            console.log("update project: ", this.originProject);
-            console.log("update project.projectName: ", this.originProject.projectName);
-
+            this.updateProject = project;
+            this.updateProjectId = project.projectId;
+            this.updateProjectName = project.projectName;
+            this.updateSemester = project.semester;
         },
         //수정
         updateProjects() {
         axios
-            .post(url + '/dashboard/projects', this.updateSetParams)
+            .patch(url + '/dashboard/projects', this.updateSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.postProject = response.data.data;
-                console.log("postProject: ", this.postProject)
                 } 
             this.$router.go(0)  //실행된 후 처음 화면으로
             })
@@ -244,9 +261,32 @@ export default {
         updateClose() {
             this.updateModalDisplay = "none";
             this.updateProject = null;
+            this.updateProjectId = null,
             this.updateSemester = "2023-2";
             this.updateProjectName = null;
         },
+
+        deleteClose() {
+            this.deleteModalDisplay = "none";
+        },
+
+        deleteProjects() {
+        axios
+            .delete(url + `/dashboard/projects/${this.updateProjectId}`)
+            .then((response) => {
+            if (response.data.message == "Success") {
+                console.log("Completely Delete");
+                } 
+            this.$router.go(0)  //실행된 후 처음 화면으로
+            })
+            .catch((e) => {
+            console.log(e);
+            });
+        },
+
+        deleteConfirm() {
+            this.deleteModalDisplay = "flex";
+        }
     }
 }
 </script>
@@ -358,11 +398,24 @@ export default {
     border-radius: 8px;
 }
 
+.delete-modal-window {
+    background-color: white;
+    width: 300px;
+    height: 100px;
+    padding: 20px;
+    padding-top: 30px;
+    border-radius: 8px;
+}
+
 .dialog-footer {
     margin-top: 40px;
     padding: 20px;
     padding-top: 10px;
     text-align: right;
+}
+
+.delete-footer {
+    margin-top: 20px;
 }
 
 /* Button Styles */
