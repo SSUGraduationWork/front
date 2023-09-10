@@ -20,8 +20,8 @@
         <div class = "info">
           <div><img :src="boardContent.pictureURL"></div>
           <div class = "writer">{{boardContent.studentNumber}} &nbsp;{{ boardContent.writer }}</div> 
-          <div class ="more-icon" @click="viewMod">
-            <ModButton v-if="mod"></ModButton>
+          <div class ="more-icon" @mousedown="openMod" @mouseleave="closeMod">
+            <ModButton v-if="mod" @close-mod="closeMod"></ModButton>
             <i class="fi fi-br-menu-dots-vertical"></i>
           </div>
           <div class = "workName-box-style" :style="{ backgroundColor: color }">
@@ -61,8 +61,8 @@ import axios from 'axios';
 import Sidebar from './SideBarPage.vue';
 import UpdatePage from "@/views/File/UpdatePage";
 import Loader from '../../components/Loader.vue';
-import ModButton from './ModButton.vue';
-import { sidebarWidth } from './state';
+import ModButton from './components/ModButton.vue';
+import { sidebarWidth } from './components/state';
 
 export default {
   props: ['boardId','memberId','teamId'],
@@ -169,8 +169,11 @@ export default {
         console.error('Error downloading file:', error);
       }
     },
-    viewMod() {
-      this.mod = !this.mod;
+    openMod() {
+      this.mod = true;
+    },
+    closeMod() {
+      this.mod = false;
     }
   }
 };
@@ -183,7 +186,6 @@ export default {
   font-size: 15px;
   font-weight: 500;
 }
-
 .write-page{
   width: 85%;
   min-width: 80vh;
@@ -284,7 +286,6 @@ export default {
 .more-icon{
   float: right;
   cursor: pointer;
-  border: 1px solid black;
   position: relative;
 }
 .created-at{
