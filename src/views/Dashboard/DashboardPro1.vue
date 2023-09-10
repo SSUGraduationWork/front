@@ -340,6 +340,7 @@ export default {
     text-decoration: none; /* 링크에 밑줄 제거 */
     color: inherit; /*색변하지 않도록 */
 }
+
 .container1 {
     display: flex;
     justify-content: space-between; /* 왼쪽과 오른쪽에 정렬되도록 설정 */
