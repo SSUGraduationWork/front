@@ -249,7 +249,7 @@ export default {
             .patch(url + '/dashboard/projects', this.updateSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
-                this.postProject = response.data.data;
+                this.updateProject = response.data.data;
                 } 
             this.$router.go(0)  //실행된 후 처음 화면으로
             })
