@@ -6,17 +6,27 @@
                     <i class="fi fi-rr-pencil"></i>
                 </div>
                 <div>
-                    <span>수정</span>
+                    <span>
+                  <button type="submit" class="submit-button" @click="goToUpdatePage(memberId, boardId,teamId)">수정</button>
+                    </span>
                 </div>
             </div>
             <div class = "delete">
-
             </div>
         </div>
     </div>
 
 </template>
 <script>
+export default {
+props: ['boardId','memberId','teamId'],
+
+methods: {
+  goToUpdatePage() {
+    this.$router.push({ name: 'UpdatePage', params: { memberId: this.memberId, boardId: this.boardId ,teamId: this.teamId} });
+  },
+}
+}
 </script>
 <style scoped>
 .modification{
