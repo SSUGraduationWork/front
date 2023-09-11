@@ -1,9 +1,11 @@
 <template>
   <div class="calendar">
     <div class="calendar_header">
-      <button class="btn" @click="previousMonth()">Previous</button>
-      <h2>{{ currentMonth }}</h2>
-      <button class="btn" @click="nextMonth()">Next</button>
+      <!-- <el-button class="btn" icon="fi fi-rr-angle-left" @click="previousMonth()"></el-button> -->
+      <i class="fi fi-bs-angle-left" @click="previousMonth()"></i>
+      <div class="currentMonth">{{currentMonth}}</div>
+      <i class="fi fi-bs-angle-right" @click="nextMonth()"></i>
+      <!-- <el-button class="btn" icon="fi fi-rr-angle-right" @click="nextMonth()"></el-button> -->
     </div>
     <table>
       <thead>
@@ -45,8 +47,8 @@
       <!--회의록이 아직 존재하지 않을 경우: postMinutes()-->
 
       <div v-if="minutes == null">
-        <div class="date">{{targetDate}}</div>
-        <el-input placeholder="제목을 입력해 주세요" v-model="title"></el-input>
+        <div class="date1">{{targetDate}}</div>
+        <el-input placeholder="제목을 입력해 주세요" v-model="title" class="title1" ></el-input>
 
         <el-input
             style="margin-top:30px;"
@@ -54,6 +56,7 @@
             :rows="20"
             placeholder="내용을 입력해 주세요."
             v-model="content"
+            class="content1"
           >
         </el-input>
             <!-- dialog footer 영역 -->
@@ -68,14 +71,14 @@
 
         <!--회의록 수정하는 경우: updateMinutes()-->
       <div v-if="update == true">
-        <div class="date">{{targetDate}}</div>
-        <el-input v-model="minutes.title" class="title"></el-input>
+        <div class="date1">{{targetDate}}</div>
+        <el-input v-model="minutes.title" class="title1" style="height: 40px;"></el-input>
         <el-input
             style="margin-top:30px;"
             type="textarea"
-            :rows="20"
+            :rows="26"
             v-model="minutes.content"
-            class="content"
+            class="content1"
         >
         </el-input>
         <div>
@@ -382,8 +385,10 @@ export default {
 </script>
 
 <style scoped>
-.prev-or-next-month {
-  color: grey;
+.currentMonth {
+  font-size: 25px;
+  margin-right: 40px;
+  margin-left: 40px;
 }
 
 .calendar {
@@ -396,10 +401,13 @@ export default {
 
 .calendar_header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+  height: 30px;
+  justify-content: center; /* 가로 가운데 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
+  text-align: center;
+  padding-bottom: 10px;
 }
+
 
 table {
   width: 100%;
@@ -409,26 +417,31 @@ table {
 th,
 td {
   padding: 10px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
+  border-radius: 10px;
   width: 30px;
-  height: 50px;
+  height: 80px;
 }
 
 .day {
-  border: None;
+  border: none;
+  background: white;
   border-radius: 50px;
+  font-size: 20px;
 }
 
 .day:hover {
-  box-shadow: 20px 20px 20px 20px darkgrey inset;
-  color: white;
+  border: 2px solid orange;
 }
+
 
 .notCurrentDay {
   border: None;
   border-radius: 50px;
-  color: grey;
-  background-color: white;
+  background: white;
+  color: lightgrey;
+  /* background-color: white; */
+  font-size: 20px;
 }
 
 .today {
@@ -436,10 +449,11 @@ td {
   border-radius: 50px;
   color: white;
   background-color: red;
+  font-size: 20px;
 }
 
 .today:hover {
-  background: darkgray;
+  border: 2px solid orange;
   color: white;
 }
 #modal {
@@ -455,8 +469,8 @@ td {
 }
 .modal_window {
   background-color: white;
-  width: 40%;
-  height: 80%;
+  width: 600px;
+  height: 720px;
   padding: 20px;
   border-radius: 8px;
 }
@@ -467,7 +481,7 @@ td {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 5px;
-  padding: 20px;
+  padding: 10px;
 }
 
 .title {
@@ -478,7 +492,7 @@ td {
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 10px;
-  border: 1px solid grey;
+  border: 1px solid red;
   border-radius: 10px;
 
   white-space: pre-line;
@@ -494,7 +508,7 @@ td {
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 20px;
-  border: 1px solid grey;
+  border: 1px solid red;
   border-radius: 10px;
 
   white-space: pre-line;
@@ -503,7 +517,7 @@ td {
 }
 
 .dialog-footer {
-  margin-top: 20px;
+  /* padding-top: 30px; */
   padding: 20px;
   text-align: right;
 }
@@ -511,6 +525,27 @@ td {
 /* Button Styles */
 .el-button {
   margin-left: 10px;
+}
+
+.el-input__wrapper {
+  border: none;
+  border-radius: 0; 
+}
+
+.date1 {
+  text-align: left;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  padding: 10px;
+}
+
+.title1 {
+
+}
+
+.content1 {
+
 }
 
 </style>
