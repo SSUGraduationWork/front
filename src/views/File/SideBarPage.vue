@@ -33,7 +33,7 @@
                     <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
                     <div class = "content">
                     <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
-                        <div :class="['feedback-comment-box', { 'blue-background': addApproved==2}]">
+                        <div :class="['feedback-comment-box', { 'blue-background': addApproved==2||(newApproved=0&&isApproved==true)}]">
                         {{ feedback.comment }}
                         </div>
                     </div>
@@ -80,15 +80,17 @@ export default {
         addPictureUrl:[],
         addUserName:[],
         addStudentNumber:[],
+        newApproved:0,
         };
     },
     created() {
     this.fetchFeedbackComments();
+    this.newApproved=this.isApproved;
   },
   methods: {
     formatDate(dateArray) {
       // 주어진 배열에서 연, 월, 일, 시, 분, 초를 추출합니다.
-      const [year, month, day, hours, minutes, seconds] = dateArray;
+      const [year, month, day, hours, minutes] = dateArray;
 
       // 월(month)은 0부터 시작하므로 1을 더해줍니다.
       const formattedMonth = (month < 9 ? '0' : '') + (month + 1);
@@ -144,7 +146,7 @@ export default {
       try {
         const date = new Date();
         this.addComments.push({comment: this.comment, date: date, isApproved: this.isApproved});
-        let approvalStatus = this.isApproved ? 1 : 2;
+        let approvalStatus = this.isApproved ? 2 : 1;
 
         const formData = new FormData(); // FormData 객체 생성
         formData.append('comment', this.comment); // 코멘트 데이터 추가
@@ -328,6 +330,7 @@ font-size : 18px;
   background-color: #3772FF; /* 원하는 배경색으로 변경하세요 */
   color: #f0f0f0;
 }
+
 .comment-container{
     width: 90%;
     margin: 0 auto;

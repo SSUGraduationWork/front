@@ -58,6 +58,7 @@
             <th>작성일</th>
             <th>피드백 여부</th>
             <th>조회수</th>
+            <th>gkdl</th>
           </tr>
         </thead>
         <div class = "margin-space"></div>
@@ -82,7 +83,8 @@
               </td>
               <td>{{  formatDateFromArray(board.createdTime) }}</td>
               <td :key="(board.feedbackYn===1)"><i class="fa-solid fa-circle text-green"></i></td>
-              <td>{{ board.viewCount }}</td>
+              <td>{{ board.viewCount }} aa{{board.feedbackYn}}</td>
+              <td> aadfds</td>
             </tr>
           </template>
         </template>
@@ -108,6 +110,7 @@
               <td>{{  formatDateFromArray(board.createdTime) }}</td>
               <td :key="(board.feedbackYn===0||board.feedbackYn===2)"><i class="fa-solid fa-circle text-red"></i></td>
               <td>{{ board.viewCount }}</td>
+              <td> aa{{board.feedbackYn}}</td>
             </tr>
           </template>
         </template>
@@ -133,6 +136,7 @@
               <td>{{  formatDateFromArray(board.createdTime) }}</td>
               <td :key="(board.feedbackYn===3)"><i class="fa-solid fa-circle text-gray"></i></td>
               <td>{{ board.viewCount }}</td>
+              <td> gg{{board.feedbackYn}}</td>
             </tr>
           </template>
         </template>
@@ -157,6 +161,7 @@
             <td>{{  formatDateFromArray(board.createdTime) }}</td>
             <td :key="(board.feedbackYn)"><i :class="{'fa-solid fa-circle text-green': (board.feedbackYn===1), 'fa-solid fa-circle text-red': (board.feedbackYn===0||board.feedbackYn===2),'fa-solid fa-circle text-gray': (board.feedbackYn===3)}"></i></td>
             <td>{{ board.viewCount }}</td>
+            <td> gg{{board.feedbackYn}}</td>
           </tr>
           </tbody>
         </template>
@@ -395,9 +400,9 @@ tr{
   text-overflow: ellipsis;
 }
 .pagination {
-  margin-top: 0px;
-  margin-left: 520px;
-  position:fixed;
+  margin: 0 auto;
+  margin-top: 70px;
+  margin-bottom: 70px;
 }
 .pagination button {
   cursor: pointer;

@@ -277,6 +277,12 @@ export default {
 </script>
 
 <style>
+.write-page{
+  margin-top: 100px;
+  width: 85%;
+  min-width: 80vh;
+  padding-left: 10px;
+}
 .file-input-container-update {
    display: inline-block;
   position: relative;
@@ -369,4 +375,6 @@ export default {
   margin: 0px 0 0 50px;
   height: 370px; /* 원하는 높이로 조정 */
 }
+
+
 </style>

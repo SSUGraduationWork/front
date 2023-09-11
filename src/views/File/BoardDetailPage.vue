@@ -101,7 +101,7 @@ export default {
         this.loading = false;
         console.log(response);
         // 조회수 증가 로직 실행
-        //this.increaseViewCount(boardId);
+        this.increaseViewCount(boardId);
       } else {
         console.error('올바르지 않은 요청입니다.');
         alert('올바르지 않은 요청입니다.');
