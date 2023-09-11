@@ -99,8 +99,6 @@ export default {
         this.formData.title = this.boardContent.title;
         this.formData.content = this.boardContent.content;
         this.loading = false;
-        console.log(response);
-        // 조회수 증가 로직 실행
         this.increaseViewCount(boardId);
       } else {
         console.error('올바르지 않은 요청입니다.');
@@ -120,7 +118,6 @@ export default {
       try {
         // 조회수를 서버에 증가시키는 API 호출
         const response = axios.post(`http://localhost:3210/board/upcount/${boardId}`);
-
         // 요청 성공 시 처리
         console.log('조회수 증가 성공:');
       } catch (error) {
