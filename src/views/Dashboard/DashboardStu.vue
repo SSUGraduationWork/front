@@ -25,7 +25,11 @@
             </li>
         </ul> -->
         <ul class="teams">
-            <li v-for="(team, index) in teams" :key="team.teamId" class="team">
+            <router-link
+            v-for="(team, index) in teams" :key="team.teamId" class="team"
+            :to="{ name: 'Work', params: { teamId: team.teamId } }">
+        
+            <!-- <li v-for="(team, index) in teams" :key="team.teamId" class="team"> -->
                 <div class="container1">
                     <!-- index를 사용하여 projects 배열에서 관련된 데이터를 가져옴 -->
                     <div class="projectName">{{ projects[index].projectName }}</div>
@@ -33,7 +37,8 @@
                 </div>
                 <div class="teamName">{{ team.teamName }}</div>
                 <div class="teamNumber">{{ team.teamNumber }}명 참여</div>
-            </li>
+            <!-- </li> -->
+            </router-link>
         </ul>
     </div>
 
@@ -224,6 +229,8 @@ export default {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
     cursor: pointer;
+    color: inherit;
+    text-decoration: none;
 }
 
 .team:hover {
@@ -238,6 +245,8 @@ export default {
 }
 
 .teamName {
+    font-size: 14px;
+    color: #777777;
     text-align: left;
     padding: 30px;
 }
@@ -253,7 +262,7 @@ export default {
     font-size: 14px;
     color: #777777;
     text-align: left;
-    padding: 20px
+    padding: 30px
 }
 
 #modal {

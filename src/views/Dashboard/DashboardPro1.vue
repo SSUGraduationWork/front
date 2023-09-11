@@ -364,11 +364,10 @@ export default {
 }
 
 .semester {
-    margin-top: 8px;
     font-size: 14px;
     color: #777777;
     text-align: left;
-    padding: 20px
+    padding: 30px
 }
 
 .projectNumber {
@@ -376,7 +375,7 @@ export default {
     font-size: 14px;
     color: #777777;
     text-align: left;
-    padding: 20px
+    padding: 30px
 }
 
 #modal {
@@ -394,7 +393,7 @@ export default {
 .post-modal-window {
     background-color: white;
     width: 500px;
-    height: 150px;
+    height: 100px;
     padding: 20px;
     border-radius: 8px;
 }

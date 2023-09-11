@@ -55,19 +55,19 @@ const routes = [
     props: true
   },
   {
-    path: '/dashboardPro1/projects/:professorId',
+    path: '/dashboard/professor/projects/:professorId',
     name: 'DashboardPro1',
     component: () => import('../views/Dashboard/DashboardPro1.vue'),
     props: true
   },
   {
-    path: '/dashboardPro2/teams/:projectId',
+    path: '/dashboard/professor/teams/:projectId',
     name: 'DashboardPro2',
     component: () => import('../views/Dashboard/DashboardPro2.vue'),
     props: true
   },
   {
-    path: '/dashboardStu/:studentId',
+    path: '/dashboard/student/:studentId',
     name: 'DashboardStu',
     component: () => import('../views/Dashboard/DashboardStu.vue')
   },
@@ -116,7 +116,18 @@ const routes = [
     component: SideBarPage,
     props: true,
   },
-
+  {
+    path: '/setting/:professorId',
+    name: 'Setting1',
+    component: () => import('../views/Setting.vue'),
+    props: true,
+  },
+  {
+    path: '/setting/:studentId',
+    name: 'Setting2',
+    component: () => import('../views/Setting.vue'),
+    props: true,
+  },
 ]
 
 const router = createRouter({

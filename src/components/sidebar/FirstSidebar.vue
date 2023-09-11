@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar2" :style="{ width: sidebarWidth }">
+  <div class="sidebar" :style="{ width: sidebarWidth }">
     <span v-if="collapsed" 
       class="collapse-icon"
       @click="toggleSidebar">
@@ -28,18 +28,16 @@ import { collapsed, toggleSidebar, sidebarWidth } from './state'
 import {computed} from 'vue'
 
 export default {
-  props: ['teamId'],
+  props: ['professorId'],
   components: { SidebarLink},
   setup() {
     return { collapsed, toggleSidebar, sidebarWidth }
   },
   data() {
     return {
-      workUrl: computed(() => '/work/' + this.teamId),
-      fileUrl: computed(() => '/board/list/11/' + this.teamId),
-      calendarUrl: computed(() => '/calendar/' + this.teamId),
-      chattingUrl: computed(() => '/chatting/' + this.teamId),
-      contributionUrl: computed(() => '/contribution/' + this.teamId)
+      dashboardUrl: computed(() => '/dashboard/professor/projects/' + this.professorId),
+      settingUrl: computed(() => '/setting/' + this.professorId)
+      // fileUrl: computed(() => '/board/list/11/' + this.teamId),
     }
   }
 }
