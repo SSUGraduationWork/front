@@ -10,14 +10,27 @@
         <input type="text" id="title" v-model="formData.title" required placeholder="제목을 입력하세요"/>
       </div>
       <div>
-        <div v-for="(file, index) in formData.files" :key="index" class="file-input-container-write">
-          <label :for="'file-input-' + index" class="custom-file-label">
+        <div v-for="(file, index) in formData.files" :key="index" :class="{'file-input-container-write' : !file}">
+          <div v-if="file" class ="file-delete">
+              <div class="approve-toggle">
+                  <div class="approve-icon approve-false">
+                    <i class="fi fi-rr-cross-circle" @click="deleteFile(index)"></i>
+                  </div>
+              </div>
+              <label :for="'file-input-' + index" class="custom-file-label" style="width: 100%;">
+                <div class = file-box>
+                  <div class = "file-icon"><i class="fi fi-sr-document"></i></div>
+                  <div class = "file-name">{{ file.name }}</div>
+                </div>
+              </label>
+          </div>
+          <label v-else :for="'file-input-' + index" class="custom-file-label">
             <div class="custom-icon-container">
               <i class="fi fi-sr-file-upload custom-icon"></i><span class="label-text">{{ file ? file.name : '파일 선택' }}</span>
             </div>
           </label>
-          <input :id="'file-input-' + index" type="file" ref="fileInput" @change="handleFileChange(index)" class="custom-file-input-write" style="display: none;"/>
-          <button type="button" class="custom-file-input-write" @click="openFileInput(index)" style="position: absolute;  width: 100%; height: 100%;"></button>
+          <input :id="'file-input-' + index" type="file" ref="fileInput" @change="handleFileChange(index)" class="custom-file-input-write" style="width: 100%; display: none;"/>
+          <button type="button" class="custom-file-input-write" @click="openFileInput(index)" style="width: 100%; display: none;"></button>
         </div>
       </div>
       <div @click="addFileInput" class="add-file-button">
@@ -77,6 +90,9 @@ export default {
     openFileInput(index) {
       const input = this.$refs.fileInput[index];
       input.click();
+    },
+    deleteFile(index){
+      this.formData.files.splice(index,1);
     },
     async submitForm() {
       this.loading = true; // 로딩 상태를 false로 설정
@@ -138,7 +154,7 @@ export default {
       this.formData.selectedWorkId = workId; // 선택한 작업의 workId 업데이트
     },
     resize(textarea) {
-      textarea.style.height = "350px";
+      textarea.style.height = 'auto';
       textarea.style.height = textarea.scrollHeight + "px";
     },
   },
@@ -192,7 +208,8 @@ export default {
   font-size: 15px;
   outline: none;
   background-size: auto 100%;
-  min-height: 150px; /* 원하는 높이로 조정 */
+  min-height: 350px; /* 원하는 높이로 조정 */
+  border: none;
 }
 
 .file-input-container-write {
@@ -288,5 +305,59 @@ export default {
   background-color: #3772FF;
   color: white;
   cursor: pointer;
+}
+.fi-rr-cross-circle:hover{
+  color: #F15454;
+}
+.fi-rr-cross-circle{
+  color: #ccc;
+  font-size: 18px;
+  cursor: pointer;
+}
+.file-delete{
+  display: flex;
+  width: 100%;
+  height: 70px;
+  line-height: 70px;
+  margin-bottom: 20px;
+}
+.file-icon{
+  margin-top: 2px;
+  margin-left: 50px;
+}
+.file-icon i{
+  font-size: 17px;
+  color: #3772ff;
+}
+.file-name{
+  margin-left: 50px;
+  width: 100%;
+  padding-right: 40px;
+  text-align: left;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.file-box {
+  cursor: pointer;
+  height: 70px;
+  width: 100%;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  line-height: 70px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  display: flex;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.approve-toggle{
+  cursor: poninter;
+  float: left;
+  background-color: white;
+  align-items: center;
+  margin-right: 20px;
+}
+.custom-file-label{
+  width: 100%;
 }
 </style>

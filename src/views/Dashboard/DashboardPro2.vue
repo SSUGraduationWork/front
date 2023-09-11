@@ -239,7 +239,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 .top {
     display: flex;

@@ -401,9 +401,7 @@ tr{
   text-overflow: ellipsis;
 }
 .pagination {
-  margin: 0 auto;
-  margin-top: 70px;
-  margin-bottom: 70px;
+  position: relative;
 }
 .pagination button {
   cursor: pointer;
@@ -589,6 +587,11 @@ td{
   line-height: 30px;
   vertical-align:middle;
   margin-right: 13px;
+  width: 30px;
+  height: 30px;
+  border-radius: 70%;
+  overflow: hidden;
+  background : #F5F6FA; 
 }
 a{
   text-decoration: none;
@@ -624,5 +627,8 @@ a:hover{
   text-overflow: ellipsis;
   overflow: hidden;
   white-space:nowrap;
+}
+img{
+ 
 }
 </style>

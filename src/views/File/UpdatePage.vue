@@ -1,72 +1,69 @@
 <template>
   <div v-if="loading" class="loading-container">
-    <i class="fa-solid fa-spinner"></i> 로딩 중...
+    <Loader></Loader>
   </div>
 
   <div v-else class="write-page">
     <!-- ... -->
     <!-- ... -->
     <!-- dropdown-->
-
-    <dropdown :options="formData.dropdownOptions" class="search-dropdown" :initialWorkName="boardContent.workName" @selected="updateSelectedWorkId" />
-    <sidebar :board-id="boardId" :member-id="memberId"/>
-    <!-- ... -->
-
-    <div>
-      <input type="text" id="title" v-model="formData.title" required :placeholder="boardContent.title" />
-    </div>
-    <!-- 파일 업로드 부분 생략 -->
-
-    <div
-        v-for="(fileDir, index) in boardContent.fileDirs"
-        :key="index"
-        style="cursor: pointer"
-    >
-
-      <div class="file-delete">
-        <button @click="toggleApproval(index)" class="approve-toggle">
-          <div
-              v-show="!isSelectedFile(index)"
-              class="approve-icon approve-false"
-          >
-            <i class="fa-regular fa-square-minus minus-image"></i>
-          </div>
-          <div
-              v-show="isSelectedFile(index)"
-              class="approve-icon approve-true"
-          >
-            <i class="fa-solid fa-square-minus minus-image"></i>
-          </div>
-        </button>
-        <div :class="{ 'file-box1': !isSelectedFile(index), 'file-box2': isSelectedFile(index) }">
-          <div class="filename-text-style">
-          {{ extractFileName(fileDir) }}
-          </div>
-        </div>
+    <div class ="search-dropdown">
+        <dropdown :options="formData.dropdownOptions" :initialWorkName="boardContent.workName" @selected="updateSelectedWorkId" />
       </div>
-    </div>
-
-    <div>
-      <div v-for="(file, index) in formData.files" :key="index" class="file-input-container-update">
-        <label :for="'file-input-' + index" class="custom-file-label">
-          <div class="custom-icon-container">
-            <i class="fa-solid fa-file-arrow-up custom-icon"></i> <span class="label-text">{{ file ? file.name : '파일 선택' }}</span>
-          </div>
-        </label>
-        <input :id="'file-input-' + index" type="file" ref="fileInput" @change="handleFileChange(index)" class="custom-file-input" style="display: none;"/>
-        <button type="button" class="custom-file-input" @click="openFileInput(index)" style="position: absolute;  width: 100%; height: 100%;"></button>
+      <div class = "title">
+        <input type="text" id="title" v-model="formData.title" required :placeholder="boardContent.title"/>
       </div>
-    </div>
-    <button type="button" @click="addFileInput" class="add-file-button">
-      <i class="fa-solid fa-plus"></i>
-    </button>
-    <div>
-      <textarea id="content" v-model="formData.content" required :placeholder="boardContent.content"></textarea>
-    </div>
-    <div class="button-container">
-      <button type="button" class="cancel-button" @click="goToHomeView">취소</button>
-      <button type="submit" class="submit-button" @click="submitForm">수정</button>
-    </div>
+        <div>
+            <div v-for="(fileDir, index) in boardContent.fileDirs" :key="index" style="cursor: pointer">
+              <div class="file-delete">
+                <div @click="toggleApproval(index)" class="approve-toggle">
+                  <div v-show="!isSelectedFile(index)" class="approve-icon approve-false">
+                    <i class="fi fi-rr-minus-circle minus"></i>
+                  </div>
+                  <div v-show="isSelectedFile(index)" class="approve-icon approve-true">
+                    <i class="fi fi-sr-minus-circle minus"></i>
+                  </div>
+                </div>
+                <div class = file-box :class="{'file-box-selected' : isSelectedFile(index)}">
+                  <div class = "file-icon"><i class="fi fi-sr-document"></i></div>
+                  <div class = "file-name">{{ extractFileName(fileDir) }}</div>
+                </div>
+              </div>
+            </div>
+          <div v-for="(file, index) in formData.files" :key="index" :class="{'file-input-container-write' : !file}">
+            <div v-if="file" class ="file-delete">
+              <div class="approve-toggle">
+                  <div class="approve-icon approve-false">
+                    <i class="fi fi-rr-cross-circle" @click="deleteFile(index)"></i>
+                  </div>
+              </div>
+              <label :for="'file-input-' + index" class="custom-file-label">
+                <div class = file-box>
+                  <div class = "file-icon"><i class="fi fi-sr-document"></i></div>
+                  <div class = "file-name">{{ file.name }}</div>
+                </div>
+              </label>
+            </div>
+            <label v-else :for="'file-input-' + index" class="custom-file-label">
+              <div class="custom-icon-container">
+                <i class="fi fi-sr-file-upload custom-icon"></i><span class="label-text">{{ file ? file.name : '파일 선택' }}</span>
+              </div>
+            </label>
+            <input :id="'file-input-' + index" type="file" ref="fileInput" @change="handleFileChange(index)" class="custom-file-input-write" style="display: none;"/>
+            <button type="button" class="custom-file-input-write" @click="openFileInput(index)" style="display: none"></button>
+          </div>
+      </div>
+      <div @click="addFileInput" class="add-file-button">
+        <i class="fi fi-sr-add-document"></i>
+      </div>
+      <div>
+        <textarea id="content" class="content" @input="resize($event.target)" v-model="formData.content" required>{{boardContent.content}}</textarea>
+      </div>
+      <div class="button-container">
+        <button type="button" class="cancel-button" @click="goToHomePage">취소</button>
+        <button type="submit" class="submit-button" @click="submitForm">수정</button>
+      </div>
+
   </div>
 </template>
 
@@ -100,6 +97,7 @@ export default {
         selectedWorkId: null,
       },
       loading: true,
+      fileUploaded : {},
     };
   },
 
@@ -149,6 +147,7 @@ export default {
 
     async submitForm() {
       this.loading = true; // 로딩 상태를 true로 설정
+      console.log(this.formData);
       const { title, content, files, selectedFileIds,selectedWorkId } = this.formData;
       const boardId = this.boardId; // props로 전달된 값 사용
       const memberId = this.memberId; // props로 전달된 값 사용
@@ -223,9 +222,13 @@ export default {
       return this.selectedFileIndexes[index];
     },
     handleFileChange(index) {
+      this.fileUploaded[index] = true;
       const input = this.$refs.fileInput[index];
       this.formData.files.splice(index, 1, input.files[0]);
       input.value = null; // 리셋하여 같은 파일을 다시 선택할 수 있도록 함
+    },
+    deleteFile(index){
+      this.formData.files.splice(index,1);
     },
     openFileInput(index) {
       const input = this.$refs.fileInput[index];
@@ -272,35 +275,75 @@ export default {
         console.error('Error downloading file:', error);
       }
     },
+    resize(textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + "px";
+    },
   }
 };
 </script>
 
-<style>
-.write-page{
-  margin-top: 100px;
-  width: 85%;
-  min-width: 80vh;
-  padding-left: 10px;
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
+*{
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 15px;
 }
-.file-input-container-update {
-   display: inline-block;
+.loading-container{
+  height: 100%;
+}
+.write-page{
+  width: 85%;
+  margin: 0 auto;
+}
+.title {
+  margin-top: 11em;
+  width: 100%;
+  font-size: 16px;
+  border-bottom: 1px solid #ccc;
+  outline: none;
+  display: flex;
+  margin-bottom: 30px;
+}
+.title input{
+  width: 90%;
+  padding: 10px;
+  float: left;
+  outline: none;
+  border: none;
+  font-weight: 600;
+  font-size: 27px;
+}
+.content {
+  width: 98.5%;
+  resize: none;
+  margin: 0 auto;
+  margin-top: 20px;
+  font-size: 15px;
+  outline: none;
+  background-size: auto 100%;
+  min-height: 350px; /* 원하는 높이로 조정 */
+  border: none;
+}
+
+.file-input-container-write {
   position: relative;
+  display: inline-block;
   overflow: hidden;
-  border-radius: 5px;
-  margin: 20px 0 0 44px;
-  width: 86%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  width: 100%;
   height: 70px;
-  border: 1px dashed darkgrey; /* 변경된 부분: 테두리를 점선으로 설정 */
-  border-width: 2px; /* 변경된 부분: 테두리 두께 설정 */
+  line-height: 70px;
+  border: 1px dashed #ccc; /* 회색 점선 테두리 추가 */
   cursor: pointer; /* 커서를 손가락 모양으로 변경 */
 }
 
-.custom-file-input {
+.custom-file-input-write {
   background-color: white;
   border-radius: 10px;
   border: 1px dashed #ccc; /* 회색 점선 테두리 추가 */
-  width: 90%;
+  width: 100%;
   height: 100%;
   /* height: 100%;*/
   /* opacity: 0;
@@ -308,39 +351,75 @@ export default {
    */
   margin-top: 100px;
 }
-.file-delete{
+
+
+/*버튼*/
+.button-container{
   display: flex;
-  margin-left: 50px;
+  float: right;
 }
-.file-box1 {
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-  border-radius: 5px;
-  margin: 20px 0 0 0;
-  width: 90%;
-  height: 70px;
-  box-shadow: 3px 3px 2px 3px darkgrey; /* 그림자 설정 */
-  border-width: 2px; /* 변경된 부분: 테두리 두께 설정 */
-  cursor: pointer; /* 커서를 손가락 모양으로 변경 */
+.submit-button,
+.cancel-button {
+  border: none;
+  cursor: pointer;
+  height: 35px;
+  border-radius: 20px;
+  width: 135px;
+  font-weight: 600;
+  margin-bottom: 50px;
 }
 
-.file-box2 {
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-  border-radius: 5px;
-  margin: 20px 0 0 0;
-  width: 90%;
-  height: 70px;
-  border-width: 2px; /* 변경된 부분: 테두리 두께 설정 */
-  cursor: pointer; /* 커서를 손가락 모양으로 변경 */
-  background: rgba(255, 0, 0, 0.1); /* 투명한 빨간색 (배경색의 알파 값이 0.5로 설정됨) */
-}
-.filename-text-style{
-  margin-top: 30px;
+.submit-button {
+  background-color: #3772FF;
+  color: white;
 }
 
+.cancel-button {
+  background-color: #e1e1e1;
+  margin-right: 30px;
+}
+
+
+.custom-icon {
+  font-size: 17px; /* 아이콘 사이즈 키우기 */
+  line-height: 70px;
+  color: #3772FF;
+  display: inline-block;
+  float: left;
+}
+
+.custom-icon-container {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+  cursor: pointer;
+  width: 90%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.custom-icon-container span{
+  float: left;
+  margin-left: 30px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.search-dropdown{
+  float: right;
+  margin-top: 7em;
+}
+.add-file-button{
+  border: 1px solid #3772FF;
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  margin: 0 auto;
+  line-height: 43px;
+  background-color: #3772FF;
+  color: white;
+  cursor: pointer;
+}
 .minus-image{
   margin-right: 20px;
   font-size: 20px;
@@ -348,33 +427,75 @@ export default {
 }
 
 .approve-toggle{
-
-  border: #f0f0f0;
+  cursor: poninter;
+  float: left;
   background-color: white;
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-
+  margin-right: 20px;
 }
-
-.file-input-container{
-  width: 57%;
+.minus{
+  font-size: 18px;
 }
-
-.add-file-button{
+.file-delete{
+  display: flex;
+  width: 100%;
+  height: 70px;
+  line-height: 70px;
+  margin-bottom: 20px;
+}
+.file-icon{
+  margin-top: 2px;
   margin-left: 50px;
-  margin-top: 15px;
 }
-#content {
-  width: 90%;
-  padding: 10px;
-  font-size: 16px;
-  border: none;
-  outline: none;
-  background-size: auto 100%;
-  margin: 0px 0 0 50px;
-  height: 370px; /* 원하는 높이로 조정 */
+.file-icon i{
+  font-size: 17px;
+  color: #3772ff;
 }
-
-
+.file-name{
+  margin-left: 50px;
+  width: 100%;
+  padding-right: 40px;
+  text-align: left;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.file-box {
+  cursor: pointer;
+  height: 70px;
+  width: 100%;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  line-height: 70px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  display: flex;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.fi-sr-minus-circle{
+  color: #F15454;
+}
+.fi-rr-minus-circle,
+.fi-rr-cross-circle{
+  color: #ccc;
+  font-size: 18px;
+  cursor: pointer;
+}
+.fi-sr-minus-circle:hover{
+  color: #E74343;
+}
+.fi-rr-minus-circle:hover,
+.fi-rr-cross-circle:hover{
+  color: #F15454;
+}
+.file-box-selected{
+  background-color: #FF8282;
+  color: white;
+}
+.file-box-selected i{
+  color: white;
+}
+.custom-file-label{
+  width: 100%;
+}
 </style>

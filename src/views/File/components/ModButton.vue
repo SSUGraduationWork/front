@@ -1,7 +1,7 @@
 <template>
     <div class ="modification">
         <div class = "options">
-            <div class = "mod" @click="modifyPost">
+            <div class = "mod" @click="modifyPost(memberId, boardId,teamId)">
                 <div class = "icon">
                     <i class="fi fi-rr-pencil"></i>
                 </div>
@@ -17,7 +17,22 @@
 </template>
 <script setup>
 import axios from 'axios';
-import { defineEmits } from 'vue';
+import { useRouter } from 'vue-router';
+import { defineEmits, defineProps } from 'vue';
+import UpdatePage from '../UpdatePage.vue';
+
+const router = useRouter();
+const props = defineProps({
+    boardId: {
+        type: Number,
+    },
+    memberId: {
+        type: Number,
+    },
+    teamId: {
+        type: Number
+    }
+})
 
 const emit = defineEmits(["closeMod"]);
 
@@ -26,6 +41,7 @@ const deletePost = () => {
 }
 const modifyPost = () => {
     emit('closeMod');
+    router.push({ name: 'UpdatePage', params: { memberId: props.memberId, boardId: props.boardId ,teamId: props.teamId} });
 }
 </script>
 <style scoped>
