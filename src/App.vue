@@ -1,6 +1,8 @@
 <template>
   <div>
-    <Sidebar v-if="['Account','SignIn','SignUp','CallBack'].includes($route.name)==false" :teamId="teamId" />
+    <Sidebar v-if="['Account','SignIn','SignUp','CallBack','Das', 'DashboardPro1', 'DashboardPro2', 'DashboardStu', 'Setting1', 'Setting2'].includes($route.name)==false" :teamId="teamId" />
+    <FirstSidebar v-if="['DashboardPro1', 'DashboardPro2', 'Setting1', 'Setting2'].includes($route.name)==true" :professorId="professorId" />
+    <SecondSidebar v-if="['DashboardStu'].includes($route.name)==true" :studentId="studentId" />
     <div v-if="['Account','SignIn','SignUp','CallBack'].includes($route.name)==false" :style="{ 'margin-left': sidebarWidth }">
       <Header /> 
       <router-view :teamId="teamId"></router-view> 
@@ -12,13 +14,17 @@
 </template>
 <script>
 import Sidebar from '@/components/sidebar/Sidebar'
+import FirstSidebar from '@/components/sidebar/FirstSidebar'
+import SecondSidebar from '@/components/sidebar/SecondSidebar.vue'
 import Header from '@/components/layout/Header'
 import { sidebarWidth } from '@/components/sidebar/state'
 
 export default {
   components: { 
     Sidebar,
-    Header
+    Header,
+    FirstSidebar,
+    SecondSidebar
   },
   setup() {
     return { sidebarWidth };
@@ -26,6 +32,14 @@ export default {
   computed : {
     teamId() {
       return this.$route.params.teamId;
+    },
+
+    professorId() {
+      return this.$route.params.professorId;
+    },
+
+    studentId() {
+      return this.$route.params.studentId;
     }
   },
 
