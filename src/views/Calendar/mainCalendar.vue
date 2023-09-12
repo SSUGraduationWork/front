@@ -23,30 +23,51 @@
         </tr>
       </tbody>
     </table>
-  <!-- </div> -->
+  </div>
     <!--모달-->
     <!--v-click 추가!!!!!!!!1-->
   <!-- <div class="modal"> -->
   <div id="modal" class="modal-overlay" :style="{display:modalDisplay}">
-    <div class="modal_window" v-click-outside="updateFunction" v-if="minutes !== null"> <!--v-click-outside="modalDisplay ? hello : null"-->
-
+    <div class="modal_window" v-click-outside="updateFunction" v-if="minutes != null"> <!--v-click-outside="modalDisplay ? hello : null"-->
+      <div>
       <!--이미 회의록 존재할 경우: getMinutes()-->    
       <container class="date1">{{targetDate}}
         <i class="fi fi-rr-trash" @click="deleteConfirm()"></i>
       </container>
       <div class="title2">
-        <textarea type="textarea" @input="resize($event.target)" @change="isModified=true" placeholder="제목을 입력해 주세요" 
+        <textarea type="textarea" @input="resize($event.target), changeInput()" placeholder="제목을 입력해 주세요" 
         v-model="minutes.title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
         ></textarea></div>
       <div class="content2">
         <textarea 
-          @input="resize($event.target)"
+          @input="resize($event.target), changeInput()"
             style="margin-top:10px; width: 100%; height: 'auto'"
             type="textarea"
             placeholder="내용을 입력해 주세요."
             v-model="minutes.content" @change="isModified=true"
           ></textarea>
-      <div>{{isModified}}</div>
+      </div>
+
+      <!--모두 입력하라는 알림창-->
+      <div id="modal" class="deleteModal" :style="{display: inputModalDisplay}">
+        <div class="delete-modal-window">
+          <div>title과 input 모두 입력하시오</div>
+          <div class="delete-footer">
+            <el-button type="primary" @click="inputClose()">확인</el-button>
+          </div>
+        </div>
+      </div>
+
+      <!--delete 확인-->
+      <div id="modal" class="deleteModal" :style="{display:deleteModalDisplay}">
+        <div class="delete-modal-window">
+          <div>해당 회의록 삭제 후에는 다시 복구할 수 없습니다.</div>
+            <div class="delete-footer">
+              <el-button type="danger" @click="deleteMinutes()">삭제</el-button>
+              <el-button type="primary" @click="deleteClose()">취소</el-button>
+            </div>
+        </div>
+      </div> 
       </div>
     </div>
     
@@ -68,8 +89,18 @@
             v-model="content"
           ></textarea>
       </div>
+            <!--모두 입력하라는 알림창-->
+      <div id="modal" class="deleteModal" :style="{display: inputModalDisplay}">
+        <div class="delete-modal-window">
+          <div>title과 input 모두 입력하시오</div>
+          <div class="delete-footer">
+            <el-button type="primary" @click="inputClose()">확인</el-button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+
   <!--delete 확인-->
   <div id="modal" class="deleteModal" :style="{display:deleteModalDisplay}">
     <div class="delete-modal-window">
@@ -78,19 +109,12 @@
           <el-button type="danger" @click="deleteMinutes()">삭제</el-button>
           <el-button type="primary" @click="deleteClose()">취소</el-button>
         </div>
-      </div>
-    </div>      
-  </div>
-
-  <!--모두 입력하라는 알림창-->
-  <div id="modal" class="deleteModal" :style="{display: inputModalDisplay}">
-    <div class="delete-modal-window">
-      <div>title과 input 모두 입력하시오</div>
-      <el-button type="primary" @click="inputClose()">확인</el-button>
     </div>
-  </div>
+  </div>   
+
 </template>
 <script>
+
 import axios from "axios";
 import vClickOutside from 'click-outside-vue3'
 const url = "http://localhost:3210";
@@ -161,6 +185,9 @@ export default {
   },
 
   methods: {
+    changeInput() {
+      this.isModified = true;
+    },
 
     //1. 현재 년/월을 기준으로 달력 데이터를 업데이트
     updateCalendar() {
@@ -203,13 +230,7 @@ export default {
         if (week.length === 7) {
           calendar.push(week);
           week = [];
-        }
-        //이전달 다음달의 날짜 구분 X 경우
-        // week.push(day.getDate());
-        // if (week.length === 7) {
-        //   calendar.push(week);
-        //   week = [];
-        // }        
+        } 
       }
       this.calendar = calendar;
     },
@@ -291,8 +312,6 @@ export default {
 
     //생성
     async postMinutes() {
-      console.log("title", this.postSetParams.title, "content: ", this.postSetParams.content);
-      console.log("postSetParams: ", this.postSetParams)
       axios
         .post(url + '/calendars/minutes', this.postSetParams)
         .then((response) => {
@@ -339,7 +358,6 @@ export default {
     async getMinutes() {
       try {
         const response = await axios.get(url + `/calendars/minutes/${this.teamId}/${this.targetDate}/${this.userId}`);
-        console.log("teamId:", this.teamId,"targetDate:",this.targetDate,"userId: ",this.userId);
         if (response.data.message === "Success") {
           this.minutes = response.data.data;
           console.log("getMinutes minutes: ", this.minutes);
@@ -388,14 +406,11 @@ export default {
     },
 
     async updateFunction() {
-      console.log("updateSetParmas: ", this.updateSetParams);
-      console.log("trim title", this.updateSetParams.title.trim());
-      console.log("trim content", this.updateSetParams.content.trim());
-      console.log("isModified: ", this.isModified);
-      if (this.modalDisplay != "none" && this.updateSetParams.title != "" && this.updateSetParams.content != "" && this.isModified == true) {
+      console.log("updateFunction");
+      if (this.modalDisplay != "none" && (this.updateSetParams.title != null && this.updateSetParams.title.trim() != "") && (this.updateSetParams.content != null && this.updateSetParams.content.trim() != "") && this.isModified == true) {
         await this.updateMinutes();
       }
-      else if (this.modalDisplay != "none" && this.updateSetParams.title != "" && this.updateSetParams.content != "" && this.isModified == false) {
+      else if (this.modalDisplay != "none" && this.updateSetParams.title != null && this.updateSetParams.content != null && this.isModified == false) {
         console.log("그냥 나가기: title+content 존재X")
         this.close();
       }
@@ -417,7 +432,7 @@ export default {
         .then((response) => {
           if (response.data.message == "Success") {
             this.close();
-            concole.log("completely delete")
+            console.log("completely delete")
             } 
         })
         .catch((e) => {
@@ -430,10 +445,12 @@ export default {
     },
 
     deleteProjects() {
+    console.log("modalDisplay: ", this.modalDisplay);
     axios
       .delete(url + `/dashboard/projects/${this.updateProjectId}`)
       .then((response) => {
       if (response.data.message == "Success") {
+        this.close();
         console.log("Completely Delete");
       } 
       this.$router.go(0)  //실행된 후 처음 화면으로
@@ -444,9 +461,7 @@ export default {
     },
 
     deleteConfirm() {
-      console.log("deleteConfirm");
       this.deleteModalDisplay = "flex";
-      console.log(this.deleteModalDisplay);
     },
 
     //css
