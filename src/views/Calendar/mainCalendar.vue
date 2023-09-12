@@ -25,70 +25,98 @@
     </table>
 
     <!--모달-->
+    <!--v-click 추가!!!!!!!!1-->
   <div id="modal" class="modal-overlay" :style="{display:modalDisplay}">
-    <div class="modal_window">
+    <div class="modal_window" v-click-outside="hello">
 
       <!--이미 회의록 존재할 경우: getMinutes()-->    
       <div v-if="minutes !== null && update == false"> 
-        <div class="date">{{targetDate}}</div>
-        <div class="title">{{minutes.title}}</div>
-        <div class="content">
-          <p>{{minutes.content}}</p>
+        <container class="date1">{{targetDate}}
+          <i class="fi fi-rr-trash" @click="deleteConfirm()"></i>
+        </container>
+        <div class="title2">
+          <textarea type="textarea" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
+          v-model="minutes.title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
+          ></textarea></div>
+        <div class="content2">
+          <textarea 
+            @input="resize($event.target)"
+              style="margin-top:10px; width: 100%; height: 'auto'"
+              type="textarea"
+              placeholder="내용을 입력해 주세요."
+              v-model="minutes.content"
+            ></textarea>
         </div>
-        <div>
-          <span class="dialog-footer">
-            <el-button type="primary" @click="update=true">수정</el-button>
+        <div class="footer1">
+          <span class="dialog-footer1">
+            <el-button type="primary" @click="updateMinutes()">수정</el-button>
             <el-button @click="close()">취소</el-button>
-            <el-button type="danger" @click="deleteMinutes()">삭제</el-button>
+            <!-- <el-button type="danger" @click="deleteConfirm()">삭제</el-button> -->
           </span>
         </div>
       </div>
+
       <!--존재하지 않을 경우-->
       <!--회의록이 아직 존재하지 않을 경우: postMinutes()-->
 
       <div v-if="minutes == null">
         <div class="date1">{{targetDate}}</div>
-        <el-input placeholder="제목을 입력해 주세요" v-model="title" class="title1" ></el-input>
-
-        <el-input
-            style="margin-top:30px;"
-            type="textarea"
-            :rows="20"
-            placeholder="내용을 입력해 주세요."
-            v-model="content"
-            class="content1"
-          >
-        </el-input>
-            <!-- dialog footer 영역 -->
-            <!-- <template v-slot:footer> -->
-        <div><!--2-->
-          <span class="dialog-footer">
-            <el-button type="primary" @click="postMinutes()">생성</el-button>
-            <el-button @click="close()">취소</el-button>
-          </span>
-        </div><!--2 지우기-->          
-      </div>
-
-        <!--회의록 수정하는 경우: updateMinutes()-->
-      <div v-if="update == true">
-        <div class="date1">{{targetDate}}</div>
-        <el-input v-model="minutes.title" class="title1" style="height: 40px;"></el-input>
-        <el-input
-            style="margin-top:30px;"
-            type="textarea"
-            :rows="26"
-            v-model="minutes.content"
-            class="content1"
-        >
-        </el-input>
-        <div>
-          <span class="dialog-footer">
-            <el-button type="primary" @click="updateFunction()">수정</el-button>
-            <el-button @click="close()">취소</el-button>
-          </span>         
+        <div class="title2">
+          <textarea type="textarea" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
+          v-model="title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
+          ></textarea>
+        </div>
+        <div class="content2">
+          <textarea
+            @input="resize($event.target)"
+              style="margin-top:10px; width: 100%; height: 'auto'"
+              type="textarea"
+              placeholder="내용을 입력해 주세요."
+              v-model="content"
+            ></textarea>
+        </div>
+              <!-- dialog footer 영역 -->
+              <!-- <template v-slot:footer> -->
+          <div class="footer1"><!--2-->
+            <span class="dialog-footer1">
+              <el-button type="primary" @click="postMinutes()">생성</el-button>
+              <el-button @click="close()">취소</el-button>
+            </span>
+          </div><!--2 지우기-->          
         </div>
 
-      
+
+        <!--회의록 수정하는 경우: updateMinutes()-->
+
+      <!-- <div v-if="update == true">
+        <div class="update">
+          <div class="date1">{{targetDate}}</div>
+          <el-input v-model="minutes.title" class="title1" style="height: 40px;"></el-input>
+          <el-input
+              style="margin-top:10px;"
+              type="textarea"
+              :rows="22"
+              v-model="minutes.content"
+              class="content1"
+          >
+          </el-input>
+          <div class="footer1">
+            <span class="dialog-footer1">
+              <el-button type="primary" @click="updateFunction()">수정</el-button>
+              <el-button @click="close()">취소</el-button>
+            </span>         
+          </div>
+        </div>
+    </div> -->
+              <!--delete 확인-->
+  <div id="modal" class="deleteModal" :style="{display:deleteModalDisplay}">
+    <div class="delete-modal-window">
+        <div>해당 회의록 삭제 후에는 다시 복구할 수 없습니다.</div>
+          <div class="delete-footer">
+              <el-button type="danger" @click="deleteMinutes()">삭제</el-button>
+              <el-button type="primary" @click="deleteClose()">취소</el-button>
+            </div>
+        </div>
       </div>      
     </div>
   </div>
@@ -98,9 +126,13 @@
 
 <script>
 import axios from "axios";
+import vClickOutside from 'click-outside-vue3'
 const url = "http://localhost:3210";
 
 export default {
+  directives: {
+    clickOutside: vClickOutside.directive
+  },
   data() {
     return {
       //기본 캘린더
@@ -121,7 +153,13 @@ export default {
       //회의록 수정
       update: false,
       //모달
-      modalDisplay: "none"
+      modalDisplay: "none",
+      //회의록 삭제 경고창
+      deleteModalDisplay: "none"
+
+      //css
+    
+
     };
   },
 
@@ -157,6 +195,9 @@ export default {
   },
 
   methods: {
+    hello() {
+      console.log("hihi");
+    },
 
     //1. 현재 년/월을 기준으로 달력 데이터를 업데이트
     updateCalendar() {
@@ -294,12 +335,13 @@ export default {
 
     //생성
     postMinutes() {
+      console.log("postSetParams: ", this.postSetParams)
       axios
         .post(url + '/calendars/minutes', this.postSetParams)
         .then((response) => {
           if (response.data.message == "Success") {
             this.minutes = response.data.data;
-            console.log("postMinutes minuste", this.minutes)
+            console.log("postMinutes minute", this.minutes)
             } 
         })
         .catch((e) => {
@@ -367,6 +409,8 @@ export default {
 
     //삭제
     deleteMinutes() {
+      this.deleteModalDisplay = "none";
+      console.log(this.teamId, this.userId, this.targetDate);
       axios
         .delete(url + `/calendars/minutes/${this.teamId}/${this.userId}/${this.targetDate}`)
         .then((response) => {
@@ -377,7 +421,38 @@ export default {
         .catch((e) => {
             console.log(e);
           });
-    }
+    },
+    
+    deleteClose() {
+      this.deleteModalDisplay = "none";
+    },
+
+    deleteProjects() {
+    axios
+      .delete(url + `/dashboard/projects/${this.updateProjectId}`)
+      .then((response) => {
+      if (response.data.message == "Success") {
+        console.log("Completely Delete");
+      } 
+      this.$router.go(0)  //실행된 후 처음 화면으로
+      })
+      .catch((e) => {
+      console.log(e);
+      });
+    },
+
+    deleteConfirm() {
+      console.log("deleteConfirm");
+      this.deleteModalDisplay = "flex";
+    },
+
+    //css
+    resize(textarea) {
+      textarea.style.height = "0.5px";
+      textarea.style.height = textarea.scrollHeight + "px";
+    },
+
+
   }
 }
 
@@ -453,7 +528,7 @@ td {
 }
 
 .today:hover {
-  border: 2px solid orange;
+  background-color: orange;
   color: white;
 }
 #modal {
@@ -468,11 +543,13 @@ td {
   justify-content: center;
 }
 .modal_window {
+  margin: 50px;
   background-color: white;
   width: 600px;
   height: 720px;
   padding: 20px;
   border-radius: 8px;
+  overflow: auto;
 }
 
 /* Modal Content */
@@ -480,72 +557,131 @@ td {
   text-align: left;
   font-size: 20px;
   font-weight: bold;
+  
   margin-bottom: 5px;
-  padding: 10px;
+  padding: 20px;
+  padding-top: 40px;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 .title {
   text-align: left;
-  font-size: 20px;
-  height: 35px;
-  margin-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 10px;
-  border: 1px solid red;
-  border-radius: 10px;
+  font-weight: bold;
+  font-size: 18px ;
+  margin-top: 15px;
+  /* padding-top: 5px; */
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  /* border: 1px solid skyblue;
+  border-radius: 5px; */
 
-  white-space: pre-line;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(187, 187, 187);
+  border: 1px solid black;
+
+  /* white-space: pre-line;
   word-wrap: break-word; 
-  overflow: auto;
+  overflow: auto; */
+}
+
+.fi fi-rr-trash {
+  display: inline-block;
 }
 
 .content {
   text-align: left;
-  font-size: 18px;
-  height: 550px;
-  margin-bottom: 5px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  border: 1px solid red;
-  border-radius: 10px;
+  font-size: 15px;
 
   white-space: pre-line;
   word-wrap: break-word; 
   overflow: auto;
 }
 
+.footer {
+  padding-top: 8px; 
+}
 .dialog-footer {
-  /* padding-top: 30px; */
+
   padding: 20px;
   text-align: right;
 }
 
-/* Button Styles */
 .el-button {
   margin-left: 10px;
 }
 
-.el-input__wrapper {
-  border: none;
-  border-radius: 0; 
-}
-
 .date1 {
+  display: flex;
   text-align: left;
   font-size: 20px;
   font-weight: bold;
+  
   margin-bottom: 5px;
+  padding: 20px;
+  padding-top: 40px;
+  padding-left: 30px;
+  padding-right: 30px;
+
+}
+
+.footer1 {
+  padding-top: 10px; 
+}
+
+.dialog-footer1 {
+  /* padding-top: 10px; */
+  text-align: right;
+}
+
+.delete-modal-window {
+    background-color: white;
+    width: 300px;
+    height: 100px;
+    padding: 20px;
+    padding-top: 30px;
+    border-radius: 8px;
+}
+
+.delete-footer {
+    margin-top: 20px;
+}
+
+textarea {
+    outline: none;
+    border: none;
+    resize: none;
+}
+
+.title2 {
+  font-size: 15px;
+  text-align: left;
+
+  height: 'auto';
+  border-bottom: 1px solid grey;
+  margin-right: 30px;
+  margin-left: 30px;
+}
+
+.content2 {
+  font-size: 15px;
+  text-align: left;
+  padding-left: 30px;
+  padding-right: 30px;
+  height: 'auto';
+}
+
+.scrollable-conainer {
+  width: 300px;
+  height: 200px;
+  overflow: auto;
+  border: 1px solid red;
   padding: 10px;
 }
 
-.title1 {
-
-}
-
-.content1 {
-
-}
 
 </style>

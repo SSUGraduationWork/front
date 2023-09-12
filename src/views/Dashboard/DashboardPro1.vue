@@ -398,6 +398,7 @@ export default {
     border-radius: 8px;
 }
 
+
 .delete-modal-window {
     background-color: white;
     width: 300px;
