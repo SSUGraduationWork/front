@@ -23,107 +23,73 @@
         </tr>
       </tbody>
     </table>
-
+  <!-- </div> -->
     <!--모달-->
     <!--v-click 추가!!!!!!!!1-->
+  <!-- <div class="modal"> -->
   <div id="modal" class="modal-overlay" :style="{display:modalDisplay}">
-    <div class="modal_window" v-click-outside="hello">
+    <div class="modal_window" v-click-outside="updateFunction" v-if="minutes !== null"> <!--v-click-outside="modalDisplay ? hello : null"-->
 
       <!--이미 회의록 존재할 경우: getMinutes()-->    
-      <div v-if="minutes !== null && update == false"> 
-        <container class="date1">{{targetDate}}
-          <i class="fi fi-rr-trash" @click="deleteConfirm()"></i>
-        </container>
-        <div class="title2">
-          <textarea type="textarea" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
-          v-model="minutes.title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
-          ></textarea></div>
-        <div class="content2">
-          <textarea 
-            @input="resize($event.target)"
-              style="margin-top:10px; width: 100%; height: 'auto'"
-              type="textarea"
-              placeholder="내용을 입력해 주세요."
-              v-model="minutes.content"
-            ></textarea>
-        </div>
-        <div class="footer1">
-          <span class="dialog-footer1">
-            <el-button type="primary" @click="updateMinutes()">수정</el-button>
-            <el-button @click="close()">취소</el-button>
-            <!-- <el-button type="danger" @click="deleteConfirm()">삭제</el-button> -->
-          </span>
-        </div>
+      <container class="date1">{{targetDate}}
+        <i class="fi fi-rr-trash" @click="deleteConfirm()"></i>
+      </container>
+      <div class="title2">
+        <textarea type="textarea" @input="resize($event.target)" @change="isModified=true" placeholder="제목을 입력해 주세요" 
+        v-model="minutes.title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
+        ></textarea></div>
+      <div class="content2">
+        <textarea 
+          @input="resize($event.target)"
+            style="margin-top:10px; width: 100%; height: 'auto'"
+            type="textarea"
+            placeholder="내용을 입력해 주세요."
+            v-model="minutes.content" @change="isModified=true"
+          ></textarea>
+      <div>{{isModified}}</div>
       </div>
-
+    </div>
+    
       <!--존재하지 않을 경우-->
       <!--회의록이 아직 존재하지 않을 경우: postMinutes()-->
-
-      <div v-if="minutes == null">
-        <div class="date1">{{targetDate}}</div>
-        <div class="title2">
-          <textarea type="textarea" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
-          v-model="title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
+    <div class="modal_window" v-click-outside="postFunction" v-if="minutes == null && modalDisplay == 'flex'">
+      <div class="date1">{{targetDate}}</div>
+      <div class="title2">
+        <textarea type="textarea" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
+        v-model="title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
+        ></textarea>
+      </div>
+      <div class="content2">
+        <textarea
+          @input="resize($event.target)"
+            style="margin-top:10px; width: 100%; height: 'auto'"
+            type="textarea"
+            placeholder="내용을 입력해 주세요."
+            v-model="content"
           ></textarea>
-        </div>
-        <div class="content2">
-          <textarea
-            @input="resize($event.target)"
-              style="margin-top:10px; width: 100%; height: 'auto'"
-              type="textarea"
-              placeholder="내용을 입력해 주세요."
-              v-model="content"
-            ></textarea>
-        </div>
-              <!-- dialog footer 영역 -->
-              <!-- <template v-slot:footer> -->
-          <div class="footer1"><!--2-->
-            <span class="dialog-footer1">
-              <el-button type="primary" @click="postMinutes()">생성</el-button>
-              <el-button @click="close()">취소</el-button>
-            </span>
-          </div><!--2 지우기-->          
-        </div>
-
-
-        <!--회의록 수정하는 경우: updateMinutes()-->
-
-      <!-- <div v-if="update == true">
-        <div class="update">
-          <div class="date1">{{targetDate}}</div>
-          <el-input v-model="minutes.title" class="title1" style="height: 40px;"></el-input>
-          <el-input
-              style="margin-top:10px;"
-              type="textarea"
-              :rows="22"
-              v-model="minutes.content"
-              class="content1"
-          >
-          </el-input>
-          <div class="footer1">
-            <span class="dialog-footer1">
-              <el-button type="primary" @click="updateFunction()">수정</el-button>
-              <el-button @click="close()">취소</el-button>
-            </span>         
-          </div>
-        </div>
-    </div> -->
-              <!--delete 확인-->
-  <div id="modal" class="deleteModal" :style="{display:deleteModalDisplay}">
-    <div class="delete-modal-window">
-        <div>해당 회의록 삭제 후에는 다시 복구할 수 없습니다.</div>
-          <div class="delete-footer">
-              <el-button type="danger" @click="deleteMinutes()">삭제</el-button>
-              <el-button type="primary" @click="deleteClose()">취소</el-button>
-            </div>
-        </div>
-      </div>      
+      </div>
     </div>
   </div>
+  <!--delete 확인-->
+  <div id="modal" class="deleteModal" :style="{display:deleteModalDisplay}">
+    <div class="delete-modal-window">
+      <div>해당 회의록 삭제 후에는 다시 복구할 수 없습니다.</div>
+        <div class="delete-footer">
+          <el-button type="danger" @click="deleteMinutes()">삭제</el-button>
+          <el-button type="primary" @click="deleteClose()">취소</el-button>
+        </div>
+      </div>
+    </div>      
+  </div>
 
+  <!--모두 입력하라는 알림창-->
+  <div id="modal" class="deleteModal" :style="{display: inputModalDisplay}">
+    <div class="delete-modal-window">
+      <div>title과 input 모두 입력하시오</div>
+      <el-button type="primary" @click="inputClose()">확인</el-button>
+    </div>
   </div>
 </template>
-
 <script>
 import axios from "axios";
 import vClickOutside from 'click-outside-vue3'
@@ -155,10 +121,12 @@ export default {
       //모달
       modalDisplay: "none",
       //회의록 삭제 경고창
-      deleteModalDisplay: "none"
+      deleteModalDisplay: "none",
 
-      //css
-    
+      //modal 체크
+      check: "none",
+      isModified: false,
+      inputModalDisplay: "none",
 
     };
   },
@@ -173,7 +141,6 @@ export default {
         title: this.title,
         content: this.content,           
       }
-      console.log("params: ",params)
       return params;      
     },
 
@@ -185,7 +152,6 @@ export default {
         title: this.minutes.title,
         content: this.minutes.content,           
       }
-      console.log("params: ",params)
       return params;
     }
   },
@@ -195,9 +161,6 @@ export default {
   },
 
   methods: {
-    hello() {
-      console.log("hihi");
-    },
 
     //1. 현재 년/월을 기준으로 달력 데이터를 업데이트
     updateCalendar() {
@@ -312,13 +275,6 @@ export default {
       return currentMonth === 12 ? `${year + 1}-1` : `${year}-${currentMonth + 1}`;
     },
 
-    //4. 이전달, 다음달 색상 변경
-    // isPrevOrNextMonth(calendar, week, date) {
-    //   for (week in calendar) {
-    //     console.log("week",week,"date", date);
-    //   }
-    // },
-
     //5. 오늘 색상 변경
     isToday(currentMonth, day) {
       const [year, month] = currentMonth.split('-').map(Number);
@@ -334,19 +290,49 @@ export default {
     },
 
     //생성
-    postMinutes() {
+    async postMinutes() {
+      console.log("title", this.postSetParams.title, "content: ", this.postSetParams.content);
       console.log("postSetParams: ", this.postSetParams)
       axios
         .post(url + '/calendars/minutes', this.postSetParams)
         .then((response) => {
           if (response.data.message == "Success") {
             this.minutes = response.data.data;
-            console.log("postMinutes minute", this.minutes)
+            console.log("post success. minutes: ", this.minutes);
+            this.close();
             } 
         })
         .catch((e) => {
           console.log(e);
-        });
+        });  
+    },
+
+    async postFunction() {
+      console.log("postfunction")
+      // this.close();
+      // this.check = "none";
+
+      if (this.modalDisplay != "none" && (this.postSetParams.title != null && this.postSetParams.title.trim() != "") && (this.postSetParams.content != null && this.postSetParams.content.trim() != "")) {
+        await this.postMinutes();
+      }
+      // else if (this.modalDisplay != "none" && this.postSetParams.title == "" && this.postSetParams.content != "") {
+      //   //제목을 입력하세요 경고창
+      //   console.log("제목입력해")
+      // }
+      // else if (this.modalDisplay != "none" && this.postSetParams.title != "" && this.postSetParams.content == "") {
+      //   //내용을 입력하세요 경고창
+      //   console.log("내용입력해")
+      // }
+      else if (this.modalDisplay != "none" && (this.postSetParams.title == null|| this.postSetParams.title.trim() == "") && (this.postSetParams.content == null || this.postSetParams.content.trim() == "")) {
+        console.log("그냥 나가기: title+content 존재X")
+        this.close();
+      }
+      else {
+        console.log("모두 입력해야함: title+content 중 하나 X")
+        this.inputModalDisplay = "flex";
+
+      }
+      
     },
 
     //조회
@@ -370,9 +356,7 @@ export default {
       clickedDate.setDate(date + 1);
       const formattedDate = clickedDate.toISOString().substring(0, 10);
       this.targetDate = formattedDate;
-
       await this.getMinutes();
-
       this.modalDisplay = "flex";
     },
 
@@ -385,6 +369,7 @@ export default {
       this.title = null;
       this.content= null;
     },
+
     //수정
     async updateMinutes() {
       axios
@@ -392,30 +377,47 @@ export default {
         .then((response) => {
           if (response.data.message == "Success") {
             this.minutes = response.data.data;
-            console.log("update minuste", this.minutes)
-            } 
+            console.log("update success. minutes:", this.minutes);
+            this.close();
+            this.isModified = false;
+            }
         })
         .catch((e) => {
           console.log(e);
         });
-
     },
 
     async updateFunction() {
-      await this.updateMinutes();
-
-      this.update = false;
+      console.log("updateSetParmas: ", this.updateSetParams);
+      console.log("trim title", this.updateSetParams.title.trim());
+      console.log("trim content", this.updateSetParams.content.trim());
+      console.log("isModified: ", this.isModified);
+      if (this.modalDisplay != "none" && this.updateSetParams.title != "" && this.updateSetParams.content != "" && this.isModified == true) {
+        await this.updateMinutes();
+      }
+      else if (this.modalDisplay != "none" && this.updateSetParams.title != "" && this.updateSetParams.content != "" && this.isModified == false) {
+        console.log("그냥 나가기: title+content 존재X")
+        this.close();
+      }
+      else if (this.modalDisplay != "none" && (this.updateSetParams.title.trim() == "" || this.updateSetParams.title == null) && (this.updateSetParams.content.trim() == "" || this.updateSetParams.content == null)) {
+        console.log("해당 회의록 삭제: title+content 존재X")
+        await this.deleteMinutes();
+      }
+      else {
+        console.log("모두 입력해야함: title+content 중 하나 X")
+        this.inputModalDisplay = "flex";
+      }
     },
 
     //삭제
-    deleteMinutes() {
+    async deleteMinutes() {
       this.deleteModalDisplay = "none";
-      console.log(this.teamId, this.userId, this.targetDate);
       axios
         .delete(url + `/calendars/minutes/${this.teamId}/${this.userId}/${this.targetDate}`)
         .then((response) => {
           if (response.data.message == "Success") {
             this.close();
+            concole.log("completely delete")
             } 
         })
         .catch((e) => {
@@ -444,6 +446,7 @@ export default {
     deleteConfirm() {
       console.log("deleteConfirm");
       this.deleteModalDisplay = "flex";
+      console.log(this.deleteModalDisplay);
     },
 
     //css
@@ -452,7 +455,9 @@ export default {
       textarea.style.height = textarea.scrollHeight + "px";
     },
 
-
+    inputClose() {
+      this.inputModalDisplay = "none";
+    }
   }
 }
 
