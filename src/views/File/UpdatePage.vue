@@ -99,7 +99,7 @@ export default {
         dropdownOptions: [],
         selectedWorkId: null,
       },
-      loading: true,
+      loading: false,
     };
   },
 
@@ -131,6 +131,14 @@ export default {
       alert('게시글 조회 오류');
     }
   },
+  watch: {
+    loading(newValue) {
+      if (!newValue) {
+        // 로딩 상태가 false로 변경되면 페이지 이동
+        this.goToBoardDetailPage();
+      }
+    },
+  },
   methods: {
     async loadDropdownOptions(memberId,teamId) {
       try {
@@ -144,7 +152,7 @@ export default {
       this.formData.selectedWorkId = workId; // 선택한 작업의 workId 업데이트
     },
     goToHomeView() {
-      this.$router.push({ name: 'HomeView' }); // WritePage의 name을 사용하여 페이지 이동
+      this.$router.push({ name: 'WritePage' }); // WritePage의 name을 사용하여 페이지 이동
     },
 
     async submitForm() {
@@ -237,12 +245,14 @@ export default {
       this.formData.fileInputs.push(null); // 새로운 파일 선택 요소의 ref를 배열에 추가
     },
     goToUpdatePage() {
-      this.$router.push({ name: 'UpdatePage' }); // WritePage의 name을 사용하여 페이지 이동
+      this.$router.push({ name: 'BoardDetailPage' ,params: { boardId: this.boardId }}); // WritePage의 name을 사용하여 페이지 이동
     },
     goToSideBarPage() {
       this.$router.push({ name: 'SideBarPage', params: { memberId: this.memberId } });
     },
-
+    goToBoardDetailPage() {
+      this.$router.push({ name: 'BoardDetailPage',params: { boardId: this.boardId } }); // WritePage의 name을 사용하여 페이지 이동
+    },
     // Function to check if the file path has an extension
     // 확장자가 있는 경우에만 이름 추출
     hasExtension(filePath) {

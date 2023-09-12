@@ -52,6 +52,7 @@ export default {
         fileInputs: [], // 각 파일 선택 요소의 ref를 저장할 배열 추가
         dropdownOptions: [],
         selectedWorkId: null,
+        boardId: 0,
       },
       loading: false, // 로딩 상태 초기값
     };
@@ -102,10 +103,12 @@ export default {
               },
             }
         );
+        this.boardId = response.data.content.boardId;
 
         // 요청 성공 시 처리
       //  console.log('글 작성 성공:', response.data);
         alert("글 작성 성공")
+
       } catch (error ) {
         // 에러 처리
           // 예외가 발생한 경우 처리
@@ -124,7 +127,7 @@ export default {
       this.formData.fileInputs.push(null); // 새로운 파일 선택 요소의 ref를 배열에 추가
     },
     goToHomePage() {
-      this.$router.push({ name: 'HomeView' }); // WritePage의 name을 사용하여 페이지 이동
+      this.$router.push({ name: 'BoardDetailPage',params: { boardId: this.boardId } }); // WritePage의 name을 사용하여 페이지 이동
     },
     async loadDropdownOptions(memberId,teamId) {
       try {
