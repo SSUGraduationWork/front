@@ -8,7 +8,7 @@
     <!-- ... -->
     <!-- ... -->
 
-    <Sidebar :board-id="boardId" :member-id="memberId"/>
+    <Sidebar :board-id="boardId" :member-id="memberId" :team-id="teamId"/>
 
     <!-- ... -->
     <form @submit.prevent="submitForm">
@@ -129,7 +129,7 @@ export default {
       this.$router.push({ name: 'UpdatePage', params: { memberId: this.memberId, boardId: this.boardId ,teamId: this.teamId} });
     },
     goToSideBarPage() {
-      this.$router.push({ name: 'SideBarPage', params: { memberId: this.memberId } });
+      this.$router.push({ name: 'SideBarPage', params: { memberId: this.memberId,teamId: this.teamId } });
     },
     submitForm() {
       // Form submission logic here...

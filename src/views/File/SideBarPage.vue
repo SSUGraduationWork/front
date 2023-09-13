@@ -13,27 +13,27 @@
         <div v-if="!collapsed" class = "comment-container">
             <div v-for="feedback in feedbackList" :key="feedback.feedbackId" class="feedback-item">
                 <div class="feedback-comment">
-                    <div class = "profile"><img :src="feedback.pictureUrl" alt="이미지" class="spaced"></div>
-                    <div class = "student-info"><span class="spaced1">{{ feedback.studentNumber }}&nbsp; {{ feedback.userName }}</span></div>
+                    <div class = "profile"><img :src="writers[feedback.userId].pictureUrl" alt="이미지" class="spaced"></div>
+                    <div class = "student-info"><span class="spaced1">{{ writers[feedback.userId].studentNumber}}&nbsp; {{ writers[feedback.userId].userName }}</span></div>
                     <div class = "created-at"><span class="small-text">{{ formatDate( feedback.createdAt) }}</span></div>
                 </div>
                 <div class = "content">
                     <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
-                    <div :class="['feedback-comment-box', { 'blue-background': feedback.modReq==2}]">
+                    <div :class="['feedback-comment-box', { 'blue-background': feedbackStatuses[feedback.userId].feedbackYn==2}]">
                     {{ feedback.comment }}
                     </div>
                 </div>
             </div>
             <div v-for="feedback in addComments" :key="feedback" class="feedback-item">
                 <div class="feedback-comment">
-                    <div class = "profile"><img :src="addPictureUrl" alt="이미지"  class="spaced"></div>
-                    <div class = "student-info"><span class="spaced1">{{ addStudentNumber }}&nbsp; {{ addUserName }}</span></div>
+                    <div class = "profile"><img :src="writers[this.memberId].pictureUrl" alt="이미지"  class="spaced"></div>
+                    <div class = "student-info"><span class="spaced1">{{ writers[this.memberId].studentNumber }}&nbsp; {{ writers[this.memberId].userName }}</span></div>
                     <div class = "created-at"><span class="small-text">{{ formatDate2( feedback.date )}}</span></div>
 
                     <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
                     <div class = "content">
                     <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
-                        <div :class="['feedback-comment-box', { 'blue-background': (addApproved==2)||(addApproved === 0 &&newApproved==1)}]">
+                        <div :class="['feedback-comment-box', { 'blue-background': (feedbackStatuses[this.memberId].feedbackYn==2)||(feedbackStatuses[this.memberId].feedbackYn==0 &&newApproved==1)}]">
                         {{ feedback.comment }}
                         </div>
                     </div>
@@ -63,7 +63,7 @@ import { collapsed, toggleSidebar, sidebarWidth, sidebarHeight } from './compone
 import axios from 'axios';
 
 export default {
-    props: ['boardId','memberId'],
+    props: ['boardId','memberId','teamId'],
     name: 'Sidebar',
     setup() {
         return { collapsed, toggleSidebar, sidebarWidth, sidebarHeight }
@@ -72,15 +72,15 @@ export default {
         return {
         isOpen: false,
         comment: '', // 코멘트를 저장할 데이터
-          isCommentVisible: true, // 입력 메시지 란의 가시성 상태를 저장하는 데이터 추가
+        isCommentVisible: true, // 입력 메시지 란의 가시성 상태를 저장하는 데이터 추가
         addComments: [],
         isApproved: 0, // 승인 여부를 저장할 데이터
         feedbackList: [], // To store the feedback comments
+        feedbackStatusList:[],
+        writerList:[],
+        feedbackStatuses:{},
+        writers:{},
         saveApproved:0,
-        addApproved:0,
-        addPictureUrl:[],
-        addUserName:[],
-        addStudentNumber:[],
         newApproved:0,
         count: 0,
         };
@@ -129,13 +129,20 @@ export default {
     },
     async fetchFeedbackComments() {
       try {
-        const response = await axios.get(`http://localhost:3210/comment/${this.boardId}/${this.memberId}`);
+        const response = await axios.get(`http://localhost:3210/comment/${this.boardId}/${this.memberId}/${this.teamId}`);
         console.log(response);
-        this.feedbackList = response.data.content;
-        this.addApproved=response.data.feedbackYn;
-        this.addPictureUrl=response.data.pictureUrl;
-        this.addUserName=response.data.userName;
-        this.addStudentNumber=response.data.studentNumber;
+        this.feedbackList = response.data.feedback;
+        this.feedbackStatusList=response.data.feedbackStatus;
+        this.writerList=response.data.writer;
+
+        for (const feedbackStatus of this.feedbackStatusList){
+          this.feedbackStatuses[feedbackStatus.userId] = feedbackStatus;
+        }
+        for (const writer of this.writerList){
+          this.writers[writer.userId] = writer;
+        }
+
+
       } catch (error) {
         console.error('Error fetching feedback comments:', error);
       }
@@ -165,6 +172,11 @@ export default {
         const formData = new FormData(); // FormData 객체 생성
         formData.append('comment', this.comment); // 코멘트 데이터 추가
 
+        // comment를 초기화
+        this.comment = '';
+        // 입력 메시지 란을 숨김
+        this.isCommentVisible = false;
+
         const response = await axios.post(
             `http://localhost:3210/comment/${this.boardId}/${this.memberId}/${approvalStatus}`,
             formData, // FormData 객체를 전송
@@ -176,10 +188,7 @@ export default {
 
         );
 
-        // comment를 초기화
-        this.comment = '';
-        // 입력 메시지 란을 숨김
-        this.isCommentVisible = false;
+
         alert('피드백 제출 성공');
       } catch (error) {
         console.error('코멘트 제출 오류:', error);

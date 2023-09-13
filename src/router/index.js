@@ -111,7 +111,7 @@ const routes = [
     props: true,
   },
   {
-    path: '/comment/:boardId/:writerId',
+    path: '/comment/:boardId/:writerId/:teamId',
     name: 'SideBarPage',
     component: SideBarPage,
     props: true,

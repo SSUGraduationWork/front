@@ -350,7 +350,7 @@ export default {
     async fetchBoardList(memberId, teamId) {
       try {
         const url = `http://localhost:3210/board/list/${memberId}/${teamId}`;
-        //const url = `/board/list/${memberId}/${teamId}`
+
         const response = await axios.get(url);
 
 
@@ -372,11 +372,8 @@ export default {
           this.totalList.sort((a, b) => b.boardId - a.boardId);
           this.feedbackTrueItemCount = this.feedbackTrueItems.length;
           this.feedbackFalseItemCount = this.feedbackFalseItems.length;
-       //   this.myBoardWriteCount=this.myfeedbackItems.length;
           // 전체 페이지 수 계산
           this.totalPages = Math.ceil(this.boardList.length / this.itemsPerPage);
-     //   this.totalPages = Math.ceil(this.feedbackTrueItemCount.length / this.itemsPerPage);
-      //  this.totalPages = Math.ceil(this.feedbackFalseItemCount.length / this.itemsPerPage);
           // 초기 visibleBoardData 설정
         this.falsePages=Math.ceil(this.feedbackIncompleteCount/this.itemsPerPage);
         this.truePages=Math.ceil(this.feedbackCompletedCount/this.itemsPerPage);
