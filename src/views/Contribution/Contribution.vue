@@ -13,7 +13,7 @@
 import Progress from './components/Progress'
 import Graph from './components/Graph'
 import Explanation from './components/Explanation.vue'
-import axios from 'axios'
+import { axiosInstance } from '@/axios'
 import {useRoute} from 'vue-router'
 import {ref} from 'vue'
 
@@ -23,7 +23,7 @@ const progress = ref();
 const contribution = ref();
 let ex = ref(false);
 
-axios.get(`http://44.219.162.63:3000/contribution/${teamId}`)
+axiosInstance.get(`/contribution/${teamId}`)
     .then((res) => {
         progress.value = res.data.result.progress;
         contribution.value = res.data.result.contribution;

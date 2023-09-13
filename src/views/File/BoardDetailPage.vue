@@ -47,7 +47,7 @@
       </div>
 
       <div class="update-content-box">
-        <textarea id="content2" v-model="formData.content" required :placeholder="boardContent.content"></textarea>
+        <textarea id="content2" v-model="formData.content" disabled></textarea>
       </div>
     </form>
   </div>
@@ -57,7 +57,7 @@
 
 <script>
 import axios from 'axios';
-
+import { axiosInstance } from '@/axios';
 import Sidebar from './SideBarPage.vue';
 import UpdatePage from "@/views/File/UpdatePage";
 import Loader from '../../components/Loader.vue';
@@ -93,7 +93,7 @@ export default {
     const memberId = this.$route.params.memberId;
     const teamId = this.$route.params.teamId;
     try {
-      const response = await axios.get(`http://localhost:3210/board/view/${boardId}/${memberId}/${teamId}`);
+      const response = await axiosInstance.get(`/board/view/${boardId}/${teamId}`);
       if (response.data.status.code === 200) {
         this.boardContent = response.data.content;
         this.formData.title = this.boardContent.title;
@@ -171,7 +171,11 @@ export default {
     },
     closeMod() {
       this.mod = false;
-    }
+    },
+    resize(textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + "px";
+    },
   }
 };
 </script>
@@ -238,7 +242,6 @@ export default {
   font-size: 16px;
   resize: none;
   outline: none;
-  background-size: auto 100%;
   min-height: 400px; /* 원하는 높이로 조정 */
   border-top: 1px solid #BABABA;
   margin-top: 10px;
@@ -247,6 +250,7 @@ export default {
   border-right: none;
   border-bottom: none;
   padding-left: 5px;
+  background-color: white;
 }
 
 .title-style{

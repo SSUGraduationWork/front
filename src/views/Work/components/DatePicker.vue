@@ -6,8 +6,7 @@
                 <p v-if="ampm" class = "hm">오전 {{dateFormat.hour}}시 {{dateFormat.minute}}분</p>
                 <p v-else class = "hm">오후 {{dateFormat.hour}}시 {{dateFormat.minute}}분</p>
             </div>
-            <div v-else class = "end-date">
-                <input disabled>
+            <div v-else class = "end-date end-date-2">
             </div>
         </template>
     </VueDatePicker>
@@ -103,5 +102,9 @@ p{
 .end-date{
     width: 100%;
     min-width: 110px;
+}
+.end-date-2{
+    min-height: 64px;
+    cursor: pointer;
 }
 </style>

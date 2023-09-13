@@ -21,10 +21,7 @@ const store = useStore();
 const route = useRoute();
 const redirectURL = route.query.redirectURI;  //로그인 후 redirect할 uri
 if(redirectURL){
-    const url_list = redirectURL.split('/');
-    const url = '/'+url_list[1] +'/'+ url_list[2];
-    console.log(url);
-    store.commit('setRedirectURL', url );
+    store.commit('setRedirectURL', redirectURL );
 }
 
 const google_uri = process.env.VUE_APP_GOOGLE_URI;

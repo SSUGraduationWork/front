@@ -72,7 +72,7 @@
               </td>
               <td class="title">
                 <router-link
-                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
                 >{{ board.title }}
                 </router-link>
               </td>
@@ -97,7 +97,7 @@
               </td>
               <td class="title">
                 <router-link
-                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
                 >{{ board.title }}
                 </router-link>
               </td>
@@ -122,7 +122,7 @@
               </td>
               <td class="title">
                 <router-link
-                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
                 >{{ board.title }}
                 </router-link>
               </td>
@@ -147,7 +147,7 @@
             </td>
             <td class = "title">
               <router-link
-                  :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                  :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
               >{{ board.title }}
               </router-link></td>
             <td class = "writer">
@@ -349,9 +349,9 @@ export default {
 
     async fetchBoardList(memberId, teamId) {
       try {
-        const url = `http://localhost:3210/board/list/${memberId}/${teamId}`;
-
-        const response = await axios.get(url);
+        //const url = `http://localhost:3210/board/list/${memberId}/${teamId}`;
+        const url = `/board/list/${teamId}`
+        const response = await axiosInstance.get(url);
 
 
           // 서버에서 받아온 데이터를 boardList에 저장
@@ -481,9 +481,7 @@ tr{
   text-overflow: ellipsis;
 }
 .pagination {
-  margin: 0 auto;
-  margin-top: 70px;
-  margin-bottom: 70px;
+  position: relative;
 }
 .pagination button {
   cursor: pointer;
@@ -669,6 +667,11 @@ td{
   line-height: 30px;
   vertical-align:middle;
   margin-right: 13px;
+  width: 30px;
+  height: 30px;
+  border-radius: 70%;
+  overflow: hidden;
+  background : #F5F6FA; 
 }
 a{
   text-decoration: none;
@@ -704,5 +707,8 @@ a:hover{
   text-overflow: ellipsis;
   overflow: hidden;
   white-space:nowrap;
+}
+img{
+ 
 }
 </style>
