@@ -33,7 +33,7 @@
                     <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
                     <div class = "content">
                     <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
-                        <div :class="['feedback-comment-box', { 'blue-background': addApproved==2||(newApproved=0&&isApproved==true)}]">
+                        <div :class="['feedback-comment-box', { 'blue-background': (addApproved==2)||(addApproved === 0 &&newApproved==1)}]">
                         {{ feedback.comment }}
                         </div>
                     </div>
@@ -81,11 +81,11 @@ export default {
         addUserName:[],
         addStudentNumber:[],
         newApproved:0,
+        count: 0,
         };
     },
     created() {
     this.fetchFeedbackComments();
-    this.newApproved=this.isApproved;
   },
   methods: {
     formatDate(dateArray) {
@@ -144,6 +144,19 @@ export default {
     },
     async submitComment() {
       try {
+
+        // API 호출 결과에 따른 처리
+        // ...
+        //addComment의 색깔을 처리하기 위함
+        if(this.isApproved==true&&this.count==0){//피드백을 수정 요청한 경우
+          this.newApproved=1;  //한번 피드백 했을경우 feedbackYn 다시 못바꿈
+          this.count=1;
+        }
+        else if(this.isApproved==false&&this.count==0)//피드백을 수정요청하지 않은경우
+        {
+          this.newApproved==2;
+          this.count=1;
+        }
         const date = new Date();
         this.addComments.push({comment: this.comment, date: date, isApproved: this.isApproved});
         let approvalStatus = this.isApproved ? 2 : 1;
@@ -161,8 +174,8 @@ export default {
             }
 
         );
-        // API 호출 결과에 따른 처리
-        // ...
+
+
         alert('피드백 제출 성공');
       } catch (error) {
         console.error('코멘트 제출 오류:', error);
