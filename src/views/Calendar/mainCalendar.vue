@@ -1,9 +1,11 @@
 <template>
   <div class="calendar">
     <div class="calendar_header">
-      <button class="btn" @click="previousMonth()">Previous</button>
-      <h2>{{ currentMonth }}</h2>
-      <button class="btn" @click="nextMonth()">Next</button>
+      <!-- <el-button class="btn" icon="fi fi-rr-angle-left" @click="previousMonth()"></el-button> -->
+      <i class="fi fi-bs-angle-left" @click="previousMonth()"></i>
+      <div class="currentMonth">{{currentMonth}}</div>
+      <i class="fi fi-bs-angle-right" @click="nextMonth()"></i>
+      <!-- <el-button class="btn" icon="fi fi-rr-angle-right" @click="nextMonth()"></el-button> -->
     </div>
     <table>
       <thead>
@@ -17,87 +19,104 @@
             <button v-if="date.classes !== 'notCurrentMonth' && !isToday(currentMonth, date.day)" @click="clickDate(currentMonth, date.day)" class="day">{{ date.day }}</button>
             <button v-if="date.classes == 'notCurrentMonth'" class="notCurrentDay">{{ date.day }}</button>
             <button v-if="isToday(currentMonth, date.day)" @click="clickDate(currentMonth, date.day)" class="today">{{date.day}}</button>
+            <div v-if="date.classes != 'notCurrentMonth'">v</div>
+            <div v-else></div>
           </td>
         </tr>
       </tbody>
     </table>
-
+  </div>
     <!--모달-->
+    <!--v-click 추가!!!!!!!!1-->
+  <!-- <div class="modal"> -->
   <div id="modal" class="modal-overlay" :style="{display:modalDisplay}">
-    <div class="modal_window">
-
+    <div class="modal_window" v-click-outside="updateFunction" v-if="minutes != null"> <!--v-click-outside="modalDisplay ? hello : null"-->
       <!--이미 회의록 존재할 경우: getMinutes()-->    
-      <div v-if="minutes !== null && update == false"> 
-        <div class="date">{{targetDate}}</div>
-        <div class="title">{{minutes.title}}</div>
-        <div class="content">
-          <p>{{minutes.content}}</p>
+      <container class="date1">
+        <div class="container1">
+          <div class="targetDate">{{targetDate}}</div>
+          <i class="fi fi-rs-menu-dots-vertical" @click="showButton()"></i>
         </div>
-        <div>
-          <span class="dialog-footer">
-            <el-button type="primary" @click="update=true">수정</el-button>
-            <el-button @click="close()">취소</el-button>
-            <el-button type="danger" @click="deleteMinutes()">삭제</el-button>
-          </span>
+        <div class="trashBtn"><i class="fi fi-rr-trash" v-if="onButton" @click="deleteConfirm()"></i></div>
+      </container>
+      <div class="title2">
+        <textarea type="textarea" @input="resize($event.target), changeInput()" placeholder="제목을 입력해 주세요" 
+        v-model="minutes.title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
+        ></textarea></div>
+      <div class="content2">
+        <textarea 
+          @input="resize($event.target), changeInput()"
+            style="margin-top:10px; width: 100%; height: 'auto'"
+            type="textarea"
+            placeholder="내용을 입력해 주세요."
+            v-model="minutes.content" @change="isModified=true"
+          ></textarea>
+      </div>
+
+      <!--모두 입력하라는 알림창-->
+      <div id="modal" class="deleteModal" :style="{display: inputModalDisplay}">
+        <div class="delete-modal-window">
+          <div>title과 input 모두 입력하시오</div>
+          <div class="delete-footer">
+            <el-button type="primary" @click="inputClose()">확인</el-button>
+          </div>
         </div>
       </div>
+
+      <!--delete 확인-->
+      <div id="modal" class="deleteModal" :style="{display:deleteModalDisplay}">
+        <div class="delete-modal-window">
+          <div>해당 회의록 삭제 후에는 다시 복구할 수 없습니다.</div>
+            <div class="delete-footer">
+              <el-button type="danger" @click="deleteMinutes()">삭제</el-button>
+              <el-button type="primary" @click="closeButton()">취소</el-button>
+            </div>
+        </div>
+      </div> 
+
+    </div>
+    
       <!--존재하지 않을 경우-->
       <!--회의록이 아직 존재하지 않을 경우: postMinutes()-->
-
-      <div v-if="minutes == null">
-        <div class="date">{{targetDate}}</div>
-        <el-input placeholder="제목을 입력해 주세요" v-model="title"></el-input>
-
-        <el-input
-            style="margin-top:30px;"
+    <div class="modal_window" v-click-outside="postFunction" v-if="minutes == null && modalDisplay == 'flex'">
+      <div class="date1">{{targetDate}}</div>
+      <div class="title2">
+        <textarea type="textarea" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
+        v-model="title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
+        ></textarea>
+      </div>
+      <div class="content2">
+        <textarea
+          @input="resize($event.target)"
+            style="margin-top:10px; width: 100%; height: 'auto'"
             type="textarea"
-            :rows="20"
             placeholder="내용을 입력해 주세요."
             v-model="content"
-          >
-        </el-input>
-            <!-- dialog footer 영역 -->
-            <!-- <template v-slot:footer> -->
-        <div><!--2-->
-          <span class="dialog-footer">
-            <el-button type="primary" @click="postMinutes()">생성</el-button>
-            <el-button @click="close()">취소</el-button>
-          </span>
-        </div><!--2 지우기-->          
+          ></textarea>
       </div>
-
-        <!--회의록 수정하는 경우: updateMinutes()-->
-      <div v-if="update == true">
-        <div class="date">{{targetDate}}</div>
-        <el-input v-model="minutes.title" class="title"></el-input>
-        <el-input
-            style="margin-top:30px;"
-            type="textarea"
-            :rows="20"
-            v-model="minutes.content"
-            class="content"
-        >
-        </el-input>
-        <div>
-          <span class="dialog-footer">
-            <el-button type="primary" @click="updateFunction()">수정</el-button>
-            <el-button @click="close()">취소</el-button>
-          </span>         
+            <!--모두 입력하라는 알림창-->
+      <div id="modal" class="deleteModal" :style="{display: inputModalDisplay}">
+        <div class="delete-modal-window">
+          <div>title과 input 모두 입력하시오</div>
+          <div class="delete-footer">
+            <el-button type="primary" @click="inputClose()">확인</el-button>
+          </div>
         </div>
-
-      
-      </div>      
+      </div>
     </div>
   </div>
 
-  </div>
 </template>
-
 <script>
+
 import axios from "axios";
+import vClickOutside from 'click-outside-vue3'
 const url = "http://localhost:3210";
 
 export default {
+  directives: {
+    clickOutside: vClickOutside.directive
+  },
   data() {
     return {
       //기본 캘린더
@@ -118,7 +137,22 @@ export default {
       //회의록 수정
       update: false,
       //모달
-      modalDisplay: "none"
+      modalDisplay: "none",
+      //회의록 삭제 경고창
+      deleteModalDisplay: "none",
+
+      //modal 체크
+      check: "none",
+      isModified: false,
+      inputModalDisplay: "none",
+      onButton: false,
+
+      //캘린더에 회의록이 존재하는 날짜 마킹
+      existMinutesList: null,
+      checkCurrentMonth: null,
+      once: false,  //false일 경우 한번이미됨. true일 경우 첫 한 번
+      checkday: '',
+      dayExist: false,
     };
   },
 
@@ -132,7 +166,6 @@ export default {
         title: this.title,
         content: this.content,           
       }
-      console.log("params: ",params)
       return params;      
     },
 
@@ -144,19 +177,125 @@ export default {
         title: this.minutes.title,
         content: this.minutes.content,           
       }
-      console.log("params: ",params)
       return params;
     }
   },
 
+
   mounted() {
+    // this.initial();
     this.updateCalendar();
+    // this.getExistMinuteList(this.teamId, this.currentMonth);
+  },
+
+  updated() {
+    this.getExistMinuteList(this.teamId, this.currentMonth);
+    // this.existMinutesList = this.getExistMinuteList(this.teamId, this.currentMonth);
+    // console.log(this.existMinutesList);
   },
 
   methods: {
+    // async checkdate(day) {
+    //   // await this.getExistMinuteList(this.teamId, this.currentMonth);
+
+    //   if (this.currentMonth == this.checkCurrentMonth && this.once == true) {
+    //     if (day < 10) {
+    //       const checkday = String(day).padStart(2, '0');
+    //       if (this.existMinutesList != null && this.existMinutesList.includes(checkday)) {
+    //         console.log("exist day", checkday);
+    //         return true;
+    //       } else {
+    //         console.log("not exist", checkday);
+    //         return false;
+    //       }
+
+    //     } else {
+    //       const checkday = day.toString();
+    //       if (this.existMinutesList != null && this.existMinutesList.includes(checkday)) {
+    //         console.log("exist day", checkday);
+    //         return true;
+    //       }
+    //       else {
+    //         console.log("not exist", checkday);
+    //         return false;
+    //       }        
+    //     }
+    //   }
+    //   //   console.log("day", day);
+    //     // const checkday = day.toString();
+    //     // console.log("checkday:", checkday);
+    //     // this.dayExist = this.existMinutesList.some(string => string.includes(checkday))
+
+    //     // // console.log("checkdate currentMonth", this.currentMonth);
+    //     // this.once = false;
+    //     // return dayExist;
+    // },
+
+    changeInput() {
+      this.isModified = true;
+    },
+
+    showButton() {
+      console.log(this.onButton)
+      if (this.onButton == false) {
+        this.onButton = true;
+      }
+      else {
+        this.onButton = false;
+      }
+    },
+
+    closeButton() {
+      this.onButton = false;
+      this.deleteClose();
+    },
+
+
+
+    //0. 해당 팀이 해당 달에 가지고 있는 회의록 날짜 리스트로 받기
+    async getExistMinuteList(teamID, currentMonth) {
+      // console.log("exitstCurrentMonth: ",this.currentMonth);
+      axios
+      .get(url + `/calendars/getExistMinutes/${this.teamId}/${this.currentMonth}`)
+      .then((response) => {
+        if (response.data.message == "Success") {
+          this.checkCurrentMonth = this.currentMonth;
+          this.existMinutesList = response.data.data;
+          // console.log("this.currentMonth:", this.currentMonth);
+          console.log("this.existMinutesList: ", this.existMinutesList);
+        } 
+        })
+        .catch((e) => {
+        console.log(e);
+        });
+      // try {
+      //   const response = axios.get(url + `/calendars/getExistMinutes/${this.teamId}/${this.currentMonth}`);
+      //   console.log("response:",response);
+      //   if (response.data.message === "Success") {
+      //     this.minutes = response.data.data;
+      //     console.log("getMinutes minutes: ", this.minutes);
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      // }
+
+
+    // try {
+    //   console.log(currentMonth);
+    //   //Promise 처리!!
+    //   const response = await axios.get(url + `/calendars/getExistMinutes/${teamID}/${currentMonth}`);
+    //   const data = response.data.data;
+    //   console.log("data",data)
+    // } catch (error) {
+    //   console.log("error")
+    // }
+
+
+    },
 
     //1. 현재 년/월을 기준으로 달력 데이터를 업데이트
     updateCalendar() {
+      
       const currentDate = new Date();
       //현재 year, month, daysInMonth(한달일수)
       const year = currentDate.getFullYear();
@@ -164,7 +303,13 @@ export default {
       const daysInMonth = new Date(year, month + 1, 0).getDate();   
       this.daysInMonth = daysInMonth;
 
-      this.currentMonth = `${year}-${month + 1}`;
+      if (month+1 <10) {
+        this.currentMonth = `${year}-0${month + 1}`;
+      }
+      else {
+        this.currentMonth = `${year}-${month + 1}`;
+      }
+      console.log("updateCurrentMOnth1: ", this.currentMonth);
       //첫번째 날과 마지막 날의 요일
       const firstDay = new Date(year, month, 1).getDay();
       const lastDay = new Date(year, month, daysInMonth).getDay();
@@ -196,13 +341,7 @@ export default {
         if (week.length === 7) {
           calendar.push(week);
           week = [];
-        }
-        //이전달 다음달의 날짜 구분 X 경우
-        // week.push(day.getDate());
-        // if (week.length === 7) {
-        //   calendar.push(week);
-        //   week = [];
-        // }        
+        } 
       }
       this.calendar = calendar;
     },
@@ -243,9 +382,10 @@ export default {
           calendar.push(week);
           week = [];
         }
-        console.log("week", week)
+        // console.log("week", week)
         // console.log("전체 day",day);
       }
+      console.log("updateCurrentMonth: ", this.currentMonth);
       this.calendar = calendar;
 
     },
@@ -261,19 +401,29 @@ export default {
     },
     getPreviousMonth(month) {
       const [year, currentMonth] = month.split('-').map(Number);
-      return currentMonth === 1 ? `${year - 1}-12` : `${year}-${currentMonth - 1}`;
+
+      if (currentMonth === 1) {
+        return `${year - 1}-12`;
+      } else {
+        if (currentMonth-1 < 10) {
+          return `${year}-0${currentMonth - 1}`
+        }
+        return `${year}-${currentMonth - 1}`;
+      }
+      
     },
     getNextMonth(month) {
       const [year, currentMonth] = month.split('-').map(Number);
-      return currentMonth === 12 ? `${year + 1}-1` : `${year}-${currentMonth + 1}`;
+      if (currentMonth === 12) {
+        return `${year + 1}-01`;
+      } else {
+        if (currentMonth+1 < 10) {
+          return `${year}-0${currentMonth + 1}`;
+        } else {
+          return `${year}-${currentMonth + 1}`;
+        }
+      }
     },
-
-    //4. 이전달, 다음달 색상 변경
-    // isPrevOrNextMonth(calendar, week, date) {
-    //   for (week in calendar) {
-    //     console.log("week",week,"date", date);
-    //   }
-    // },
 
     //5. 오늘 색상 변경
     isToday(currentMonth, day) {
@@ -290,25 +440,44 @@ export default {
     },
 
     //생성
-    postMinutes() {
+    async postMinutes() {
       axios
         .post(url + '/calendars/minutes', this.postSetParams)
         .then((response) => {
           if (response.data.message == "Success") {
             this.minutes = response.data.data;
-            console.log("postMinutes minuste", this.minutes)
+            console.log("post success. minutes: ", this.minutes);
+            this.close();
             } 
         })
         .catch((e) => {
           console.log(e);
-        });
+        });  
+    },
+
+    async postFunction() {
+      console.log("postfunction")
+
+      if (this.modalDisplay != "none" && (this.postSetParams.title != null && this.postSetParams.title.trim() != "") && (this.postSetParams.content != null && this.postSetParams.content.trim() != "")) {
+        await this.postMinutes();
+      }
+
+      else if (this.modalDisplay != "none" && (this.postSetParams.title == null|| this.postSetParams.title.trim() == "") && (this.postSetParams.content == null || this.postSetParams.content.trim() == "")) {
+        console.log("그냥 나가기: title+content 존재X")
+        this.close();
+      }
+      else {
+        console.log("모두 입력해야함: title+content 중 하나 X")
+        this.inputModalDisplay = "flex";
+
+      }
+      
     },
 
     //조회
     async getMinutes() {
       try {
         const response = await axios.get(url + `/calendars/minutes/${this.teamId}/${this.targetDate}/${this.userId}`);
-        console.log("teamId:", this.teamId,"targetDate:",this.targetDate,"userId: ",this.userId);
         if (response.data.message === "Success") {
           this.minutes = response.data.data;
           console.log("getMinutes minutes: ", this.minutes);
@@ -325,9 +494,7 @@ export default {
       clickedDate.setDate(date + 1);
       const formattedDate = clickedDate.toISOString().substring(0, 10);
       this.targetDate = formattedDate;
-
       await this.getMinutes();
-
       this.modalDisplay = "flex";
     },
 
@@ -340,6 +507,7 @@ export default {
       this.title = null;
       this.content= null;
     },
+
     //수정
     async updateMinutes() {
       axios
@@ -347,33 +515,83 @@ export default {
         .then((response) => {
           if (response.data.message == "Success") {
             this.minutes = response.data.data;
-            console.log("update minuste", this.minutes)
-            } 
+            console.log("update success. minutes:", this.minutes);
+            this.close();
+            this.isModified = false;
+            }
         })
         .catch((e) => {
           console.log(e);
         });
-
     },
 
     async updateFunction() {
-      await this.updateMinutes();
-
-      this.update = false;
+      console.log("updateFunction");
+      if (this.modalDisplay != "none" && (this.updateSetParams.title != null && this.updateSetParams.title.trim() != "") && (this.updateSetParams.content != null && this.updateSetParams.content.trim() != "") && this.isModified == true) {
+        await this.updateMinutes();
+      }
+      else if (this.modalDisplay != "none" && this.updateSetParams.title != null && this.updateSetParams.content != null && this.isModified == false) {
+        console.log("그냥 나가기: title+content 존재X")
+        this.close();
+      }
+      else if (this.modalDisplay != "none" && (this.updateSetParams.title.trim() == "" || this.updateSetParams.title == null) && (this.updateSetParams.content.trim() == "" || this.updateSetParams.content == null)) {
+        console.log("해당 회의록 삭제: title+content 존재X")
+        await this.deleteMinutes();
+      }
+      else {
+        console.log("모두 입력해야함: title+content 중 하나 X")
+        this.inputModalDisplay = "flex";
+      }
     },
 
     //삭제
-    deleteMinutes() {
+    async deleteMinutes() {
+      this.deleteModalDisplay = "none";
       axios
         .delete(url + `/calendars/minutes/${this.teamId}/${this.userId}/${this.targetDate}`)
         .then((response) => {
           if (response.data.message == "Success") {
             this.close();
+            console.log("completely delete")
             } 
         })
         .catch((e) => {
             console.log(e);
           });
+    },
+    
+    deleteClose() {
+      this.deleteModalDisplay = "none";
+    },
+
+    deleteProjects() {
+    console.log("modalDisplay: ", this.modalDisplay);
+    axios
+      .delete(url + `/dashboard/projects/${this.updateProjectId}`)
+      .then((response) => {
+      if (response.data.message == "Success") {
+        this.close();
+        console.log("Completely Delete");
+      } 
+      this.$router.go(0)  //실행된 후 처음 화면으로
+      })
+      .catch((e) => {
+      console.log(e);
+      });
+    },
+
+    deleteConfirm() {
+      this.deleteModalDisplay = "flex";
+    },
+
+    //css
+    resize(textarea) {
+      textarea.style.height = "0.5px";
+      textarea.style.height = textarea.scrollHeight + "px";
+    },
+
+    inputClose() {
+      this.inputModalDisplay = "none";
     }
   }
 }
@@ -382,8 +600,10 @@ export default {
 </script>
 
 <style scoped>
-.prev-or-next-month {
-  color: grey;
+.currentMonth {
+  font-size: 25px;
+  margin-right: 40px;
+  margin-left: 40px;
 }
 
 .calendar {
@@ -396,10 +616,13 @@ export default {
 
 .calendar_header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+  height: 30px;
+  justify-content: center; /* 가로 가운데 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
+  text-align: center;
+  padding-bottom: 10px;
 }
+
 
 table {
   width: 100%;
@@ -409,26 +632,31 @@ table {
 th,
 td {
   padding: 10px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
+  border-radius: 10px;
   width: 30px;
-  height: 50px;
+  height: 80px;
 }
 
 .day {
-  border: None;
+  border: none;
+  background: white;
   border-radius: 50px;
+  font-size: 20px;
 }
 
 .day:hover {
-  box-shadow: 20px 20px 20px 20px darkgrey inset;
-  color: white;
+  border: 2px solid orange;
 }
+
 
 .notCurrentDay {
   border: None;
   border-radius: 50px;
-  color: grey;
-  background-color: white;
+  background: white;
+  color: lightgrey;
+  /* background-color: white; */
+  font-size: 20px;
 }
 
 .today {
@@ -436,10 +664,11 @@ td {
   border-radius: 50px;
   color: white;
   background-color: red;
+  font-size: 20px;
 }
 
 .today:hover {
-  background: darkgray;
+  background-color: orange;
   color: white;
 }
 #modal {
@@ -454,11 +683,13 @@ td {
   justify-content: center;
 }
 .modal_window {
+  margin: 50px;
   background-color: white;
-  width: 40%;
-  height: 80%;
+  width: 600px;
+  height: 720px;
   padding: 20px;
   border-radius: 8px;
+  overflow: auto;
 }
 
 /* Modal Content */
@@ -466,51 +697,177 @@ td {
   text-align: left;
   font-size: 20px;
   font-weight: bold;
+  
   margin-bottom: 5px;
   padding: 20px;
+  padding-top: 40px;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 .title {
   text-align: left;
-  font-size: 20px;
-  height: 35px;
-  margin-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 10px;
-  border: 1px solid grey;
-  border-radius: 10px;
+  font-weight: bold;
+  font-size: 18px ;
+  margin-top: 15px;
+  /* padding-top: 5px; */
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  /* border: 1px solid skyblue;
+  border-radius: 5px; */
 
-  white-space: pre-line;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(187, 187, 187);
+  border: 1px solid black;
+
+  /* white-space: pre-line;
   word-wrap: break-word; 
-  overflow: auto;
+  overflow: auto; */
+}
+
+.fi fi-rr-trash {
+  display: inline-block;
 }
 
 .content {
   text-align: left;
-  font-size: 18px;
-  height: 550px;
-  margin-bottom: 5px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  border: 1px solid grey;
-  border-radius: 10px;
+  font-size: 15px;
 
   white-space: pre-line;
   word-wrap: break-word; 
   overflow: auto;
 }
 
+.footer {
+  padding-top: 8px; 
+}
 .dialog-footer {
-  margin-top: 20px;
+
   padding: 20px;
   text-align: right;
 }
 
-/* Button Styles */
 .el-button {
   margin-left: 10px;
 }
+
+.date1 {
+  display: flex;
+  text-align: left;
+  font-size: 20px;
+  font-weight: bold;
+  
+  margin-bottom: 5px;
+  padding: 20px;
+  padding-top: 40px;
+  padding-left: 30px;
+  padding-right: 30px;
+
+}
+
+.footer1 {
+  padding-top: 10px; 
+}
+
+.dialog-footer1 {
+  /* padding-top: 10px; */
+  text-align: right;
+}
+
+.delete-modal-window {
+    background-color: white;
+    width: 300px;
+    height: 100px;
+    padding: 20px;
+    padding-top: 30px;
+    border-radius: 8px;
+}
+
+.delete-footer {
+    margin-top: 20px;
+}
+
+textarea {
+    outline: none;
+    border: none;
+    resize: none;
+}
+
+.title2 {
+  font-size: 15px;
+  text-align: left;
+
+  height: 'auto';
+  border-bottom: 1px solid grey;
+  margin-right: 30px;
+  margin-left: 30px;
+}
+
+.content2 {
+  font-size: 15px;
+  text-align: left;
+  padding-left: 30px;
+  padding-right: 30px;
+  height: 'auto';
+}
+
+.scrollable-conainer {
+  width: 300px;
+  height: 200px;
+  overflow: auto;
+  border: 1px solid red;
+  padding: 10px;
+}
+
+.container1 {
+    display: flex;
+    justify-content: space-between; /* 왼쪽과 오른쪽에 정렬되도록 설정 */
+    align-items: center; /* 수직 가운데 정렬 */
+    /* padding: 30px; 여백을 설정 (원하는 여백으로 조절) */
+    width: 100%;
+}
+
+.targetDate {
+    font-weight: bold;
+    text-align: left;
+}
+
+.fi fi-rs-menu-dots-vertical {
+  /* display: inline; */
+  text-align: right;
+  /* align-items: right;
+  justify-content: right; */
+}
+
+.trashBtn::before {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: grey;
+  border-radius: 100%;
+}
+.trashBtn i {
+  color: blue;
+}
+
+.trashBtn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: blue;
+  border-radius: 100%;
+}
+
+.trashBtn i:hover {
+  color: white;
+}
+
+
 
 </style>
