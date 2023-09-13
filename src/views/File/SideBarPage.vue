@@ -72,6 +72,7 @@ export default {
         return {
         isOpen: false,
         comment: '', // 코멘트를 저장할 데이터
+          isCommentVisible: true, // 입력 메시지 란의 가시성 상태를 저장하는 데이터 추가
         addComments: [],
         isApproved: 0, // 승인 여부를 저장할 데이터
         feedbackList: [], // To store the feedback comments
@@ -175,7 +176,10 @@ export default {
 
         );
 
-
+        // comment를 초기화
+        this.comment = '';
+        // 입력 메시지 란을 숨김
+        this.isCommentVisible = false;
         alert('피드백 제출 성공');
       } catch (error) {
         console.error('코멘트 제출 오류:', error);
