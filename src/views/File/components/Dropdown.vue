@@ -24,7 +24,7 @@ export default {
   },
 
   mounted() {
-    this.selectedOption = this.initialWorkName ? this.initialWorkName : "선택";
+    this.selectedOption = this.initialWorkName ? this.initialWorkName : "작업 선택";
   },
   data() {
     return {

@@ -57,7 +57,7 @@
         <i class="fi fi-sr-add-document"></i>
       </div>
       <div>
-        <textarea id="content" class="content" @input="resize($event.target)" v-model="formData.content" required>{{boardContent.content}}</textarea>
+        <textarea id="content" class="content" @input="resize($event.target)" v-model="formData.content" required></textarea>
       </div>
       <div class="button-container">
         <button type="button" class="cancel-button" @click="goToHomePage">취소</button>
@@ -69,7 +69,7 @@
 
 <script>
 import axios from 'axios';
-
+import { axiosInstance } from '@/axios';
 import Sidebar from './SideBarPage.vue';
 import UpdatePage from "@/views/File/UpdatePage";
 import Dropdown from "@/views/File/components/Dropdown";
@@ -91,8 +91,8 @@ export default {
         content: '',
         // Other form data properties here...
         boardId: null,
-        files: [], // 여러 파일을 저장하는 배열
-        fileInputs: [], // 각 파일 선택 요소의 ref를 저장할 배열 추가
+        files: [null], // 여러 파일을 저장하는 배열
+        fileInputs: [null], // 각 파일 선택 요소의 ref를 저장할 배열 추가
         dropdownOptions: [],
         selectedWorkId: null,
       },
@@ -105,14 +105,14 @@ export default {
 
 
   async created() {
-    this.loadDropdownOptions(this.memberId,this.teamId);
+    this.loadDropdownOptions(22,this.teamId);
 
     const boardId = this.$route.params.boardId;
-    const memberId = this.$route.params.memberId;
+    //const memberId = this.$route.params.memberId;
     const teamId = this.$route.params.teamId;
 
     try {
-      const response = await axios.get(`http://localhost:3210/board/view/${boardId}/${memberId}/${teamId}`);
+      const response = await axiosInstance.get(`/board/view/${boardId}/${teamId}`);
       if (response.data.status.code === 200) {
         this.boardContent = response.data.content;
         this.formData.title = this.boardContent.title;
@@ -132,7 +132,7 @@ export default {
   methods: {
     async loadDropdownOptions(memberId,teamId) {
       try {
-        const response = await axios.get(`http://localhost:3210/work/list/${memberId}/${teamId}`);
+        const response = await axios.get(`http://localhost:3210/work/list/${memberId}/${teamId}`);  //`http://localhost:3210/work/list/${memberId}/${teamId}
         this.formData.dropdownOptions = response.data.content;
       } catch (error) {
         console.error('Dropdown options load error:', error);
@@ -150,7 +150,7 @@ export default {
       console.log(this.formData);
       const { title, content, files, selectedFileIds,selectedWorkId } = this.formData;
       const boardId = this.boardId; // props로 전달된 값 사용
-      const memberId = this.memberId; // props로 전달된 값 사용
+      //const memberId = this.memberId; // props로 전달된 값 사용
       const teamId = this.teamId; // props로 전달된 값 사용
 
       const request = {
@@ -178,9 +178,10 @@ export default {
         });
 
 
+        //const url = `http://localhost:3210/multiboard/update/${boardId}/${memberId}/${teamId}/${selectedWorkId}`
 
-        const response = await axios.post(
-            `http://localhost:3210/multiboard/update/${boardId}/${memberId}/${teamId}/${selectedWorkId}`,
+        const response = await axiosInstance.post(
+            `/multiboard/update/${boardId}/${teamId}/${selectedWorkId}`,
             formData,
             {
               params: { files: selectedFileIds }, // 선택된 파일 IDs를 전달

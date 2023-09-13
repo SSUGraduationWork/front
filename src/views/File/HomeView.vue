@@ -73,7 +73,7 @@
               </td>
               <td class="title">
                 <router-link
-                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
                 >{{ board.title }}
                 </router-link>
               </td>
@@ -99,7 +99,7 @@
               </td>
               <td class="title">
                 <router-link
-                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
                 >{{ board.title }}
                 </router-link>
               </td>
@@ -125,7 +125,7 @@
               </td>
               <td class="title">
                 <router-link
-                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
                 >{{ board.title }}
                 </router-link>
               </td>
@@ -151,7 +151,7 @@
             </td>
             <td class = "title">
               <router-link
-                  :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,memberId: memberId ,teamId:teamId} }"
+                  :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
               >{{ board.title }}
               </router-link></td>
             <td class = "writer">
@@ -278,9 +278,9 @@ export default {
 
     async fetchBoardList(memberId, teamId) {
       try {
-        const url = `http://localhost:3210/board/list/${memberId}/${teamId}`;
-        //const url = `/board/list/${memberId}/${teamId}`
-        const response = await axios.get(url);
+        //const url = `http://localhost:3210/board/list/${memberId}/${teamId}`;
+        const url = `/board/list/${teamId}`
+        const response = await axiosInstance.get(url);
 
         if (response.data && response.data.content && Array.isArray(response.data.content)) {
           // 서버에서 받아온 데이터를 boardList에 저장

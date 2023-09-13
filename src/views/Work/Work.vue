@@ -23,7 +23,7 @@
       <tbody v-for="(work, i) in workInfo" :key="i" :id = "work.work_id" class = "work-row">
         <tr  v-if="deletedWork[work.work_id]!=true">
           <td class = "work-name">
-            <textarea v-model="work.work_name" @input="resize($event.target)" v-on:change="textChange(work.work_id, $event.target.value)" class="work-name-input">{{ work.work_name }}</textarea>
+            <textarea v-model="work.work_name" @input="resize($event.target)" v-on:change="textChange(work.work_id, $event.target.value)" class="work-name-input"></textarea>
           </td>
           <td class = "team-members">
             <MultiSelect v-if="membersById !== null" :teamMembers="membersById" :workers="work.worker" :workId = "work.work_id" :teamId="teamId"></MultiSelect>

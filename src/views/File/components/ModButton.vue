@@ -6,11 +6,6 @@
                     <i class="fi fi-rr-pencil"></i>
                 </div>
             </div>
-            <div class = "delete" @click="deletePost">
-                <div class ="icon">
-                    <i class="fi fi-rs-trash"></i>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -41,7 +36,7 @@ const deletePost = () => {
 }
 const modifyPost = () => {
     emit('closeMod');
-    router.push({ name: 'UpdatePage', params: { memberId: props.memberId, boardId: props.boardId ,teamId: props.teamId} });
+    router.push({ name: 'UpdatePage', params: { boardId: props.boardId ,teamId: props.teamId} });
 }
 </script>
 <style scoped>
@@ -55,13 +50,13 @@ const modifyPost = () => {
 .mod,
 .delete{
     float: right;
-    border: 1px solid #3772FF;
+    border: 1px solid var(--sidebar-bg-color);
     width: 45px;
     height: 45px;
     border-radius: 100%;
     line-height: 45px;
-    background-color: #3772FF;
-    color: white;
+    background-color: var(--sidebar-bg-color);
+    color: #4F4F4F;
 }
 .delete{
     margin-top: 10px;
@@ -72,7 +67,8 @@ const modifyPost = () => {
 }
 .mod:hover,
 .delete:hover{
-    background-color: #215DEB;
-    border: 1px solid #215DEB;
+    background-color: #3772FF;
+    border: 1px solid #3772FF;
+    color: white;
 }
 </style>

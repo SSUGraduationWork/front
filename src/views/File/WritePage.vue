@@ -50,8 +50,9 @@
 
 <script>
 import axios from 'axios';
-
+import { axiosInstance } from '@/axios';
 import Dropdown from './components/Dropdown.vue';
+import Loader from '../../components/Loader.vue'
 
 export default {
   props: ['memberId', 'teamId'], // 프롭스 정의
@@ -69,9 +70,6 @@ export default {
       loading: false, // 로딩 상태 초기값
     };
   },
-  components: {
-    Dropdown,
-  },
   watch: {
     loading(newValue) {
       if (!newValue) {
@@ -79,6 +77,10 @@ export default {
         this.goToHomePage();
       }
     },
+  },
+  components: {
+    Dropdown,
+    Loader
   },
   methods: {
 
@@ -95,41 +97,48 @@ export default {
       this.formData.files.splice(index,1);
     },
     async submitForm() {
-      this.loading = true; // 로딩 상태를 false로 설정
       const { title, content, files, selectedWorkId } = this.formData;
-      const memberId = this.memberId; // props로 전달된 값 사용
-      const teamId = this.teamId; // props로 전달된 값 사용
+      if(selectedWorkId == null){
+        alert("작업을 선택해주세요")
+      } else if (title == null || title.trim() == ""){
+        console.log(title);
+        alert("제목을 입력해주세요");
+      } else{
 
+        this.loading = true; // 로딩 상태를 true로 설정
+        const memberId = this.memberId; // props로 전달된 값 사용
+        const teamId = this.teamId; // props로 전달된 값 사용
+        
 
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('content', content);
-      for (let i = 0; i < files.length; i++) {
-        formData.append('files', files[i]);
-      }
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('content', content);
+        for (let i = 0; i < files.length; i++) {
+          formData.append('files', files[i]);
+        }
 
-      try {
-        const response = await axios.post(
-            `http://localhost:3210/board/multiWrite/${memberId}/${teamId}/${selectedWorkId}`,
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-              },
-            }
-        );
+        try {
+          //const url = `http://localhost:3210/board/multiWrite/${teamId}/${selectedWorkId}`
+          const response = await axiosInstance.post(
+              `/board/multiWrite/${teamId}/${selectedWorkId}`,
+              formData,
+              {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              }
+          );
 
-        // 요청 성공 시 처리
-      //  console.log('글 작성 성공:', response.data);
-        alert("글 작성 성공")
-      } catch (error ) {
-        // 에러 처리
-          // 예외가 발생한 경우 처리
-        console.error(error.message);
+          // 요청 성공 시 처리
+        //  console.log('글 작성 성공:', response.data);
+          alert("글 작성 성공")
+        } catch (error ) {
+          // 에러 처리
+            // 예외가 발생한 경우 처리
+          console.error(error.message);
 
-      }finally {
-        {
-          this.loading = false; // 로딩 상태를 false로 설정
+        }finally {
+            this.loading = false; // 로딩 상태를 false로 설정
         }
       }
     },
@@ -144,7 +153,7 @@ export default {
     },
     async loadDropdownOptions(memberId,teamId) {
       try {
-        const response = await axios.get(`http://localhost:3210/work/list/${memberId}/${teamId}`);
+        const response = await axios.get(`http://localhost:3210/work/list/22/${teamId}`);
         this.formData.dropdownOptions = response.data.content;
       } catch (error) {
         console.error('Dropdown options load error:', error);
