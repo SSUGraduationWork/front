@@ -20,8 +20,10 @@ import { useStore } from 'vuex';
 const store = useStore();
 const route = useRoute();
 const redirectURL = route.query.redirectURI;  //로그인 후 redirect할 uri
-if(redirectURL){
+if(redirectURL && redirectURL != "/alarmList/view"){
     store.commit('setRedirectURL', redirectURL );
+} else {
+    store.commit('setRedirectURL', "/");
 }
 
 const google_uri = process.env.VUE_APP_GOOGLE_URI;

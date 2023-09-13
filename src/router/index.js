@@ -5,7 +5,6 @@ import HomeView from '../views/File/HomeView.vue'
 import WritePage from '../views/File/WritePage.vue'
 import UpdatePage from '../views/File/UpdatePage.vue'
 import BoardDetailPage from '../views/File/BoardDetailPage.vue'
-import SideBarPage from '../views/File/SideBarPage.vue'
 
 
 const routes = [
@@ -90,7 +89,7 @@ const routes = [
     props: true, // 이 설정으로 동적 라우팅 파라미터를 컴포넌트의 props로 전달할 수 있습
   },
   {//글쓰기
-    path: '/board/multiWrite/:teamId/:workId?',
+    path: '/board/multiWrite/:teamId',
     name: 'WritePage',
     component: WritePage,
     // route level code-splitting
@@ -99,7 +98,7 @@ const routes = [
     props: true,
   },
   {//글 수정
-    path: '/multiboard/update/:boardId/:teamId/:workId?',
+    path: '/board/multiboard/update/:boardId/:teamId',
     name: 'UpdatePage',
     component: UpdatePage,
     props: true,
@@ -108,12 +107,6 @@ const routes = [
     path: '/board/view/:boardId/:teamId',
     name: 'BoardDetailPage',
     component: BoardDetailPage,
-    props: true,
-  },
-  {
-    path: '/comment/:boardId/:writerId/:teamId',
-    name: 'SideBarPage',
-    component: SideBarPage,
     props: true,
   },
   {

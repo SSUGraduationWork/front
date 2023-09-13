@@ -11,17 +11,12 @@
 
 </template>
 <script setup>
-import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { defineEmits, defineProps } from 'vue';
-import UpdatePage from '../UpdatePage.vue';
 
 const router = useRouter();
 const props = defineProps({
     boardId: {
-        type: Number,
-    },
-    memberId: {
         type: Number,
     },
     teamId: {
@@ -31,11 +26,10 @@ const props = defineProps({
 
 const emit = defineEmits(["closeMod"]);
 
-const deletePost = () => {
-    emit('closeMod');
-}
 const modifyPost = () => {
     emit('closeMod');
+    console.log(props.boardId);
+    console.log(props.teamId)
     router.push({ name: 'UpdatePage', params: { boardId: props.boardId ,teamId: props.teamId} });
 }
 </script>

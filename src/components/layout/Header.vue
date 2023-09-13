@@ -111,9 +111,7 @@ export default {
 }
 .header-right{
   float: right;
-  margin-right: 2em;
-  font-weight: 300;
-
+  margin-right: 30px;
 }
 .header-left-div{
   float: left;
@@ -122,11 +120,13 @@ export default {
   position: fixed;
 }
 .header-right-div{
+  background-color: white;
   float: right;
   width: 320px;
   height: 50px;
   position: fixed;
   right: 10px;
+  z-index: 10;
 }
 h3 {
   font-weight: 700;

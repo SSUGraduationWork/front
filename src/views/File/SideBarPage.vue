@@ -27,13 +27,13 @@
             <div v-for="feedback in addComments" :key="feedback" class="feedback-item">
                 <div class="feedback-comment">
                     <div class = "profile"><img :src="writers[this.memberId].pictureUrl" alt="이미지"  class="spaced"></div>
-                    <div class = "student-info"><span class="spaced1">{{ writers[this.memberId].studentNumber }}&nbsp; {{ writers[this.memberId].userName }}</span></div>
+                    <div class = "student-info"><span class="spaced1">{{ writers[memberId].studentNumber }}&nbsp; {{ writers[memberId].userName }}</span></div>
                     <div class = "created-at"><span class="small-text">{{ formatDate2( feedback.date )}}</span></div>
 
                     <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
                     <div class = "content">
                     <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
-                        <div :class="['feedback-comment-box', { 'blue-background': (feedbackStatuses[this.memberId].feedbackYn==2)||(feedbackStatuses[this.memberId].feedbackYn==0 &&newApproved==1)}]">
+                        <div :class="['feedback-comment-box', { 'blue-background': (feedbackStatuses[memberId].feedbackYn==2)||(feedbackStatuses[memberId].feedbackYn==0 &&newApproved==1)}]">
                         {{ feedback.comment }}
                         </div>
                     </div>
@@ -60,10 +60,10 @@
   
 <script>
 import { collapsed, toggleSidebar, sidebarWidth, sidebarHeight } from './components/state'
-import axios from 'axios';
+import { axiosInstance } from '@/axios';
 
 export default {
-    props: ['boardId','memberId','teamId'],
+    props: ['boardId','teamId'],
     name: 'Sidebar',
     setup() {
         return { collapsed, toggleSidebar, sidebarWidth, sidebarHeight }
@@ -83,6 +83,7 @@ export default {
         saveApproved:0,
         newApproved:0,
         count: 0,
+        memberId : null
         };
     },
     created() {
@@ -129,11 +130,12 @@ export default {
     },
     async fetchFeedbackComments() {
       try {
-        const response = await axios.get(`http://localhost:3210/comment/${this.boardId}/${this.memberId}/${this.teamId}`);
+        const response = await axiosInstance.get(`/comment/${this.boardId}/${this.teamId}`);
         console.log(response);
         this.feedbackList = response.data.feedback;
         this.feedbackStatusList=response.data.feedbackStatus;
         this.writerList=response.data.writer;
+        this.memberId = response.data.userId;
 
         for (const feedbackStatus of this.feedbackStatusList){
           this.feedbackStatuses[feedbackStatus.userId] = feedbackStatus;
@@ -169,27 +171,16 @@ export default {
         this.addComments.push({comment: this.comment, date: date, isApproved: this.isApproved});
         let approvalStatus = this.isApproved ? 2 : 1;
 
-        const formData = new FormData(); // FormData 객체 생성
-        formData.append('comment', this.comment); // 코멘트 데이터 추가
-
+        //const formData = new FormData(); // FormData 객체 생성
+        //formData.append('comment', this.comment); // 코멘트 데이터 추가
+        const data = {comment : this.comment};
         // comment를 초기화
         this.comment = '';
         // 입력 메시지 란을 숨김
         this.isCommentVisible = false;
 
-        const response = await axios.post(
-            `http://localhost:3210/comment/${this.boardId}/${this.memberId}/${approvalStatus}`,
-            formData, // FormData 객체를 전송
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data', // 필수! FormData를 전송할 때는 이 헤더가 필요합니다.
-              },
-            }
+        const response = await axiosInstance.post(`/comment/${this.teamId}/${this.boardId}/${approvalStatus}`, data);
 
-        );
-
-
-        alert('피드백 제출 성공');
       } catch (error) {
         console.error('코멘트 제출 오류:', error);
         alert('피드백 제출 오류');

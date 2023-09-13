@@ -31,7 +31,7 @@
       <!-- 검색 입력창 -->
       <div class="search-container">
         <div class="file-letter">파일</div>
-        <div class="write-button-container"><button class="write-button" @click="goToWritePage">글쓰기</button></div> <!-- "글쓰기" 버튼 추가 -->
+        <div v-if="role=='student'" class="write-button-container"><button class="write-button" @click="goToWritePage">글쓰기</button></div> <!-- "글쓰기" 버튼 추가 -->
 
         <!-- dropdown-->
         <div  class="search-dropdown"><BoardDropdown :options="updateSelectedIndex"  @selected="handleDropdownSelect"/></div>
@@ -207,7 +207,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { axiosInstance } from '@/axios';
 
 import BoardDropdown from './components/BoardDropdown.vue';
@@ -216,7 +215,7 @@ import Loader from '../../components/Loader.vue';
 import bgColors from '../../../public/color';
 
 export default {
-  props: ['memberId', 'teamId'], // props로 받을 파라미터 이름을 선언
+  props: ['teamId'], // props로 받을 파라미터 이름을 선언
 
   data() {
     return {
@@ -247,6 +246,7 @@ export default {
       bgColors,
       members: {},
       works : {},
+      role: "",
     };
   },
   components: {
@@ -349,7 +349,6 @@ export default {
 
     async fetchBoardList(memberId, teamId) {
       try {
-        //const url = `http://localhost:3210/board/list/${memberId}/${teamId}`;
         const url = `/board/list/${teamId}`
         const response = await axiosInstance.get(url);
 
@@ -358,6 +357,7 @@ export default {
           this.boardList = response.data.content;
           this.workList=response.data.work;
           this.memberList=response.data.member;
+          this.role = response.data.role;
 
           for (const member of this.memberList){
             this.members[member.userId] = member;
@@ -482,6 +482,7 @@ tr{
 }
 .pagination {
   position: relative;
+  margin-bottom: 100px;
 }
 .pagination button {
   cursor: pointer;
@@ -627,7 +628,7 @@ tr{
   float: left;
   font-weight: 700;
   margin-right: 20px;
-  margin-top: 5px;
+  margin-top: 7px;
   width: 100px;
   height: 30px;
   font-size: 17px;

@@ -11,7 +11,7 @@
     <Sidebar :board-id="boardId" :member-id="memberId" :team-id="teamId"/>
 
     <!-- ... -->
-    <form @submit.prevent="submitForm">
+    <div @submit.prevent="submitForm">
 
 
 
@@ -20,8 +20,8 @@
         <div class = "info">
           <div><img :src="boardContent.pictureURL"></div>
           <div class = "writer">{{boardContent.studentNumber}} &nbsp;{{ boardContent.writer }}</div> 
-          <div class ="more-icon" @mousedown="openMod" @mouseleave="closeMod">
-            <ModButton v-if="mod" @close-mod="closeMod"></ModButton>
+          <div v-if="memberId ==boardContent.writerId" class ="more-icon" @mousedown="openMod" @mouseleave="closeMod">
+            <ModButton v-if="mod" @close-mod="closeMod" :boardId = "boardId" :teamId="teamId"></ModButton>
             <i class="fi fi-br-menu-dots-vertical"></i>
           </div>
           <div class = "workName-box-style" :style="{ backgroundColor: color }">
@@ -45,19 +45,18 @@
           <div class = "file-name">{{ extractFileName(fileDir) }}</div>
         </div>
       </div>
-
-      <div class="update-content-box">
-        <textarea id="content2" v-model="formData.content" disabled></textarea>
+        <div class="update-content-box">
+          <textarea id="content2" v-model="formData.content" disabled></textarea>
+        </div>
       </div>
-    </form>
   </div>
 </div>
 </div>
 </template>
 
 <script>
-import axios from 'axios';
 import { axiosInstance } from '@/axios';
+import axios from 'axios';
 import Sidebar from './SideBarPage.vue';
 import UpdatePage from "@/views/File/UpdatePage";
 import Loader from '../../components/Loader.vue';
@@ -65,7 +64,7 @@ import ModButton from './components/ModButton.vue';
 import { sidebarWidth } from './components/state';
 
 export default {
-  props: ['boardId','memberId','teamId'],
+  props: ['boardId','teamId'],
   components: {
     Sidebar,
     Loader,
@@ -86,6 +85,7 @@ export default {
       loading: true,
       color: this.$route.params.color,
       mod: false,
+      memberId: 0,
     };
   },
   async created() {
@@ -98,21 +98,18 @@ export default {
         this.boardContent = response.data.content;
         this.formData.title = this.boardContent.title;
         this.formData.content = this.boardContent.content;
+        this.memberId = response.data.userId;
         this.loading = false;
         this.increaseViewCount(boardId);
+
       } else {
         console.error('올바르지 않은 요청입니다.');
-        alert('올바르지 않은 요청입니다.');
       }
     } catch (error) {
       console.error('게시글 조회 오류:', error);
-      alert('게시글 조회 오류');
     }
   },
   methods: {
-    goToHomeView() {
-      this.$router.push({ name: 'HomeView' }); // WritePage의 name을 사용하여 페이지 이동
-    },
     // 조회수 증가 로직
     increaseViewCount(boardId) {
       try {
@@ -126,7 +123,7 @@ export default {
       }
     },
     goToUpdatePage() {
-      this.$router.push({ name: 'UpdatePage', params: { memberId: this.memberId, boardId: this.boardId ,teamId: this.teamId} });
+      this.$router.push({ name: 'UpdatePage', params: { boardId: this.boardId ,teamId: this.teamId} });
     },
     goToSideBarPage() {
       this.$router.push({ name: 'SideBarPage', params: { memberId: this.memberId,teamId: this.teamId } });
@@ -151,7 +148,7 @@ export default {
     },
     async downloadFile(fileId, fileDir) {
       try {
-        const response = await axios.get(`http://localhost:3210/downloadFile/${fileId}`, {
+        const response = await axiosInstance.get(`/downloadFile/${this.teamId}/${fileId}`, {
           responseType: 'blob',
         });
 
@@ -212,7 +209,7 @@ export default {
 .file-container{
   width: 100%;
   margin-top: 25px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .workName-box-style{
@@ -244,12 +241,12 @@ export default {
   outline: none;
   min-height: 400px; /* 원하는 높이로 조정 */
   border-top: 1px solid #BABABA;
-  margin-top: 10px;
   padding-top: 25px;
   border-left: none;
   border-right: none;
   border-bottom: none;
   padding-left: 5px;
+  overflow:visible;
   background-color: white;
 }
 
@@ -320,5 +317,12 @@ export default {
 .file-box:hover{
   background-color: #F5F6FA;
 
+}
+.update-content-box{
+  margin-bottom: 70px;
+  height: auto;
+}
+tr{
+  height: 100%;
 }
 </style>

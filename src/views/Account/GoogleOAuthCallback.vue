@@ -35,7 +35,7 @@ axiosInstance.get(`/accounts/oauth2/google/callback?code=${route.query.code}`)
                     store.commit('setRedirectURL', null);
                     router.push(`${redirectURL.value}`);
                 } else{
-                    router.push(`/dashboard/${res.data.result.user_id}`);
+                    router.push(`/dashboard/${res.data.result.role}/${res.data.result.user_id}`);
                 }
             }
         }

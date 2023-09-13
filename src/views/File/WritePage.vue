@@ -55,7 +55,7 @@ import Dropdown from './components/Dropdown.vue';
 import Loader from '../../components/Loader.vue'
 
 export default {
-  props: ['memberId', 'teamId'], // 프롭스 정의
+  props: ['teamId'], // 프롭스 정의
   data() {
     return {
       workName: 'ValueFromUpdatePage', // 전달할 데이터
@@ -107,7 +107,6 @@ export default {
       } else{
 
         this.loading = true; // 로딩 상태를 true로 설정
-        const memberId = this.memberId; // props로 전달된 값 사용
         const teamId = this.teamId; // props로 전달된 값 사용
         
 
@@ -119,8 +118,7 @@ export default {
         }
 
         try {
-          //const url = `http://localhost:3210/board/multiWrite/${teamId}/${selectedWorkId}`
-          const response = await axiosInstance.post(
+          axiosInstance.post(
               `/board/multiWrite/${teamId}/${selectedWorkId}`,
               formData,
               {
@@ -128,12 +126,14 @@ export default {
                   'Content-Type': 'multipart/form-data',
                 },
               }
-          );
-        this.boardId = response.data.content.boardId;
+          ).then((res) => {
+            this.boardId = res.data.content.boardId;
+            if(boardId != null){
+              this.boardId = res.data.content.boardId;
+              this.goToDetailPage();
+            }
+          })
 
-          // 요청 성공 시 처리
-        //  console.log('글 작성 성공:', response.data);
-          alert("글 작성 성공")
         } catch (error ) {
           // 에러 처리
             // 예외가 발생한 경우 처리
@@ -151,9 +151,12 @@ export default {
       this.formData.fileInputs.push(null); // 새로운 파일 선택 요소의 ref를 배열에 추가
     },
     goToHomePage() {
+      this.$router.push({name:"HomeView", params: {teamId : this.teamId}});
+    },
+    goToDetailPage() {
       this.$router.push({ name: 'BoardDetailPage',params: { boardId: this.boardId } }); // WritePage의 name을 사용하여 페이지 이동
     },
-    async loadDropdownOptions(memberId,teamId) {
+    async loadDropdownOptions(teamId) {
       try {
         const response = await axios.get(`http://localhost:3210/work/list/22/${teamId}`);
         this.formData.dropdownOptions = response.data.content;
@@ -171,7 +174,7 @@ export default {
   },
   created() {
     this.addFileInput(); // 페이지 로드 시에 파일 입력 요소 추가
-    this.loadDropdownOptions(this.memberId,this.teamId);
+    this.loadDropdownOptions(this.teamId);
   },
 
 };
@@ -254,6 +257,7 @@ export default {
 .button-container{
   display: flex;
   float: right;
+  margin-top: 30px;
 }
 .submit-button,
 .cancel-button {

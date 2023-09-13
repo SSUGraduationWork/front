@@ -1,4 +1,5 @@
 <template>
+<div>
   <div v-if="loading" class="loading-container">
     <Loader></Loader>
   </div>
@@ -65,19 +66,23 @@
       </div>
 
   </div>
+</div>
 </template>
 
 <script>
 import axios from 'axios';
 import { axiosInstance } from '@/axios';
 import Sidebar from './SideBarPage.vue';
-import UpdatePage from "@/views/File/UpdatePage";
+import Loader from '../../components/Loader.vue';
 import Dropdown from "@/views/File/components/Dropdown";
+import {ref} from 'vue';
+
 export default {
   props: ['boardId','memberId','teamId'],
   components: {
     Sidebar,
     Dropdown,
+    Loader
   },
   data() {
     return {
@@ -101,9 +106,6 @@ export default {
     };
   },
 
-  loading: false, // 로딩 상태 초기값
-
-
   async created() {
     this.loadDropdownOptions(22,this.teamId);
 
@@ -122,20 +124,10 @@ export default {
         this.loading = false;
       } else {
         console.error('올바르지 않은 요청입니다.');
-        alert('올바르지 않은 요청입니다.');
       }
     } catch (error) {
       console.error('게시글 조회 오류:', error);
-      alert('게시글 조회 오류');
     }
-  },
-  watch: {
-    loading(newValue) {
-      if (!newValue) {
-        // 로딩 상태가 false로 변경되면 페이지 이동
-        this.goToBoardDetailPage();
-      }
-    },
   },
   methods: {
     async loadDropdownOptions(memberId,teamId) {
@@ -148,9 +140,6 @@ export default {
     },
     updateSelectedWorkId(workId) {
       this.formData.selectedWorkId = workId; // 선택한 작업의 workId 업데이트
-    },
-    goToHomeView() {
-      this.$router.push({ name: 'WritePage' }); // WritePage의 name을 사용하여 페이지 이동
     },
 
     async submitForm() {
@@ -178,15 +167,14 @@ export default {
         const selectedFileIdsJson = JSON.stringify(this.selectedFileIds);
         console.log('Selected File IDs:', selectedFileIdsJson);
         // 서버에 선택된 파일 ID들을 보내고 파일을 삭제하는 API 호출
-        await axios.delete('http://localhost:3210/files/delete', {
-          data: selectedFileIdsJson, // 선택된 파일 ID들을 요청의 본문(body)로 보냄
-          headers: {
-            'Content-Type': 'application/json' // JSON 형식으로 요청을 보내기 위해 헤더 설정
-          }
-        });
-
-
-        //const url = `http://localhost:3210/multiboard/update/${boardId}/${memberId}/${teamId}/${selectedWorkId}`
+        if(selectedFileIdsJson != "[]"){
+            await axiosInstance.delete(`/files/delete/${this.boardId}`, {
+              data: selectedFileIdsJson, // 선택된 파일 ID들을 요청의 본문(body)로 보냄
+              headers: {
+                'Content-Type': 'application/json' // JSON 형식으로 요청을 보내기 위해 헤더 설정
+              }
+          });
+        }
 
         const response = await axiosInstance.post(
             `/multiboard/update/${boardId}/${teamId}/${selectedWorkId}`,
@@ -204,9 +192,7 @@ export default {
         // 요청 성공 시 처리
         console.log('수정 성공:', response.data);
 
-
-        alert("수정 성공");
-        this.$router.push({ name: 'HomeView' });
+        this.$router.push({ name: 'BoardDetailPage',params: { boardId: this.boardId } });
       } catch (error) {
         // 에러 처리,//예외처리에 문제 있음-->추후에 수정해야함
         console.error('수정 오류:', error);
@@ -302,6 +288,7 @@ export default {
 }
 .loading-container{
   height: 100%;
+  margin: 0 auto;
 }
 .write-page{
   width: 85%;
@@ -368,6 +355,7 @@ export default {
 .button-container{
   display: flex;
   float: right;
+  margin-top: 30px;
 }
 .submit-button,
 .cancel-button {

@@ -38,61 +38,53 @@
     </div>
 </template>
 <script setup>
-import {ref} from 'vue';
+import {axiosInstance} from '@/axios';
+import axios from 'axios';
+import {ref, watchEffect} from 'vue';
 import { defineProps } from 'vue';
-const content = ref();
+import {useStore} from 'vuex';
+
+const content = ref([]);
 const props = defineProps({
     isClicked : {
         type: Boolean,
     },
 });
-console.log(props.isClicked);
 const fetchAndShowAlarms = async() => {
-      try {
-        //const memberId = this.$route.params.memberId; // 동적 라우트 매개변수 사용
-        const memberId = 11;
-        const response = await axios.get(`http://localhost:3210/alarmList/view/${memberId}`);
+  try {
+        const response = await axiosInstance.get(`/alarmList/view`);
         content.value = response.data.content;
+        console.log(content.value);
         // boardId를 기준으로 내림차순으로 정렬
         content.value.sort((a, b) => b.alarmId - a.alarmId);
       } catch (error) {
         console.error('Error fetching alarms:', error);
       }
+      
 }
-fetchAndShowAlarms();
-</script>
-<script>
-import axios from 'axios';
+const closeModalOutside = ()  => {
+        // 모달이 닫힐 때 각 항목의 'seen' 속성을 true로 업데이트하고 서버에 업데이트 요청을 보냄
+        content.value.forEach(async item => {
+          item.seen = true;
 
-export default {
-  data() {
-    return {
-      //guyujung alarm
-      isModalOpen: false,
-      content: [],
-    }
-  },
-  methods: {
-    async handleReapprove(boardId, writerId, isApproved) {
-      try {
-        await axios.post(`http://localhost:3210/recomment/${boardId}/${writerId}/${isApproved}`);
-        // 재수락 또는 거절 요청을 보낸 후에, 필요한 업데이트를 수행할 수 있습니다.
-      } catch (error) {
-        console.error('Error reapproving:', error);
-      }
-    },
-    async handleLinkClick(alarmId) {
-      // 1. API 호출
-      try {
-        const response = await axios.get(`http://localhost:3210/alarm/view/${alarmId}`);
-        // 처리할 로직 작성 (예: 상세 정보 표시)
-      } catch (error) {
-        console.error('Error fetching alarm detail:', error);
-      }
-    },
-
-    //guyujung alarm
-    formatDateFromArray(dateArray) {
+          try {
+            // 서버에 업데이트 요청 보내기
+            await axios.put(`http://localhost:3210/updateSeenStatus/${item.alarmId}`, {
+              seen: true
+            });
+          } catch (error) {
+            console.error('Error updating seen status:', error);
+          }
+        });
+}
+watchEffect(() => {
+  if (props.isClicked){
+    fetchAndShowAlarms();
+  } else{
+    closeModalOutside();
+  }
+})
+const formatDateFromArray = (dateArray) => {
       // 연도, 월, 일, 시간, 분, 초 추출
       const [year, month, day, hour, minute] = dateArray;
 
@@ -110,48 +102,38 @@ export default {
       const formattedDate = `${year}.${month}.${day} ${amOrPm} ${formattedHour}:${formattedMinute}`;
 
       return formattedDate;
-    },
-    toggleModal() {
+}
 
-      this.fetchAndShowAlarms(); // 모달이 열릴 때 알람 내용을 가져와서 표시
-
-
-      this.isModalOpen = !this.isModalOpen;
-    },
-    closeModalOutside(event) {
-      if (event.target.classList.contains('modal')) {
-        this.isModalOpen = false;
-
-        // 모달이 닫힐 때 각 항목의 'seen' 속성을 true로 업데이트하고 서버에 업데이트 요청을 보냄
-        this.content.forEach(async item => {
-          item.seen = true;
-
-          try {
-            // 서버에 업데이트 요청 보내기
-            await axios.put(`http://localhost:3210/updateSeenStatus/${item.alarmId}`, {
-              seen: true
-            });
-          } catch (error) {
-            console.error('Error updating seen status:', error);
-          }
-        });
-      }
-    },
-    async fetchAndShowAlarms() {
+const handleReapprove = async (boardId, writerId, isApproved) => {
       try {
-        //const memberId = this.$route.params.memberId; // 동적 라우트 매개변수 사용
-        const memberId = 11;
-        const response = await axios.get(`http://localhost:3210/alarmList/view/${memberId}`);
-        this.content = response.data.content;
-        // boardId를 기준으로 내림차순으로 정렬
-        this.content.sort((a, b) => b.alarmId - a.alarmId);
-
-        this.isModalOpen = true;
+        await axiosInstance.post(`/recomment/${boardId}/${writerId}/${isApproved}`);
+        // 재수락 또는 거절 요청을 보낸 후에, 필요한 업데이트를 수행할 수 있습니다.
       } catch (error) {
-        console.error('Error fetching alarms:', error);
+        console.error('Error reapproving:', error);
       }
-    },
+}
+const handleLinkClick = async (alarmId) => {
+      // 1. API 호출
+      try {
+        const response = await axios.get(`http://localhost:3210/alarm/view/${alarmId}`);
+        // 처리할 로직 작성 (예: 상세 정보 표시)
+      } catch (error) {
+        console.error('Error fetching alarm detail:', error);
+      }
+} 
+</script>
+<script>
+import axios from 'axios';
+import { axiosInstance } from '@/axios';
+import vClickOutside from 'click-outside-vue3'
 
+export default {
+  data() {
+    return {
+      //guyujung alarm
+      isModalOpen: false,
+      content: [],
+    }
   },
 }
 </script>
