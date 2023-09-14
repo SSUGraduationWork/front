@@ -1,9 +1,8 @@
 <template>
     <div class="dropdown">
-      <div class = "dropdown-label">학기</div>
       <button @click="Dropdown" v-click-outside = "closeDropdown" class="dropdown-button">
         <div class = "selected-content">
-          {{ selectedOption }}
+          {{ selectedOption }} 학기
         </div>
         <div class = "icon"><i class="fi fi-rr-caret-down"></i></div>
       </button>
@@ -17,21 +16,22 @@
   
   
   
-<script>
-import vClickOutside from 'click-outside-vue3'
-
+  <script>
+  import vClickOutside from 'click-outside-vue3'
   export default {
+    props: ['updateSemester'],
     directives : {
         clickOutside: vClickOutside.directive
     },
     mounted() {
-      this.selectedOption =  "전체";
+      this.selectedOption = this.updateSemester;
+      console.log(this.updateSemester);
     },
     data() {
       return {
         isOpen: false,
-        selectedOption: '전체',
-        options: ['전체', '2022-1', '2022-2', '2023-1', '2023-2', '2024-1', '2024-2', '2025-1', '2025-2'],
+        selectedOption: this.updateSemester,
+        options: ['2022-1', '2022-2', '2023-1', '2023-2', '2024-1', '2024-2', '2025-1', '2025-2'],
       };
     },
     methods: {
@@ -63,11 +63,12 @@ import vClickOutside from 'click-outside-vue3'
     display: inline-block;
     position: relative;
     z-index: 1; /* 다른 요소보다 위에 나타나도록 설정 */
+    border-bottom: 1px solid #ccc;
   }
   
   .dropdown-button {
     border-radius: 7px;
-    width: 150px;
+    width: 170px;
     height: 37px;
     border: none;
     cursor: pointer;
@@ -79,7 +80,7 @@ import vClickOutside from 'click-outside-vue3'
   .icon{
     float: right;
     width: 20px;
-    margin-top: 0.5px;
+    font-size: 18px;
   }
   .selected-content{
     float: left;
@@ -90,7 +91,9 @@ import vClickOutside from 'click-outside-vue3'
     overflow: hidden;
     white-space:nowrap;
     text-align: left;
-    font-weight: 600;
+    font-weight: 500;
+    text-align: center;
+    margin-left: 28px;
   }
   .dropdown-list {
     width: 150px;
@@ -99,6 +102,7 @@ import vClickOutside from 'click-outside-vue3'
     list-style: none;
     padding: 0;
     margin: 0;
+    margin-top: 5px;
     background-color: var(--sidebar-bg-color);
     border: 1px solid var(--sidebar-bg-color);
     border-radius: 6px;
@@ -108,13 +112,12 @@ import vClickOutside from 'click-outside-vue3'
     min-width: 100%; /* 최소 너비를 버튼과 같게 설정 */
     box-sizing: border-box; /* 패딩과 보더를 포함한 크기 계산 */
     overflow-y: auto; /* 세로 스크롤 적용 */
-    max-height: 150px;
+    max-height: 110px;
     position: absolute;
   }
   
   .dropdown-list li {
     height: 30px;
-    margin-left: 3px;
     line-height: 30px;
     font-weight: 600;
     font-size: 14px;
@@ -136,5 +139,5 @@ import vClickOutside from 'click-outside-vue3'
     color: #777777;
     margin-left: 13px;
   }
-</style>
+  </style>
   
