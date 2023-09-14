@@ -28,7 +28,8 @@
   </div>
     <!--모달-->
   <!-- <div class="modal"> -->
-  <div id="modal" class="modal-overlay" :style="{display:modalDisplay}">
+  <div class="black-bg" :style="{display:modalDisplay}">
+  <div id="modal" class="modal-overlay">
     <div class="modal_window" v-click-outside="updateFunction" v-if="minutes != null">
       <!--이미 회의록 존재할 경우: getMinutes()-->    
       <container class="date1">
@@ -42,7 +43,7 @@
 
       </container>
       <div class="title2">
-        <textarea type="textarea" @input="resize($event.target), changeInput()" placeholder="제목을 입력해 주세요" 
+        <textarea type="textarea" class="inputTitle" @input="resize($event.target), changeInput()" placeholder="제목을 입력해 주세요" 
         v-model="minutes.title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
         ></textarea></div>
       <div class="content2">
@@ -71,22 +72,6 @@
           <div>해당 회의록 삭제 후에는 다시 복구할 수 없습니다.</div>
             <div class="delete-footer">
               <button class="danger" type="danger" @click="deleteFunction()">삭제</button>
-              <button class="document" @click="closeButton()">취소</button>
-            </div>
-        </div>
-      </div> 
-
-    </div>
-    
-      <!--존재하지 않을 경우-->
-      <!--회의록이 아직 존재하지 않을 경우: postMinutes()-->
-    <div class="modal_window" v-click-outside="postFunction" v-if="minutes == null && modalDisplay == 'flex'">
-      <div class="date1">{{targetDate}}</div>
-      <div class="title2">
-        <textarea type="textarea" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
-        v-model="title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
-        ></textarea>
-      </div>
       <div class="content2">
         <textarea
           @input="resize($event.target)"
@@ -106,6 +91,23 @@
         </div>
       </div>
     </div>
+  </div>        <button class="document" @click="closeButton()">취소</button>
+            </div>
+        </div>
+      </div> 
+
+    </div>
+    
+      <!--존재하지 않을 경우-->
+      <!--회의록이 아직 존재하지 않을 경우: postMinutes()-->
+    <div class="modal_window" v-click-outside="postFunction" v-if="minutes == null && modalDisplay == 'flex'">
+      <div class="date1">{{targetDate}}</div>
+      <div class="title2">
+        <textarea type="textarea" class="inputTitle" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
+        v-model="title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
+        ></textarea>
+      </div>
+      
   </div>
 
 </template>
@@ -573,6 +575,7 @@ export default {
   font-size: 25px;
   margin-right: 40px;
   margin-left: 40px;
+  font-weight: 700;
 }
 
 .calendar {
@@ -592,6 +595,7 @@ export default {
   align-items: center; /* 세로 가운데 정렬 */
   text-align: center;
   padding-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 
@@ -648,8 +652,8 @@ td {
   font-size: 20px;
   border: none;
   border-radius: 100%;
-  color: white;
-  background-color: #aeaeae;
+  color: black;
+  background-color: #e5e5e5;
 
   width: 40px;
   height: 40px;
@@ -683,8 +687,16 @@ td {
   align-items: center;
   justify-content: center;
 }
+
 .modal_window {
-  margin: 50px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  top: 0;
+  margin: 0 auto;
+  margin-top: 70px;
+
   background-color: white;
   width: 600px;
   height: 720px;
@@ -799,7 +811,6 @@ textarea {
 }
 
 .title2 {
-  font-size: 15px;
   text-align: left;
 
   height: 'auto';
@@ -910,5 +921,36 @@ textarea {
   /* padding-top: 20px; */
   font-size: 1px;
   color: #ff3f3f;
+}
+
+.inputTitle {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.black-bg{
+  z-index: 15;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.3);
+  position: fixed; 
+  top: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+}
+
+.white-bg{
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  width: 45em; background: white;
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: 65px;
+  margin: 0 auto;
+  margin-top: 4em;
+  height: 40em;
+  overflow: scroll;
 }
 </style>
