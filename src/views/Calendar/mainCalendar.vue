@@ -564,6 +564,11 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
+*{
+  font-family: 'Red Hat Display', sans-serif;
+}
+
 .currentMonth {
   font-size: 25px;
   margin-right: 40px;
@@ -576,6 +581,8 @@ export default {
   font-family: Arial, sans-serif;
   margin-left: 70px;
   margin-right: 70px;
+
+  min-width: 500px;
 }
 
 .calendar_header {
@@ -599,12 +606,13 @@ td {
   border-radius: 10px;
   width: 30px;
   height: 80px;
+  margin-top: 30px;
 }
 
 td {
   text-align: center;
   vertical-align: top;
-  margin-top: 5px;
+  padding-top: 25px;
 }
 
 .day {
@@ -615,11 +623,12 @@ td {
   width: 40px;
   height: 40px;
 
+  cursor: pointer;
 }
 
 .day:hover {
   border-radius: 100%;
-  background: orange;
+  background: #3772FF;
   color: white;
 }
 
@@ -640,15 +649,17 @@ td {
   border: none;
   border-radius: 100%;
   color: white;
-  background-color: #ffa7a7;
+  background-color: #aeaeae;
 
   width: 40px;
   height: 40px;
   margin: 0 auto;
+
+  cursor: pointer;
 }
 
 .today:hover {
-  background-color: orange;
+  background-color: #3772FF;
   color: white;
 }
 
@@ -896,7 +907,8 @@ textarea {
   background-color: #777777;
 }
 .dot {
+  /* padding-top: 20px; */
   font-size: 1px;
-  color: #FF7171;
+  color: #ff3f3f;
 }
 </style>
