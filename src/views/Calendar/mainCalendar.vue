@@ -15,13 +15,12 @@
         </tr>
       </thead>
         <tbody>
-          <tr v-for="week in calendar" :key="week">
-            <td v-for="date in week" :key="date">
-              <button v-if="date.classes !== 'notCurrentMonth' && !isToday(currentMonth, date.day)" @click="clickDate(currentMonth, date.day)" class="day">{{ date.day }}</button>
-              <button v-if="date.classes == 'notCurrentMonth'" class="notCurrentDay">{{ date.day }}</button>
-              <button v-if="isToday(currentMonth, date.day)" @click="clickDate(currentMonth, date.day)" class="today">{{date.day}}</button>
-              <div v-if="date.classes != 'notCurrentMonth' && checkDay(date.day)">v</div>
-              <div v-else></div>
+          <tr v-for="week in calendar" :key="week" class="tr">
+            <td v-for="date in week" :key="date" class="td">
+              <div v-if="date.classes !== 'notCurrentMonth' && !isToday(currentMonth, date.day)"><button @click="clickDate(currentMonth, date.day)" class="day">{{ date.day }}</button></div>
+              <div><button v-if="date.classes == 'notCurrentMonth'" class="notCurrentDay">{{ date.day }}</button></div>
+              <div v-if="isToday(currentMonth, date.day)"><button class="today" @click="clickDate(currentMonth, date.day)">{{date.day}}</button></div>
+              <div class="dot" v-if="date.classes != 'notCurrentMonth' && checkDay(date.day)"><i class="fi fi-ss-circle-small"></i></div>
             </td>
           </tr>
         </tbody>
@@ -71,7 +70,7 @@
         <div class="delete-modal-window">
           <div>해당 회의록 삭제 후에는 다시 복구할 수 없습니다.</div>
             <div class="delete-footer">
-              <button class="danger" type="danger" @click="deleteMinutes()">삭제</button>
+              <button class="danger" type="danger" @click="deleteFunction()">삭제</button>
               <button class="document" @click="closeButton()">취소</button>
             </div>
         </div>
@@ -400,9 +399,11 @@ export default {
       axios
         .post(url + '/calendars/minutes', this.postSetParams)
         .then((response) => {
+          this.checkExist = false;
           if (response.data.message == "Success") {
             this.minutes = response.data.data;
             console.log("post success. minutes: ", this.minutes);
+            this.getExistMinuteList(this.teamId, this.currentMonth);
             this.close();
             } 
         })
@@ -419,11 +420,9 @@ export default {
       }
 
       else if (this.modalDisplay != "none" && (this.postSetParams.title == null|| this.postSetParams.title.trim() == "") && (this.postSetParams.content == null || this.postSetParams.content.trim() == "")) {
-        console.log("그냥 나가기: title+content 존재X")
         this.close();
       }
       else {
-        console.log("모두 입력해야함: title+content 중 하나 X")
         this.inputModalDisplay = "flex";
 
       }
@@ -460,8 +459,10 @@ export default {
       this.targetDate = null;
       this.update = false;
 
+      this.deleteModalDisplay = "none";
       this.title = null;
       this.content= null;
+      this.onButton = false;
     },
 
     //수정
@@ -469,11 +470,13 @@ export default {
       axios
         .patch(url + '/calendars/minutes', this.updateSetParams)
         .then((response) => {
+          this.checkExist = false;
           if (response.data.message == "Success") {
             this.minutes = response.data.data;
             console.log("update success. minutes:", this.minutes);
             this.close();
             this.isModified = false;
+            this.getExistMinuteList(this.teamId, this.currentMonth);
             }
         })
         .catch((e) => {
@@ -487,17 +490,19 @@ export default {
         await this.updateMinutes();
       }
       else if (this.modalDisplay != "none" && this.updateSetParams.title != null && this.updateSetParams.content != null && this.isModified == false) {
-        console.log("그냥 나가기: title+content 존재X")
         this.close();
       }
       else if (this.modalDisplay != "none" && (this.updateSetParams.title.trim() == "" || this.updateSetParams.title == null) && (this.updateSetParams.content.trim() == "" || this.updateSetParams.content == null)) {
-        console.log("해당 회의록 삭제: title+content 존재X")
         await this.deleteMinutes();
+        this.getExistMinuteList(this.teamId, this.currentMonth);
       }
       else {
-        console.log("모두 입력해야함: title+content 중 하나 X")
         this.inputModalDisplay = "flex";
       }
+    },
+
+    async deleteFunction() {
+      await this.deleteMinutes();
     },
 
     //삭제
@@ -506,8 +511,10 @@ export default {
       axios
         .delete(url + `/calendars/minutes/${this.teamId}/${this.userId}/${this.targetDate}`)
         .then((response) => {
+          this.checkExist = false;
           if (response.data.message == "Success") {
             this.close();
+            this.getExistMinuteList(this.teamId, this.currentMonth);
             console.log("completely delete")
             } 
         })
@@ -517,6 +524,7 @@ export default {
     },
     
     deleteClose() {
+      
       this.deleteModalDisplay = "none";
     },
 
@@ -587,46 +595,72 @@ table {
 
 th,
 td {
-  padding: 10px;
   /* border: 1px solid #ccc; */
   border-radius: 10px;
   width: 30px;
   height: 80px;
 }
 
+td {
+  text-align: center;
+  vertical-align: top;
+  margin-top: 5px;
+}
+
 .day {
+  border-radius: 100%;
   border: none;
   background: white;
-  border-radius: 50px;
   font-size: 20px;
+  width: 40px;
+  height: 40px;
+
 }
 
 .day:hover {
-  border: 2px solid orange;
+  border-radius: 100%;
+  background: orange;
+  color: white;
 }
 
 
 .notCurrentDay {
-  border: None;
-  border-radius: 50px;
+  border: none;
+  border-radius: 100%;
   background: white;
   color: lightgrey;
   /* background-color: white; */
   font-size: 20px;
+  width: 40px;
+  height: 40px;
 }
 
 .today {
-  border: None;
-  border-radius: 50px;
-  color: white;
-  background-color: red;
   font-size: 20px;
+  border: none;
+  border-radius: 100%;
+  color: white;
+  background-color: #ffa7a7;
+
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
 }
 
 .today:hover {
   background-color: orange;
   color: white;
 }
+
+.todayBtn {
+  border: none;
+  background: #FF7171;
+}
+
+.todayBtn:hover {
+    background: orange;
+}
+
 #modal {
   position: fixed;
   top: 0;
@@ -861,5 +895,8 @@ textarea {
   color: white;
   background-color: #777777;
 }
-
+.dot {
+  font-size: 1px;
+  color: #FF7171;
+}
 </style>
