@@ -34,9 +34,12 @@
       <container class="date1">
         <div class="container1">
           <div class="targetDate">{{targetDate}}</div>
+          <div class="icons">
           <i class="fi fi-rs-menu-dots-vertical" @click="showButton()"></i>
+          <div class="trashBtn" v-if="onButton"><i class="fi fi-rr-trash" @click="deleteConfirm()"></i></div>          
+          </div>
         </div>
-        <div class="trashBtn"><i class="fi fi-rr-trash" v-if="onButton" @click="deleteConfirm()"></i></div>
+
       </container>
       <div class="title2">
         <textarea type="textarea" @input="resize($event.target), changeInput()" placeholder="제목을 입력해 주세요" 
@@ -67,8 +70,8 @@
         <div class="delete-modal-window">
           <div>해당 회의록 삭제 후에는 다시 복구할 수 없습니다.</div>
             <div class="delete-footer">
-              <el-button type="danger" @click="deleteMinutes()">삭제</el-button>
-              <el-button type="primary" @click="closeButton()">취소</el-button>
+              <button class="danger" type="danger" @click="deleteMinutes()">삭제</button>
+              <button class="document" @click="closeButton()">취소</button>
             </div>
         </div>
       </div> 
@@ -228,29 +231,6 @@ export default {
         .catch((e) => {
         console.log(e);
         });
-      // try {
-      //   const response = axios.get(url + `/calendars/getExistMinutes/${this.teamId}/${this.currentMonth}`);
-      //   console.log("response:",response);
-      //   if (response.data.message === "Success") {
-      //     this.minutes = response.data.data;
-      //     console.log("getMinutes minutes: ", this.minutes);
-      //   }
-      // } catch (error) {
-      //   console.log(error);
-      // }
-
-
-    // try {
-    //   console.log(currentMonth);
-    //   //Promise 처리!!
-    //   const response = await axios.get(url + `/calendars/getExistMinutes/${teamID}/${currentMonth}`);
-    //   const data = response.data.data;
-    //   console.log("data",data)
-    // } catch (error) {
-    //   console.log("error")
-    // }
-
-
     },
 
     //1. 현재 년/월을 기준으로 달력 데이터를 업데이트
@@ -448,10 +428,10 @@ export default {
     },
 
     async clickDate(currentMonth, date) {
-      console.log("clickDate");
+      console.log("clickDate", date);
 
       const clickedDate = new Date(currentMonth);
-      clickedDate.setDate(date + 1);
+      clickedDate.setDate(date);
       const formattedDate = clickedDate.toISOString().substring(0, 10);
       this.targetDate = formattedDate;
       await this.getMinutes();
@@ -748,7 +728,7 @@ td {
 }
 
 .delete-footer {
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 textarea {
@@ -796,38 +776,74 @@ textarea {
     text-align: left;
 }
 
-.fi fi-rs-menu-dots-vertical {
+.fi-rs-menu-dots-vertical {
   /* display: inline; */
   text-align: right;
   /* align-items: right;
   justify-content: right; */
 }
 
-.trashBtn::before {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  background-color: grey;
-  border-radius: 100%;
-}
-.trashBtn i {
-  color: blue;
-}
-
 .trashBtn {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  background-color: blue;
+  text-align: center;
+  position: absolute;
   border-radius: 100%;
+  background-color: #ffebeb;
+  color: #e53535;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  line-height: 42px;
+
+  top: 35px;
+  left: -9px;
+  cursor: pointer;
 }
 
-.trashBtn i:hover {
+.trashBtn i {
+  margin: 0 auto;
+  line-height: 42px;
+  font-size: 18px;
+}
+
+.trashBtn:hover {
+  background-color: #e53535;
   color: white;
 }
 
+.icons {
+  position: relative;
+  height: 20px;
+  /* display: flex; */
+}
 
+.danger,
+.document {
+  margin: 5px;
+  margin-bottom: 5px;
+  border: none;
+  border-radius: 20px;
+  width: 110px;
+  height: 40px;
+}
+
+.danger {
+  color:#ffebeb;
+  background-color: #e53535;
+}
+
+.danger:hover {
+  color:  #ffebeb;
+  background: #b42929;
+}
+
+.document {
+  color:white;
+  background-color: #a5a5a5;
+}
+
+.document:hover {
+  color: white;
+  background-color: #777777;
+}
 
 </style>
