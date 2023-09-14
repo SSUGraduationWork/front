@@ -132,5 +132,21 @@ const RadioButtonCSS = `
                     background-color: #3772FF;
                 }
 `
-const css = MultiSelectCSS+DropdownCSS+RatingCSS+RadioButtonCSS
+
+const AvatarCSS = `
+                .p-avatar{
+                    background-color: #D5D9EA;
+                }
+                .p-avatar-text{
+                    font-weight: 600;
+                    font-size: 15px;
+
+                }
+                .p-avatar-group{
+                    padding: 10px;
+                    padding-left: 30px;
+                }
+`
+
+const css = MultiSelectCSS + DropdownCSS + RatingCSS + RadioButtonCSS + AvatarCSS;
 export default css;

@@ -2,20 +2,11 @@
     <div class="content">
         <div class="top">
             <div class="choose">
-                <form>
-                <select name="watchBySemester" v-model="watchBySemester" @change="this.showProjects()">
-                    <option value="All">All</option>
-                    <option value="2022-1">2022-1</option>
-                    <option value="2022-2">2022-2</option>
-                    <option value="2023-1">2023-1</option>
-                    <option value="2023-2">2023-2</option>
-                </select>
-                </form>
+                <Dropdown @selected="viewProjects"></Dropdown>
             </div>
-            <el-button type="primary" class="new" @click="postGenerate()">새 프로젝트</el-button>
+            <el-button type="primary" class="new" @click="postGenerate()"><i class="fi fi-br-plus"></i>새 프로젝트</el-button>
         </div>
-
-        <ul class="projects">
+        <div v-if="option == '전체'" class="projects">
             <router-link
             v-for="project in projects"
             :key="project.projectId"
@@ -27,10 +18,33 @@
                     <!-- <div @click="updateGenerate(project)"><i class="fi fi-rs-menu-dots-vertical"></i></div> -->
                     <i class="fi fi-rs-menu-dots-vertical" v-on:click.prevent @click="updateGenerate(project)"></i>
                 </div>
-                <div class="semester">{{project.semester}}</div>
-                <div class="projectNumber">{{project.projectNumber}}명 참여</div>
+                <div class="semester">{{project.semester}}학기</div>
+                <div class ="participant">
+                    <Avatar :number="project.projectNumber"></Avatar>
+                    <div class="projectNumber">{{project.projectNumber}}명 참여</div>
+                </div>
             </router-link>
-        </ul>
+        </div>
+
+        <div v-else class="projects">
+            <router-link
+            v-for="project in projects.filter((p) => p.semester==option)"
+            :key="project.projectId"
+            :to="{ name: 'DashboardPro2', params: { projectId: project.projectId } }"
+            class="project"
+            >
+                <div class="container1">
+                    <div class="projectName">{{project.projectName}}</div>
+                    <!-- <div @click="updateGenerate(project)"><i class="fi fi-rs-menu-dots-vertical"></i></div> -->
+                    <i class="fi fi-rs-menu-dots-vertical" v-on:click.prevent @click="updateGenerate(project)"></i>
+                </div>
+                <div class="semester">{{project.semester}}학기</div>
+                <div class ="participant">
+                    <Avatar :number="project.projectNumber"></Avatar>
+                    <div class="projectNumber">{{project.projectNumber}}명 참여</div>
+                </div>
+            </router-link>
+        </div>
     </div>
 
 <!--post 모달창-->
@@ -108,11 +122,13 @@
 
 <script>
 import axios from "axios";
+import Avatar from './components/Avatar.vue';
+import Dropdown from './components/Dropdown.vue';
 const url = "http://localhost:3210";
 
 export default {
     pops: ['projects'],
-
+    components: {Avatar, Dropdown},
     computed: {
         professorId() {
             return this.$route.params.professorId; // route.params에서 professorId를 가져옴
@@ -142,13 +158,13 @@ export default {
         }
     },
 
-    mounted() {
+    created() {
         this.showProjects(); // 컴포넌트가 마운트되면 초기 데이터 표시
     },
 
     data() {
         return {
-            projects: null,
+            projects: [],
             watchBySemester: 'All',
             //생성
             postProject: null, //생성할 프로젝트 객체
@@ -163,7 +179,8 @@ export default {
             updateProjectName: null,
             updateSemester: "",
             //삭제
-            deleteModalDisplay: "none"
+            deleteModalDisplay: "none",
+            option: "전체",
         }
 
     },
@@ -200,6 +217,7 @@ export default {
                 const response = await axios.get(url + `/dashboard/projects/${this.professorId}`);
                 if (response.data.message === "Success") {
                     this.projects = response.data.data;
+
                 }
             } catch (error) {
                 console.log(error);
@@ -286,13 +304,20 @@ export default {
 
         deleteConfirm() {
             this.deleteModalDisplay = "flex";
+        },
+        viewProjects(option){
+            this.option = option
         }
     }
 }
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
 
+* {
+  font-family: 'Red Hat Display', sans-serif;
+}
 .top {
     display: flex;
     justify-content: space-between;
@@ -307,38 +332,46 @@ export default {
     text-align: right;
     width: 160px;
     padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    font-size: 15px;
+    border-radius: 10px;
     outline: none;
     height: 40px;
+    font-weight: 600;
+    background-color: #3772ff;
+    border: none;
+    margin-right: 0.9%;
+    margin-top: 12px;
 }
 
 .content {
-    padding: 100px;
+    width: 85%;
+    margin: 0 auto;
+    margin-top: 95px;
+    min-width: 900px;
 }
 
 .projects {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* 옆으로 정렬할 때 간격 설정 */
-    
     list-style: none;
     color: inherit;
     padding-top: 30px;
+    gap: 3%;
+    width: 100%;
 }
 
 
 .project {
-    width: 380px;
+    width: 31.199999999999%;
     background-color: #ffffff;
-    border: 1.5px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 13px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     transition: transform 0.2s;
     cursor: pointer;
     text-decoration: none; /* 링크에 밑줄 제거 */
     color: inherit; /*색변하지 않도록 */
+    height: 180px;
+    margin-bottom: 30px;
 }
 
 .container1 {
@@ -358,24 +391,22 @@ export default {
 
 .projectName {
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 700;
     text-align: left;
-
 }
 
 .semester {
     font-size: 14px;
     color: #777777;
     text-align: left;
-    padding: 30px
+    padding-left: 30px;
 }
 
 .projectNumber {
     margin-top: 8px;
-    font-size: 14px;
+    font-size: 13px;
     color: #777777;
     text-align: left;
-    padding: 30px
 }
 
 #modal {
@@ -421,7 +452,7 @@ export default {
 
 /* Button Styles */
 .el-button {
-    margin-left: 10px;
+    margin-left: 10px;    
 }
         
 form {
@@ -437,11 +468,6 @@ select {
     outline: none;
 }
 
-        /* 선택된 옵션의 스타일 */
-select:focus {
-    border-color: #007bff; /* 포커스 시 파란색 테두리 */
-}
-
 .custom-input-style {
     width: 400px; /* 너비 조절 */
     padding: 10px;
@@ -452,6 +478,15 @@ select:focus {
     padding-top: 10px;
     padding-bottom: 10px;
 }
-
+.fi-br-plus{
+    font-size: 13px;
+    margin-right: 15px;
+}
+.participant{
+    display: flex;
+    height: 40px;
+    line-height: 40px;
+    margin-top: 10px;
+}
 
 </style>
