@@ -57,7 +57,7 @@
     </div>
 </div>
 </template>
-  
+
 <script>
 import { collapsed, toggleSidebar, sidebarWidth, sidebarHeight } from './components/state'
 import { axiosInstance } from '@/axios';
@@ -86,8 +86,28 @@ export default {
         memberId : null
         };
     },
-    created() {
-    this.fetchFeedbackComments();
+    beforeCreate() {
+      try {
+        const response = axiosInstance.get(`/comment/${this.boardId}/${this.teamId}`)
+          .then((response) => {
+            console.log(response);
+            this.feedbackList = response.data.feedback;
+            this.feedbackStatusList=response.data.feedbackStatus;
+            this.writerList=response.data.writer;
+            this.memberId = response.data.userId;
+
+            for (const feedbackStatus of this.feedbackStatusList){
+              this.feedbackStatuses[feedbackStatus.userId] = feedbackStatus;
+            }
+            for (const writer of this.writerList){
+              this.writers[writer.userId] = writer;
+            }
+          })
+
+      } catch (error) {
+        console.error('Error fetching feedback comments:', error);
+      }
+    //this.fetchFeedbackComments();
   },
   methods: {
     formatDate(dateArray) {
@@ -127,27 +147,6 @@ export default {
       const formattedDate = `${year}.${month}.${day} ${ampm} ${formattedHours}:${formattedMinutes}`;
 
       return formattedDate;
-    },
-    async fetchFeedbackComments() {
-      try {
-        const response = await axiosInstance.get(`/comment/${this.boardId}/${this.teamId}`);
-        console.log(response);
-        this.feedbackList = response.data.feedback;
-        this.feedbackStatusList=response.data.feedbackStatus;
-        this.writerList=response.data.writer;
-        this.memberId = response.data.userId;
-
-        for (const feedbackStatus of this.feedbackStatusList){
-          this.feedbackStatuses[feedbackStatus.userId] = feedbackStatus;
-        }
-        for (const writer of this.writerList){
-          this.writers[writer.userId] = writer;
-        }
-
-
-      } catch (error) {
-        console.error('Error fetching feedback comments:', error);
-      }
     },
     toggleApproval() {
       this.isApproved = !this.isApproved;

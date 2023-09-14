@@ -3,8 +3,8 @@
     <div class = "header-info">
       <ul>
         <div class = "header-right-div">
-          <li class = "header-right">
-            <div class = "circle-profile">
+          <li class = "header-right profile">
+            <div class = "circle-profile" @click="goToMyPage">
               <img :src = "headerInfo.picture_url" class = "profile-user-img">
             </div>
           </li>
@@ -36,6 +36,7 @@
 <script>
 import {ref, onBeforeMount} from 'vue'
 import axios from 'axios';
+import {axiosInstance} from '@/axios';
 import {useRouter, useRoute} from 'vue-router'
 import { useStore } from 'vuex';
 import Alarm from './Alarm.vue';
@@ -82,6 +83,19 @@ export default {
     },
     closeAlarm() {
       this.isModalOpen = false;
+    },
+    goToMyPage() {
+      axiosInstance.get("/dashboard")
+        .then((res) => {
+          const userId = res.data.result.id;
+          const role = res.data.result.role;
+          const uri = `/dashboard/${role}/${userId}`
+          console.log(uri);
+          this.$router.push(uri);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
     }
   }
 }
@@ -172,5 +186,8 @@ h5 {
 .alarm-clicked{
   background-color : #3772FF;
   color: white;
+}
+.circle-profile:hover{
+  border: 1.5px solid #ccc;
 }
 </style>
