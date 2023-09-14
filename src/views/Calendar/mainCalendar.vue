@@ -27,10 +27,9 @@
     </table>
   </div>
     <!--모달-->
-    <!--v-click 추가!!!!!!!!1-->
   <!-- <div class="modal"> -->
   <div id="modal" class="modal-overlay" :style="{display:modalDisplay}">
-    <div class="modal_window" v-click-outside="updateFunction" v-if="minutes != null"> <!--v-click-outside="modalDisplay ? hello : null"-->
+    <div class="modal_window" v-click-outside="updateFunction" v-if="minutes != null">
       <!--이미 회의록 존재할 경우: getMinutes()-->    
       <container class="date1">
         <div class="container1">
@@ -183,53 +182,14 @@ export default {
 
 
   mounted() {
-    // this.initial();
     this.updateCalendar();
-    // this.getExistMinuteList(this.teamId, this.currentMonth);
   },
 
   updated() {
     this.getExistMinuteList(this.teamId, this.currentMonth);
-    // this.existMinutesList = this.getExistMinuteList(this.teamId, this.currentMonth);
-    // console.log(this.existMinutesList);
   },
 
   methods: {
-    // async checkdate(day) {
-    //   // await this.getExistMinuteList(this.teamId, this.currentMonth);
-
-    //   if (this.currentMonth == this.checkCurrentMonth && this.once == true) {
-    //     if (day < 10) {
-    //       const checkday = String(day).padStart(2, '0');
-    //       if (this.existMinutesList != null && this.existMinutesList.includes(checkday)) {
-    //         console.log("exist day", checkday);
-    //         return true;
-    //       } else {
-    //         console.log("not exist", checkday);
-    //         return false;
-    //       }
-
-    //     } else {
-    //       const checkday = day.toString();
-    //       if (this.existMinutesList != null && this.existMinutesList.includes(checkday)) {
-    //         console.log("exist day", checkday);
-    //         return true;
-    //       }
-    //       else {
-    //         console.log("not exist", checkday);
-    //         return false;
-    //       }        
-    //     }
-    //   }
-    //   //   console.log("day", day);
-    //     // const checkday = day.toString();
-    //     // console.log("checkday:", checkday);
-    //     // this.dayExist = this.existMinutesList.some(string => string.includes(checkday))
-
-    //     // // console.log("checkdate currentMonth", this.currentMonth);
-    //     // this.once = false;
-    //     // return dayExist;
-    // },
 
     changeInput() {
       this.isModified = true;
