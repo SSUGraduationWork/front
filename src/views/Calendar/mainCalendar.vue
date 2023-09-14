@@ -1,5 +1,6 @@
 <template>
-  <div class="calendar">
+
+  <div class="calendar" v-if="this.checkExist == true">
     <div class="calendar_header">
       <!-- <el-button class="btn" icon="fi fi-rr-angle-left" @click="previousMonth()"></el-button> -->
       <i class="fi fi-bs-angle-left" @click="previousMonth()"></i>
@@ -13,17 +14,17 @@
           <th v-for="day in days" :key="day">{{ day }}</th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="week in calendar" :key="week">
-          <td v-for="date in week" :key="date">
-            <button v-if="date.classes !== 'notCurrentMonth' && !isToday(currentMonth, date.day)" @click="clickDate(currentMonth, date.day)" class="day">{{ date.day }}</button>
-            <button v-if="date.classes == 'notCurrentMonth'" class="notCurrentDay">{{ date.day }}</button>
-            <button v-if="isToday(currentMonth, date.day)" @click="clickDate(currentMonth, date.day)" class="today">{{date.day}}</button>
-            <div v-if="date.classes != 'notCurrentMonth'">v</div>
-            <div v-else></div>
-          </td>
-        </tr>
-      </tbody>
+        <tbody>
+          <tr v-for="week in calendar" :key="week">
+            <td v-for="date in week" :key="date">
+              <button v-if="date.classes !== 'notCurrentMonth' && !isToday(currentMonth, date.day)" @click="clickDate(currentMonth, date.day)" class="day">{{ date.day }}</button>
+              <button v-if="date.classes == 'notCurrentMonth'" class="notCurrentDay">{{ date.day }}</button>
+              <button v-if="isToday(currentMonth, date.day)" @click="clickDate(currentMonth, date.day)" class="today">{{date.day}}</button>
+              <div v-if="date.classes != 'notCurrentMonth' && checkDay(date.day)">v</div>
+              <div v-else></div>
+            </td>
+          </tr>
+        </tbody>
     </table>
   </div>
     <!--모달-->
@@ -155,6 +156,7 @@ export default {
       once: false,  //false일 경우 한번이미됨. true일 경우 첫 한 번
       checkday: '',
       dayExist: false,
+      checkExist: false,
     };
   },
 
@@ -185,14 +187,17 @@ export default {
 
 
   mounted() {
-    this.updateCalendar();
-  },
-
-  updated() {
-    this.getExistMinuteList(this.teamId, this.currentMonth);
+    this.initialFunction();
   },
 
   methods: {
+    checkDay(day) {
+      if (this.existMinutesList.includes(day)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
 
     changeInput() {
       this.isModified = true;
@@ -213,7 +218,17 @@ export default {
       this.deleteClose();
     },
 
+    async initialFunction() {
+      this.checkExist = false;
+      await this.updateCalendar();
+      this.getExistMinuteList(this.teamId, this.currentMonth);
+    },
 
+    async secondFunction(selectedMonth) {
+      this.checkExist = false;
+      await this.updateCalendarWithCustomMonth(selectedMonth);
+      this.getExistMinuteList(this.teamId, this.currentMonth);
+    },
 
     //0. 해당 팀이 해당 달에 가지고 있는 회의록 날짜 리스트로 받기
     async getExistMinuteList(teamID, currentMonth) {
@@ -225,6 +240,7 @@ export default {
           this.checkCurrentMonth = this.currentMonth;
           this.existMinutesList = response.data.data;
           // console.log("this.currentMonth:", this.currentMonth);
+          this.checkExist = true;
           console.log("this.existMinutesList: ", this.existMinutesList);
         } 
         })
@@ -333,11 +349,11 @@ export default {
     //3. 이전 달, 다음 달 기준으로 넘기는 함수
     previousMonth() {
       this.currentMonth = this.getPreviousMonth(this.currentMonth);
-      this.updateCalendarWithCustomMonth(this.currentMonth);
+      this.secondFunction(this.currentMonth);
     },
     nextMonth() {
       this.currentMonth = this.getNextMonth(this.currentMonth);
-      this.updateCalendarWithCustomMonth(this.currentMonth);
+      this.secondFunction(this.currentMonth);
     },
     getPreviousMonth(month) {
       const [year, currentMonth] = month.split('-').map(Number);
