@@ -11,7 +11,7 @@
         <div class="update-modal-overlay">
                 <!--v-model 사용해야 입력된 값이 화면에 보임. v-model 사용하기 위해 해당 변수를 data에 정의해야함-->
                 <!-- <el-input placeholder="학기를 입력해 주세요" v-model="postSemester"></el-input> -->
-            <UpdateModalDropdown v-if="updateSemester!=''" :updateSemester = "updateSemester"></UpdateModalDropdown>
+            <UpdateModalDropdown v-if="updateSemester!=''" :updateSemester = "updateSemester" @selected = "changeUpdateSemester"></UpdateModalDropdown>
             <input
                 style="margin-top:10px;"
                 v-model="updateProjectName"
@@ -35,9 +35,7 @@
             <div class = "icon-circle"><i class="fi fi-sr-briefcase"></i></div>
         </div>
         <div class="post-modal-overlay">
-                <!--v-model 사용해야 입력된 값이 화면에 보임. v-model 사용하기 위해 해당 변수를 data에 정의해야함-->
-                <!-- <el-input placeholder="학기를 입력해 주세요" v-model="postSemester"></el-input> -->
-                <UpdateModalDropdown :updateSemester = "postSemester"></UpdateModalDropdown>
+                <UpdateModalDropdown :updateSemester = "postSemester" @selected="changeSemester"></UpdateModalDropdown>
                 <input
                     style="margin-top:10px;"
                     placeholder="프로젝트명을 입력해 주세요."
@@ -142,6 +140,7 @@ import CreateModalDropdown from './components/CreateModalDropdown.vue';
 import ModButton from "./components/ModButton.vue";
 import Loader from '../../components/Loader';
 import {ref} from 'vue';
+import { axiosInstance } from '@/axios';
 const url = "http://localhost:3210";
 
 export default {
@@ -210,8 +209,8 @@ export default {
         },
         //생성
         postProjects() {
-        axios
-            .post(url + '/dashboard/projects', this.postSetParams)
+        axiosInstance
+            .post('/dashboard/projects', this.postSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.postProject = response.data.data;
@@ -233,13 +232,14 @@ export default {
         
         async getProjects() {
             try {
-                const response = await axios.get(url + `/dashboard/projects/${this.professorId}`);
+                const response = await axiosInstance.get(`/dashboard/professor/${this.professorId}`);
                 if (response.data.message === "Success") {
                     this.projects = response.data.data;
 
                 }
                 this.loading=false;
             } catch (error) {
+                //forbidden
                 console.log(error);
             }
         },
@@ -283,14 +283,12 @@ export default {
         },
         //수정
         updateProjects() {
-            this.loading=true;
-        axios
-            .patch(url + '/dashboard/projects', this.updateSetParams)
+        axiosInstance
+            .post('/dashboard/project', this.updateSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.updateProject = response.data.data;
                 } 
-            this.loading=false;
             this.$router.go(0)  //실행된 후 처음 화면으로
             })
             .catch((e) => {
@@ -311,8 +309,8 @@ export default {
         },
 
         deleteProjects() {
-        axios
-            .delete(url + `/dashboard/projects/${this.updateProjectId}`)
+        axiosInstance
+            .delete(`/dashboard/projects/${this.updateProjectId}`)
             .then((response) => {
             if (response.data.message == "Success") {
                 console.log("Completely Delete");
@@ -331,6 +329,7 @@ export default {
             this.option = option
         },
         modButtonControl(id){
+            this.updateProjectId = id;
             const projectId = id.toString();
             if(this.moreButtonOpen[projectId] == true){
                 this.moreButtonOpen[projectId]=false;
@@ -342,6 +341,12 @@ export default {
             console.log(this.moreButtonOpen[(id).toString()])
             this.moreButtonOpen[(id).toString()]=false
             console.log(this.moreButtonOpen[(id).toString()])
+        },
+        changeSemester(option){
+            this.postSemester = option;
+        },
+        changeUpdateSemester(option){
+            this.updateSemester = option;
         }
     }
 }
@@ -615,7 +620,6 @@ input:focus::placeholder{
     margin: 0 auto;
     margin-top: 10em;
     height: 235px;
-    overflow: scroll;
 }
 .delete{
     background-color: #e53535;

@@ -1,5 +1,8 @@
 <template>
-<div>
+<div v-if="loading" class="loading-container">
+    <Loader></Loader>
+</div>
+<div v-else>
 <div class = "black-bg" :style="{display:updateModalDisplay}">
     <div class = "white-bg">
         <div class ="icon-box">
@@ -30,13 +33,13 @@
         </div>
         <div v-if="option == '전체'" class="teams">
             <router-link
-            v-for="(team, index) in teams" :key="team.teamId" class="team"
+            v-for="team in teams" :key="team.teamId" class="team"
             :to="{ name: 'Work', params: { teamId: team.teamId } }">
-        
+
             <!-- <li v-for="(team, index) in teams" :key="team.teamId" class="team"> -->
                 <div class="container1">
                     <!-- index를 사용하여 projects 배열에서 관련된 데이터를 가져옴 -->
-                    <div class="projectName">{{ projects[index].projectName }}</div>
+                    <div class="projectName">{{ team.projectName }}</div>
                     <div class="more-button" v-on:click.prevent @click="modButtonControl(team.teamId)">
                         <i class="fi fi-rs-menu-dots-vertical"></i>
                         <StudentModButton :moreButtonOpen = "moreButtonOpen[(team.teamId).toString()]" 
@@ -53,13 +56,13 @@
         </div>
         <div v-else class="teams">
             <router-link
-            v-for="(team, index) in teams" :key="team.teamId" class="team"
+            v-for="team in teams.filter((t) => t.semester == option)" :key="team.teamId" class="team"
             :to="{ name: 'Work', params: { teamId: team.teamId } }">
         
             <!-- <li v-for="(team, index) in teams" :key="team.teamId" class="team"> -->
                 <div class="container1">
                     <!-- index를 사용하여 projects 배열에서 관련된 데이터를 가져옴 -->
-                    <div class="projectName">{{ projects[index].projectName }}</div>
+                    <div class="projectName">{{ team.projectName }}</div>
                     <div class="more-button" v-on:click.prevent @click="modButtonControl(team.teamId)">
                         <i class="fi fi-rs-menu-dots-vertical"></i>
                         <StudentModButton :moreButtonOpen = "moreButtonOpen[(team.teamId).toString()]" 
@@ -81,17 +84,15 @@
 
 <script>
 import axios from "axios";
-import UpdateModalDropdown from './components/UpdateModalDropdown.vue';
-import CreateModalDropdown from './components/CreateModalDropdown.vue';
+import { axiosInstance } from '@/axios';
 import Avatar from './components/Avatar.vue';
 import Dropdown from './components/Dropdown.vue';
 import StudentModButton from './components/StudentModButton';
-
-const url = "http://localhost:3210";
+import Loader from '../../components/Loader.vue'
 
 export default {
     pops: ['teams'],
-    components: {Dropdown, StudentModButton, Avatar},
+    components: {Dropdown, StudentModButton, Avatar, Loader},
     computed: {
         studentId() {
             return this.$route.params.studentId; // route.params에서 professorId를 가져옴
@@ -110,13 +111,11 @@ export default {
     },
 
     mounted() {
-        this.showTeams(); // 컴포넌트가 마운트되면 초기 데이터 표시
+        this.getTeams(); // 컴포넌트가 마운트되면 초기 데이터 표시
     },
 
     data() {
         return {
-            //semester 별로 
-            watchBySemester2: 'All',
 
             teams: null,
             projects: null,
@@ -132,51 +131,21 @@ export default {
 
             moreButtonOpen: {},
             option: "전체",
+            loading: true,
         }
 
     },
 
     methods: {
-        async showTeams() {
-            console.log("studentOd: ", this.studentId);
-            console.log("semester: ", this.watchBySemester2);
-            if (this.watchBySemester2 == 'All') {
-                console.log("겟팀")
-                await this.getTeams();
-            }
-            else {
-                await this.getTeamsBySemester();
-            }
 
-            // this.modalDisplay = "flex";
-        },
-
-        async getTeamsBySemester() {
-            console.log("getTeamsBySemester", this.watchBySemester2);
-            try {
-                const response = await axios.get(url + `/dashboard/teams/${this.studentId}/${this.watchBySemester2}`);
-                console.log("response: ",response)
-                if (response.data.message == null) {
-                    this.teams = null;
-                    this.projects = null;
-                }
-                if (response.data.message === "Success") {
-                    this.teams = response.data.data.object1;
-                    this.projects = response.data.data.object2;
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        
         async getTeams() {
-            console.log("getTeams", this.watchBySemester2);
             try {
-                const response = await axios.get(url + `/dashboard/teamsByStu/${this.studentId}`);
+                const response = await axiosInstance.get(`/dashboard/student/${this.studentId}`);
                 if (response.data.message === "Success") {
-                    this.teams = response.data.data.object1;
-                    this.projects = response.data.data.object2;
+                    console.log(response);
+                    this.teams = response.data.data;
                 }
+                this.loading = false;
             } catch (error) {
                 console.log(error);
             }
@@ -198,12 +167,12 @@ export default {
         },
 
         updateTeams() {
-            axios
-                .patch(url + '/dashboard/teams', this.updateSetParams)
+            axiosInstance
+                .post('/dashboard/teams', this.updateSetParams)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     this.updateTeam = response.data.data;
-                    } 
+                } 
                 this.$router.go(0)  //실행된 후 처음 화면으로
                 })
                 .catch((e) => {
@@ -228,6 +197,7 @@ export default {
             }
         },
         watchBySemester2(option){
+            console.log(option);
             this.option = option;
         }
 
@@ -243,6 +213,9 @@ export default {
 
 .choose {
     text-align: left;
+}
+.loading-container {
+  height: 100%;
 }
 
 .content {

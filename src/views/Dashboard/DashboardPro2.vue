@@ -78,10 +78,10 @@
 
             <div class="container1">            
                 <div class="teamName">{{team.teamName}}</div>
-                <div  class = "more-button" v-on:click.prevent @click="modButtonControl(team.teamId)">
+                <div class = "more-button" v-on:click.prevent @click="modButtonControl(team.teamId)">
                     <i class="fi fi-rs-menu-dots-vertical"></i>
                     <TeamDeleteButton :moreButtonOpen = "moreButtonOpen[(team.teamId).toString()]" 
-                        @deleteProject="deleteModalDisplay='flex'" 
+                        @deleteProject="deleteGenerate(team.teamId)" 
                         @updateProject="updateGenerate(team)">
                     </TeamDeleteButton>
                 </div>
@@ -93,12 +93,14 @@
             </div>
             </router-link>
         </div>
+        <div class ="margin-space"></div>
     </div>
 </div>
 </template>
 
 <script>
 import axios from "axios";
+import {axiosInstance} from '@/axios';
 import TeamDeleteButton from './components/TeamDeleteButton.vue';
 import Avatar from './components/Avatar.vue';
 import Loader from '../../components/Loader.vue'
@@ -144,7 +146,6 @@ export default {
             projectName: null,
             //생성
             postTeam: null,
-            studentId: 7,
             postTeamName: null, //생성할 프로젝트 객체
             postModalDisplay: "none",
 
@@ -155,10 +156,13 @@ export default {
             updateTeamId: null,
             updateModalDisplay: "none",
 
+            deleteTeamId : null,
+
             //삭제
             deleteModalDisplay: "none",
             moreButtonOpen: {},
             loading : true,
+            owner: false,
         }
 
     },
@@ -169,20 +173,18 @@ export default {
         },
         //생성
         postTeams() {
-        this.loading = true;
-        axios
-            .post(url + `/dashboard/teams/${this.studentId}`, this.postSetParams)
-            .then((response) => {
-            if (response.data.message == "Success") {
-                this.postTeam = response;
-                console.log("postProject: ", this.postTeam)
-                this.loading = false;
-                } 
-            this.$router.go(0)  //실행된 후 처음 화면으로
-            })
-            .catch((e) => {
-            console.log(e);
-            });
+
+            axiosInstance
+                .post(`/dashboard/team`, this.postSetParams)
+                .then((response) => {
+                if (response.data.message == "Success") {
+                    this.postTeam = response;
+                    this.$router.go(0)  //실행된 후 처음 화면으로
+                    } 
+                })
+                .catch((e) => {
+                console.log(e);
+                });
         },
         
         close() {
@@ -194,10 +196,14 @@ export default {
 
         async getTeams() {
             try {
-                const response = await axios.get(url + `/dashboard/teamsByPro/${this.projectId}`);
+                const response = await axiosInstance.get(`/dashboard/teamsByPro/${this.projectId}`);
                 if (response.data.message === "Success") {
                     this.teams = response.data.data.object1;
                     this.projectName = response.data.data.string;
+                    if(response.data.data.owner){
+                        this.owner = response.data.data.owner;
+                    }
+                    console.log(response.data.data);
                 }
                 this.loading = false;
             } catch (error) {
@@ -222,8 +228,8 @@ export default {
         //수정
     
         updateTeams() {
-        axios
-            .patch(url + '/dashboard/teams', this.updateSetParams)
+        axiosInstance
+            .post('/dashboard/teams', this.updateSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.postTeam = response.data.data;
@@ -246,8 +252,9 @@ export default {
         },
 
         deleteTeams() {
-        axios
-            .delete(url + `/dashboard/teams/${this.updateTeamId}`)
+        console.log(this.deleteTeamId);
+        axiosInstance
+            .delete(`/dashboard/teams/${this.deleteTeamId}`)
             .then((response) => {
             if (response.data.message == "Success") {
                 console.log("Completely Delete");
@@ -270,6 +277,10 @@ export default {
                 this.moreButtonOpen[teamId] = true;
             }
         },
+        deleteGenerate(id) {
+            this.deleteModalDisplay='flex'
+            this.deleteTeamId = id;
+        }
 
     }
 }
@@ -593,5 +604,8 @@ input:focus::placeholder{
     margin-top: 10em;
     height: 235px;
     overflow: scroll;
+}
+.margin-space{
+    margin-top: 100px;
 }
 </style>
