@@ -31,7 +31,7 @@ axiosInstance.get(`/accounts/oauth2/google/callback?code=${route.query.code}`)
                 store.commit(`${userStore}/setUserId`, res.data.result.user_id );
                 store.commit(`${userStore}/setJwtToken`, res.data.result.jwtToken);
                 
-                if (redirectURL.value != null){
+                if (redirectURL.value != null && redirectURL.value != "/dashboard"){
                     store.commit('setRedirectURL', null);
                     router.push(`${redirectURL.value}`);
                 } else{

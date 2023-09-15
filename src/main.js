@@ -15,7 +15,10 @@ import MultiSelect from 'primevue/multiselect';
 import Dropdown from 'primevue/dropdown';
 import Rating from 'primevue/rating';
 import RadioButton from 'primevue/radiobutton';
-import PrimeVueCSS from '../public/primevue_style'
+import PrimeVueCSS from '../public/primevue_style';
+import Avatar from 'primevue/avatar';
+import AvatarGroup from 'primevue/avatargroup';
+
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
@@ -42,5 +45,7 @@ app.component('MultiSelect', MultiSelect);
 app.component('Dropdown', Dropdown);
 app.component('Rating', Rating);
 app.component('RadioButton', RadioButton);
+app.component('Avatar', Avatar);
+app.component('AvatarGroup', AvatarGroup);
 
 app.mount('#app')

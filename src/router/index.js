@@ -54,7 +54,7 @@ const routes = [
     props: true
   },
   {
-    path: '/dashboard/professor/projects/:professorId',
+    path: '/dashboard/professor/:professorId',
     name: 'DashboardPro1',
     component: () => import('../views/Dashboard/DashboardPro1.vue'),
     props: true
