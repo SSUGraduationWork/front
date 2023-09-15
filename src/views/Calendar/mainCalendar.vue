@@ -3,9 +3,9 @@
   <div class="calendar" v-if="this.checkExist == true">
     <div class="calendar_header">
       <!-- <el-button class="btn" icon="fi fi-rr-angle-left" @click="previousMonth()"></el-button> -->
-      <i class="fi fi-bs-angle-left" @click="previousMonth()"></i>
+      <div class="move"><i class="fi fi-bs-angle-left" @click="previousMonth()"></i></div>
       <div class="currentMonth">{{currentMonth}}</div>
-      <i class="fi fi-bs-angle-right" @click="nextMonth()"></i>
+      <div class="move"><i class="fi fi-bs-angle-right" @click="nextMonth()"></i></div>
       <!-- <el-button class="btn" icon="fi fi-rr-angle-right" @click="nextMonth()"></el-button> -->
     </div>
     <table>
@@ -61,7 +61,7 @@
         <div class="delete-modal-window">
           <div>title과 input 모두 입력하시오</div>
           <div class="delete-footer">
-            <el-button type="primary" @click="inputClose()">확인</el-button>
+            <button class="document" @click="inputClose()">확인</button>
           </div>
         </div>
       </div>
@@ -71,32 +71,14 @@
         <div class="delete-modal-window">
           <div>해당 회의록 삭제 후에는 다시 복구할 수 없습니다.</div>
             <div class="delete-footer">
-              <button class="danger" type="danger" @click="deleteFunction()">삭제</button>
-      <div class="content2">
-        <textarea
-          @input="resize($event.target)"
-            style="margin-top:10px; width: 100%; height: 'auto'"
-            type="textarea"
-            placeholder="내용을 입력해 주세요."
-            v-model="content"
-          ></textarea>
-      </div>
-            <!--모두 입력하라는 알림창-->
-      <div id="modal" class="deleteModal" :style="{display: inputModalDisplay}">
-        <div class="delete-modal-window">
-          <div>title과 input 모두 입력하시오</div>
-          <div class="delete-footer">
-            <el-button type="primary" @click="inputClose()">확인</el-button>
+              <button class="danger" @click="deleteFunction()">삭제</button>
+              <button class="document" @click="closeButton()">취소</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>        <button class="document" @click="closeButton()">취소</button>
-            </div>
-        </div>
-      </div> 
-
-    </div>
+  </div>        
     
       <!--존재하지 않을 경우-->
       <!--회의록이 아직 존재하지 않을 경우: postMinutes()-->
@@ -106,6 +88,25 @@
         <textarea type="textarea" class="inputTitle" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
         v-model="title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
         ></textarea>
+      </div>
+      <div class="content2">
+        <textarea 
+          @input="resize($event.target), changeInput()"
+            style="margin-top:10px; width: 100%; height: 'auto'"
+            type="textarea"
+            placeholder="내용을 입력해 주세요."
+            v-model="content" @change="isModified=true"
+        ></textarea>
+      </div>
+
+            <!--모두 입력하라는 알림창-->
+      <div id="modal" class="deleteModal" :style="{display: inputModalDisplay}">
+        <div class="delete-modal-window">
+          <div>title과 input 모두 입력하시오</div>
+          <div class="delete-footer">
+            <button class="document" @click="inputClose()">확인</button>
+          </div>
+        </div>
       </div>
       
   </div>
@@ -571,6 +572,11 @@ export default {
   font-family: 'Red Hat Display', sans-serif;
 }
 
+.move{
+  cursor: pointer;
+}
+
+
 .currentMonth {
   font-size: 25px;
   margin-right: 40px;
@@ -906,6 +912,7 @@ textarea {
 .danger:hover {
   color:  #ffebeb;
   background: #b42929;
+  cursor: pointer;
 }
 
 .document {
@@ -916,6 +923,7 @@ textarea {
 .document:hover {
   color: white;
   background-color: #777777;
+  cursor: pointer;
 }
 .dot {
   /* padding-top: 20px; */
