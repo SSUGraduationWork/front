@@ -85,7 +85,7 @@ export default {
       this.isModalOpen = false;
     },
     goToMyPage() {
-      axiosInstance.get("/dashboard")
+      axiosInstance.get("/dashboard/mypage")
         .then((res) => {
           const userId = res.data.result.id;
           const role = res.data.result.role;

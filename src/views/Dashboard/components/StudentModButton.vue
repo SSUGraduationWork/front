@@ -23,7 +23,6 @@ const props = defineProps({
 const modifyPost = () => {
     emit('updateProject');
     props.moreButtonOpen = false;
-    console.log("mod");
 }
 
 </script>

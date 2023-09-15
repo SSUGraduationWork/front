@@ -30,7 +30,7 @@
 <script setup>
 import RadioButton from "./components/RadioButton";
 import { ref, computed } from "vue";
-import axios from 'axios';
+import {axiosInstance} from '@/axios';
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router";
 
@@ -51,7 +51,7 @@ const selectedRole = (r) => {
     role.value = r;
 }
 const register = () => {
-    axios.post('http://localhost:3210/accounts/signup', 
+    axiosInstance.post('/accounts/signup', 
         {   user_email : userEmail.value,
             user_name: name.value, 
             role: role.value, 
@@ -65,7 +65,7 @@ const register = () => {
                 store.commit(`${userStore}/setUserId`, res.data.result.user_id );
                 store.commit(`${userStore}/setJwtToken`, res.data.result.jwtToken);
 
-                router.push(`/dashboard/${res.data.result.user_id}`);
+                router.push(`/dashboard/${res.data.result.role}/${res.data.result.user_id}`);
             }
         })
 }
