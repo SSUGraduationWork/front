@@ -43,7 +43,7 @@ import vClickOutside from 'click-outside-vue3'
       },
       selectOption(option) {
         this.selectedOption = option;
-        // 선택한 작업의 workId를 부모 컴포넌트로 전달
+        // 선택한 학기를 부모 컴포넌트로 전달
         this.$emit('selected', option);
         this.isOpen = false;
       },

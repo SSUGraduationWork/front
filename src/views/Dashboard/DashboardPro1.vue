@@ -1,5 +1,8 @@
 <template>
-<div>
+<div v-if="loading" class = "loading-container">
+    <Loader></Loader>
+</div>
+<div v-else>
 <div class = "black-bg" :style="{display:updateModalDisplay}">
     <div class = "white-bg">
         <div class ="icon-box">
@@ -137,12 +140,13 @@ import Dropdown from './components/Dropdown.vue';
 import UpdateModalDropdown from './components/UpdateModalDropdown.vue';
 import CreateModalDropdown from './components/CreateModalDropdown.vue';
 import ModButton from "./components/ModButton.vue";
+import Loader from '../../components/Loader';
 import {ref} from 'vue';
 const url = "http://localhost:3210";
 
 export default {
     pops: ['projects'],
-    components: {Avatar, Dropdown, UpdateModalDropdown, CreateModalDropdown, ModButton},
+    components: {Avatar, Dropdown, UpdateModalDropdown, CreateModalDropdown, ModButton, Loader},
     computed: {
         professorId() {
             return this.$route.params.professorId; // route.params에서 professorId를 가져옴
@@ -195,6 +199,7 @@ export default {
             deleteModalDisplay: "none",
             option: "전체",
             moreButtonOpen: ref({}),
+            loading: true,
         }
 
     },
@@ -233,24 +238,25 @@ export default {
                     this.projects = response.data.data;
 
                 }
+                this.loading=false;
             } catch (error) {
                 console.log(error);
             }
         },
 
-        async getProjectsBySemester() {
-            try {
-                const response = await axios.get(url + `/dashboard/projects/${this.professorId}/${this.watchBySemester}`);
-                if (response.data.message == null) {
-                    this.projects = null
-                }
-                if (response.data.message === "Success") {
-                    this.projects = response.data.data;
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        },
+        // async getProjectsBySemester() {
+        //     try {
+        //         const response = await axios.get(url + `/dashboard/projects/${this.professorId}/${this.watchBySemester}`);
+        //         if (response.data.message == null) {
+        //             this.projects = null
+        //         }
+        //         if (response.data.message === "Success") {
+        //             this.projects = response.data.data;
+        //         }
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // },
 
         async showProjects() {
             if (this.watchBySemester == 'All') {
@@ -277,12 +283,14 @@ export default {
         },
         //수정
         updateProjects() {
+            this.loading=true;
         axios
             .patch(url + '/dashboard/projects', this.updateSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.updateProject = response.data.data;
                 } 
+            this.loading=false;
             this.$router.go(0)  //실행된 후 처음 화면으로
             })
             .catch((e) => {
@@ -635,5 +643,8 @@ input:focus::placeholder{
 }
 .delete:hover{
     background-color: #D02323;
+}
+.loading-container {
+  height: 100%;
 }
 </style>
