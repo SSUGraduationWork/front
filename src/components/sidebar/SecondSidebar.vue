@@ -36,7 +36,7 @@ export default {
     data() {
         return {
         dashboardUrl: computed(() => '/dashboard/student/' + this.studentId),
-        settingUrl: computed(() => '/setting/' + this.studentId)
+        settingUrl: computed(() => '/settingStu/' + this.studentId)
         }
     },
 }

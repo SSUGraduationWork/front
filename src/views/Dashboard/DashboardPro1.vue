@@ -200,7 +200,6 @@ export default {
             moreButtonOpen: ref({}),
             loading: true,
         }
-
     },
 
     methods: {
@@ -210,7 +209,7 @@ export default {
         //생성
         postProjects() {
         axiosInstance
-            .post('/dashboard/projects', this.postSetParams)
+            .post(`/dashboard/projects/${this.professorId}`, this.postSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.postProject = response.data.data;
@@ -284,7 +283,7 @@ export default {
         //수정
         updateProjects() {
         axiosInstance
-            .post('/dashboard/project', this.updateSetParams)
+            .patch(`/dashboard/projects/${this.updateProjectId}`, this.updateSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.updateProject = response.data.data;

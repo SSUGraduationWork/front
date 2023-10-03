@@ -66,9 +66,16 @@ const routes = [
     props: true
   },
   {
+    path: '/dashboard/student/teams/:projectId',
+    name: 'DashboardStu1',
+    component: () => import('../views/Dashboard/DashboardStu1.vue'),
+    props: true
+  },
+
+  {
     path: '/dashboard/student/:studentId',
-    name: 'DashboardStu',
-    component: () => import('../views/Dashboard/DashboardStu.vue')
+    name: 'DashboardStu2',
+    component: () => import('../views/Dashboard/DashboardStu2.vue')
   },
   {
     path: '/chatting/:teamId',
@@ -110,13 +117,13 @@ const routes = [
     props: true,
   },
   {
-    path: '/setting/:professorId',
+    path: '/settingPro/:professorId',
     name: 'Setting1',
     component: () => import('../views/Setting.vue'),
     props: true,
   },
   {
-    path: '/setting/:studentId',
+    path: '/settingStu/:studentId',
     name: 'Setting2',
     component: () => import('../views/Setting.vue'),
     props: true,

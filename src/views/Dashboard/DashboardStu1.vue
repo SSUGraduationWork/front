@@ -6,7 +6,7 @@
 <div class = "black-bg" :style="{display:updateModalDisplay}">
     <div class = "white-bg">
         <div class ="icon-box">
-            <div class = "icon-circle"><i class="fa fa-users" aria-hidden="true"></i></div>
+        <div class = "icon-circle"><i class="fa fa-users" aria-hidden="true"></i></div>
         </div>
         <div class="update-modal-overlay">
             <input
@@ -36,10 +36,9 @@
                 v-model="postTeamName"
                 class="custom-input-style"
             >
-                    <!-- dialog footer 영역 -->
-                    <!-- <template v-slot:footer> -->
+            
         </div>
-        <div class="footer"><!--2-->
+        <div class="footer">
             <span class="dialog-footer">
                 <button @click="close()" class="cancel">취소</button>
                 <button type="primary" @click="postTeams()" class = "ok">생성</button>
@@ -78,13 +77,13 @@
 
             <div class="container1">            
                 <div class="teamName">{{team.teamName}}</div>
-                <div class = "more-button" v-on:click.prevent @click="modButtonControl(team.teamId)">
+                <!-- <div class = "more-button" v-on:click.prevent @click="modButtonControl(team.teamId)">
                     <i class="fi fi-rs-menu-dots-vertical"></i>
                     <TeamDeleteButton :moreButtonOpen = "moreButtonOpen[(team.teamId).toString()]" 
                         @deleteProject="deleteGenerate(team.teamId)" 
                         @updateProject="updateGenerate(team)">
                     </TeamDeleteButton>
-                </div>
+                </div> -->
             </div>
             <div class="semester"> </div>
             <div class= "participant">
@@ -104,7 +103,11 @@ import {axiosInstance} from '@/axios';
 import TeamDeleteButton from './components/TeamDeleteButton.vue';
 import Avatar from './components/Avatar.vue';
 import Loader from '../../components/Loader.vue'
+import { useStore } from 'vuex';
+const store = useStore();
 const url = "http://localhost:3210";
+
+const studentId = ref(store.state.useStore.user_Id);
 
 export default {
     props: ['teams'],
@@ -173,9 +176,8 @@ export default {
         },
         //생성
         postTeams() {
-
             axiosInstance
-                .post(`/dashboard/team/${this.projectId}/${this.studentId}`, this.postSetParams)
+                .post(`/dashboard/teams/${this.projectId}/${this.studentId}`, this.postSetParams)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     this.postTeam = response;

@@ -168,7 +168,7 @@ export default {
 
         updateTeams() {
             axiosInstance
-                .post('/dashboard/teams', this.updateSetParams)
+                .post(`/dashboard/teams/${this.updateTeamId}`, this.updateSetParams)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     this.updateTeam = response.data.data;
