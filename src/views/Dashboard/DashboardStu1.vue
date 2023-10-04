@@ -107,7 +107,6 @@ import { useStore } from 'vuex';
 const store = useStore();
 const url = "http://localhost:3210";
 
-const studentId = ref(store.state.useStore.user_Id);
 
 export default {
     props: ['teams'],
@@ -124,7 +123,7 @@ export default {
                 teamNumber: 0 //백엔드에서 카운트해줌
             }
             console.log("params: ",params)
-            return params;      
+            return params;
         },
 
         updateSetParams() {
@@ -176,8 +175,15 @@ export default {
         },
         //생성
         postTeams() {
+            // const store = useStore();
+            // const studentId = this.$store.state.useStore.user_id;
+
+            const store = useStore();
+            const studentId = this.$store.state.userStore.user_id; // "userStore"로 접근
+
+            console.log("studentId: " +studentId);
             axiosInstance
-                .post(`/dashboard-service/dashboard/teams/${this.projectId}/${this.studentId.value}`, this.postSetParams)
+                .post(`/dashboard-service/dashboard/teams/${this.projectId}/${studentId}`, this.postSetParams)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     this.postTeam = response;
