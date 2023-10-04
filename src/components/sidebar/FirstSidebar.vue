@@ -35,8 +35,8 @@ export default {
   },
   data() {
     return {
-      dashboardUrl: computed(() => '/dashboard/professor/projects/' + this.professorId),
-      settingUrl: computed(() => '/setting/' + this.professorId)
+      dashboardUrl: computed(() => '/dashboard/professor/' + this.professorId),
+      settingUrl: computed(() => '/settingPro/' + this.professorId)
       // fileUrl: computed(() => '/board/list/11/' + this.teamId),
     }
   }

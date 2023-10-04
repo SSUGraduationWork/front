@@ -136,7 +136,7 @@ export default {
       //회의록 생성
       title: null,
       content: null,
-      userId: 7,
+      userId: 2,
       teamId: this.$route.params.teamId,
 
       //회의록 수정
@@ -166,8 +166,6 @@ export default {
   computed: {
     postSetParams() {
       const params = {
-        teamId: this.teamId,
-        userId: this.userId,
         date: this.targetDate,
         title: this.title,
         content: this.content,           
@@ -177,8 +175,6 @@ export default {
 
     updateSetParams() {
       const params = {
-        teamId: this.teamId,
-        userId: this.userId,
         date: this.targetDate,
         title: this.minutes.title,
         content: this.minutes.content,           
@@ -400,7 +396,7 @@ export default {
     //생성
     async postMinutes() {
       axios
-        .post(url + '/calendars/minutes', this.postSetParams)
+        .post(url + `/calendars/minutes/${this.teamId}`, this.postSetParams)
         .then((response) => {
           this.checkExist = false;
           if (response.data.message == "Success") {
@@ -435,7 +431,7 @@ export default {
     //조회
     async getMinutes() {
       try {
-        const response = await axios.get(url + `/calendars/minutes/${this.teamId}/${this.targetDate}/${this.userId}`);
+        const response = await axios.get(url + `/calendars/minutes/${this.teamId}/${this.targetDate}`);
         if (response.data.message === "Success") {
           this.minutes = response.data.data;
           console.log("getMinutes minutes: ", this.minutes);
@@ -471,7 +467,7 @@ export default {
     //수정
     async updateMinutes() {
       axios
-        .patch(url + '/calendars/minutes', this.updateSetParams)
+        .patch(url + `/calendars/minutes/${this.teamId}`, this.updateSetParams)
         .then((response) => {
           this.checkExist = false;
           if (response.data.message == "Success") {
@@ -512,7 +508,7 @@ export default {
     async deleteMinutes() {
       this.deleteModalDisplay = "none";
       axios
-        .delete(url + `/calendars/minutes/${this.teamId}/${this.userId}/${this.targetDate}`)
+        .delete(url + `/calendars/minutes/${this.teamId}/${this.targetDate}`)
         .then((response) => {
           this.checkExist = false;
           if (response.data.message == "Success") {

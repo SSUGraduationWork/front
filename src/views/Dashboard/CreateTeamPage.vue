@@ -69,7 +69,7 @@
     const url = "http://localhost:3210";
     
     export default {
-        props: ['teams'],
+        props: ['teams', 'studentId'],
         components: {TeamDeleteButton, Avatar, Loader},
         computed: {
             projectId() {
@@ -78,9 +78,7 @@
     
             postSetParams() {
                 const params = {
-                    projectId: this.projectId,
                     teamName: this.postTeamName,
-                    teamNumber: 0 //백엔드에서 카운트해줌
                 }
                 console.log("params: ",params)
                 return params;      
@@ -88,10 +86,7 @@
     
             updateSetParams() {
                 const params = {
-                    projectId: this.updateProjectId, 
-                    teamId: this.updateTeamId,
                     teamName: this.updateTeamName,
-                    teamNumber: this.updateTeam.teamNumber
                 }
             console.log("params: ",params)
             return params;
