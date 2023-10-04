@@ -23,10 +23,11 @@ const progress = ref();
 const contribution = ref();
 let ex = ref(false);
 
-axiosInstance.get(`/contribution/${teamId}`)
+axiosInstance.get(`/dashboard-service/contributions/${teamId}`)
     .then((res) => {
-        progress.value = res.data.result.progress;
-        contribution.value = res.data.result.contribution;
+        console.log(res);
+        progress.value = res.data.progress;
+        contribution.value = res.data.contribution;
     })
 
 const openEx = () => {

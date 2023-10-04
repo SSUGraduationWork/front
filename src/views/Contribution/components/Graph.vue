@@ -6,10 +6,10 @@
         </div>
         <div class="contribution">
             <div v-for="(m, i) in contribution" :key="i" class="member">
-                <img class = "user-img" :src="m.picture_url" />
+                <img class = "user-img" :src="m.pictureUrl" />
                 <div class = "user-info">
-                    <p class = "student-number">{{ m.student_number }}</p>
-                    <p class = "user-name">{{ m.user_name }}</p>
+                    <p class = "student-number">{{ m.studentNumber }}</p>
+                    <p class = "user-name">{{ m.name }}</p>
                 </div>
                 <div class = "graph-space">
                     <div class = "stick" :style = "{ '--graph-width' : contributions[i]}"></div>

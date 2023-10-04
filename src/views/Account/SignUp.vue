@@ -45,13 +45,14 @@ const name = ref('');
 const userEmail = ref(store.state.registerStore.user_email);
 const pictureUrl = ref(store.state.registerStore.picture_url);
 
+
 const userStore = 'userStore';
 
 const selectedRole = (r) => {
     role.value = r;
 }
 const register = () => {
-    axiosInstance.post('/accounts/signup', 
+    axiosInstance.post('/user-service/accounts/signup', 
         {   user_email : userEmail.value,
             user_name: name.value, 
             role: role.value, 
