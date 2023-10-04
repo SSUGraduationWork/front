@@ -51,9 +51,8 @@ axiosInstance.interceptors.response.use(
     (error) => {
         if(error.response) {
             const status = error.response.status;
-            if (status === 403){
-                console.error('403 Forbidden: Access Denied');
-                console.log(error.response.data.requestURI);
+            if (status === 401){
+                console.error('401 Unauthorized');
                 router.push(`${error.response.data.requestURI}`);
             } else{
                 console.error(`HTTP Error: ${status} ${error.response.statusText}`);

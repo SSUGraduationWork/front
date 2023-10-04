@@ -20,23 +20,23 @@ const redirectURL = ref(store.state.redirectURL);  //로그인 후 redirect할 u
 
 axiosInstance.get(`/user-service/accounts/oauth2/google/callback?code=${route.query.code}`)
     .then((res) => {
-        console.log(route.query.code);
-        if(res.data.result) {
-            if (res.data.result.user_id == null) {
+
+        if(res.data) {
+            if (res.data.user_id == null) {
                 //signup 페이지로 이동 (user_email, picture_url 값 전송해야함)
-                store.commit(`${registerStore}/setUserEmail`, res.data.result.user_email);
-                store.commit(`${registerStore}/setPictureUrl`, res.data.result.picture_url);
+                store.commit(`${registerStore}/setUserEmail`, res.data.user_email);
+                store.commit(`${registerStore}/setPictureUrl`, res.data.picture_url);
                 
                 router.push('/accounts/signup');
             } else {
-                store.commit(`${userStore}/setUserId`, res.data.result.user_id );
-                store.commit(`${userStore}/setJwtToken`, res.data.result.jwtToken);
+                store.commit(`${userStore}/setUserId`, res.data.user_id );
+                store.commit(`${userStore}/setJwtToken`, res.data.jwtToken);
                 
                 if (redirectURL.value != null){
                     store.commit('setRedirectURL', null);
                     router.push(`${redirectURL.value}`);
                 } else{
-                    router.push(`/dashboard/${res.data.result.role}/${res.data.result.user_id}`);
+                    router.push(`/dashboard/${res.data.role}/${res.data.user_id}`);
                 }
             }
         }

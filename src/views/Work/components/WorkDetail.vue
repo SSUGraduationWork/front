@@ -18,8 +18,8 @@
                     <div class = "option-name">담당자</div>
                     <div class = "workers">
                         <div v-for="(id, idx) in workers" :key="idx" class="worker">
-                            <img class = "user-img" :src="teamMembers[id].picture_url" />
-                            <span class = "user-name">{{ teamMembers[id].user_name }}</span>
+                            <img class = "user-img" :src="teamMembers[id].pictureUrl" />
+                            <span class = "user-name">{{ teamMembers[id].name }}</span>
                         </div>
                     </div>
                 </div>
@@ -49,8 +49,8 @@
                         <i class="fi fi-sr-document"></i>
                         <span class="title">{{ post.title }}</span>
                         <span class="uploaded-by">uploaded by</span>
-                        <img class = "profile-img" :src="teamMembers[post.user_id].picture_url" />
-                        <span class="poster">{{ teamMembers[post.user_id].user_name }}</span>
+                        <img class = "profile-img" :src="teamMembers[post.user_id].pictureUrl" />
+                        <span class="poster">{{ teamMembers[post.user_id].name }}</span>
                     </div>
                 </div>
             </div>
@@ -82,9 +82,9 @@ let date = ref();
 const board = ref();
 const importance = ref();
 const emit = defineEmits(["closeDetail", "openDetail"]);
-
+console.log(props.teamMembers);
 if (props.workId > 0) {
-    axiosInstance.get(`/work/detail/${props.teamId}/${props.workId}`)
+    axiosInstance.get(`/work-service/works-detail/${props.workId}`)
     .then((res) => {
         workDetail.value = res.data.result;
         if(workDetail.value.worker){
