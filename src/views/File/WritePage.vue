@@ -53,6 +53,7 @@ import axios from 'axios';
 import { axiosInstance } from '@/axios';
 import Dropdown from './components/Dropdown.vue';
 import Loader from '../../components/Loader.vue'
+import { useStore } from 'vuex';
 
 export default {
   props: ['teamId'], // 프롭스 정의
@@ -118,8 +119,10 @@ export default {
         }
 
         try {
+          const userId = this.$store.state.userStore.user_id;
+          console.log(userId);
           axiosInstance.post(
-              `/board/multiWrite/${teamId}/${selectedWorkId}`,
+              `/board-service/board/multiWrite/${userId}/${teamId}/${selectedWorkId}`,
               formData,
               {
                 headers: {
@@ -127,6 +130,7 @@ export default {
                 },
               }
           ).then((res) => {
+            console.log(res);
             this.boardId = res.data.content.boardId;
             if(boardId != null){
               this.boardId = res.data.content.boardId;
@@ -158,8 +162,11 @@ export default {
     },
     async loadDropdownOptions(teamId) {
       try {
-        const response = await axios.get(`http://localhost:3210/work/list/22/${teamId}`);
-        this.formData.dropdownOptions = response.data.content;
+        const store = useStore();
+        const userId = store.state.userStore.user_id;
+        const response = await axiosInstance.get(`/work-service/works/${teamId}/${userId}`);
+        this.formData.dropdownOptions = response.data;
+
       } catch (error) {
         console.error('Dropdown options load error:', error);
       }

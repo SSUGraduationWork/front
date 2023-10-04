@@ -61,6 +61,7 @@
 <script>
 import { collapsed, toggleSidebar, sidebarWidth, sidebarHeight } from './components/state'
 import { axiosInstance } from '@/axios';
+import {useStore} from 'vuex';
 
 export default {
     props: ['boardId','teamId'],
@@ -88,7 +89,7 @@ export default {
     },
     beforeCreate() {
       try {
-        const response = axiosInstance.get(`/comment/${this.boardId}/${this.teamId}`)
+        const response = axiosInstance.get(`board-service/comment/${this.boardId}/${this.teamId}`)
           .then((response) => {
             console.log(response);
             this.feedbackList = response.data.feedback;
@@ -177,8 +178,8 @@ export default {
         this.comment = '';
         // 입력 메시지 란을 숨김
         this.isCommentVisible = false;
-
-        const response = await axiosInstance.post(`/comment/${this.teamId}/${this.boardId}/${approvalStatus}`, data);
+        const userId = this.$store.state.userStore.user_id;
+        const response = await axiosInstance.post(`/comment/${this.boardId}/${userId}/${approvalStatus}`, data);
 
       } catch (error) {
         console.error('코멘트 제출 오류:', error);

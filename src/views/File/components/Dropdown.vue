@@ -8,7 +8,7 @@
     </button>
     <ul v-show="isOpen" class="dropdown-list" @mouseenter="openDropdown" @mouseleave="closeDropdown">
       <li v-for="(option, index) in options" :key="index" @click="selectOption(option)">
-        {{ option.workName }}
+        {{ option.work_name }}
       </li>
     </ul>
   </div>
@@ -40,10 +40,9 @@ export default {
       this.isOpen = false;
     },
     selectOption(option) {
-      this.selectedOption = option.workName;
-      console.log(option.workName);
+      this.selectedOption = option.work_name;
       // 선택한 작업의 workId를 부모 컴포넌트로 전달
-      this.$emit('selected', option.workId);
+      this.$emit('selected', option.work_id);
       this.isOpen = false;
     },
     Dropdown() {

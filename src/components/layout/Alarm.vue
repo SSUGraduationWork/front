@@ -52,7 +52,8 @@ const props = defineProps({
 });
 const fetchAndShowAlarms = async() => {
   try {
-        const response = await axiosInstance.get(`/alarmList/view`);
+        const userId = this.$store.state.userStore.user_id;
+        const response = await axiosInstance.get(`board-service/alarmList/view/${userId}`);
         content.value = response.data.content;
         console.log(content.value);
         // boardId를 기준으로 내림차순으로 정렬
@@ -69,7 +70,7 @@ const closeModalOutside = ()  => {
 
           try {
             // 서버에 업데이트 요청 보내기
-            await axios.put(`http://localhost:3210/updateSeenStatus/${item.alarmId}`, {
+            await axiosInstance.put(`board-service/updateSeenStatus/${item.alarmId}`, {
               seen: true
             });
           } catch (error) {
@@ -106,7 +107,7 @@ const formatDateFromArray = (dateArray) => {
 
 const handleReapprove = async (boardId, writerId, isApproved) => {
       try {
-        await axiosInstance.post(`/recomment/${boardId}/${writerId}/${isApproved}`);
+        await axiosInstance.post(`board-service/recomment/${boardId}/${writerId}/${isApproved}`);
         // 재수락 또는 거절 요청을 보낸 후에, 필요한 업데이트를 수행할 수 있습니다.
       } catch (error) {
         console.error('Error reapproving:', error);

@@ -75,6 +75,7 @@ import { axiosInstance } from '@/axios';
 import Sidebar from './SideBarPage.vue';
 import Loader from '../../components/Loader.vue';
 import Dropdown from "@/views/File/components/Dropdown";
+import { useStore } from 'vuex';
 import {ref} from 'vue';
 
 export default {
@@ -112,9 +113,10 @@ export default {
     const boardId = this.$route.params.boardId;
     //const memberId = this.$route.params.memberId;
     const teamId = this.$route.params.teamId;
+    const userId = this.$store.state.userStore.user_id;
 
     try {
-      const response = await axiosInstance.get(`/board/view/${boardId}/${teamId}`);
+      const response = await axiosInstance.get(`/board-service/board/view/${boardId}/${userId}/${teamId}`);
       if (response.data.status.code === 200) {
         this.boardContent = response.data.content;
         this.formData.title = this.boardContent.title;
@@ -132,7 +134,7 @@ export default {
   methods: {
     async loadDropdownOptions(memberId,teamId) {
       try {
-        const response = await axios.get(`http://localhost:3210/work/list/${memberId}/${teamId}`);  //`http://localhost:3210/work/list/${memberId}/${teamId}
+        const response = await axiosInstance.get(`/work-service/works/${teamId}/${memberId}`);  //`http://localhost:3210/work/list/${memberId}/${teamId}
         this.formData.dropdownOptions = response.data.content;
       } catch (error) {
         console.error('Dropdown options load error:', error);
@@ -144,6 +146,7 @@ export default {
 
     async submitForm() {
       this.loading = true; // 로딩 상태를 true로 설정
+      const userId = this.$store.state.userStore.user_id;
       console.log(this.formData);
       const { title, content, files, selectedFileIds,selectedWorkId } = this.formData;
       const boardId = this.boardId; // props로 전달된 값 사용
@@ -177,7 +180,7 @@ export default {
         }
 
         const response = await axiosInstance.post(
-            `/multiboard/update/${boardId}/${teamId}/${selectedWorkId}`,
+            `board-service/multiboard/update/${boardId}/${userId}/${teamId}/${selectedWorkId}`,
             formData,
             {
               params: { files: selectedFileIds }, // 선택된 파일 IDs를 전달
@@ -257,7 +260,8 @@ export default {
     },
     async downloadFile(fileId, fileDir) {
       try {
-        const response = await axios.get(`http://localhost:3210/downloadFile/${fileId}`, {
+        
+        const response = await axiosInstance.get(`board-service/downloadFile/${fileId}`, {
           responseType: 'blob',
         });
 
