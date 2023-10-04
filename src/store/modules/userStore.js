@@ -3,6 +3,7 @@ const userStore = {
     state: {
         user_id: null,
         jwtToken: null,
+        role: null,
     },
     mutations: {
         setUserId(state, id){
@@ -10,6 +11,9 @@ const userStore = {
         },
         setJwtToken(state, token){
             state.jwtToken = token
+        },
+        setRole(state, role){
+            state.role = role
         }
     }
 }

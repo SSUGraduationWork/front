@@ -31,6 +31,7 @@ axiosInstance.get(`/user-service/accounts/oauth2/google/callback?code=${route.qu
             } else {
                 store.commit(`${userStore}/setUserId`, res.data.user_id );
                 store.commit(`${userStore}/setJwtToken`, res.data.jwtToken);
+                store.commit(`${userStore}/setRole`, res.data.role);
                 
                 if (redirectURL.value != null){
                     store.commit('setRedirectURL', null);

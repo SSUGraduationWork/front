@@ -5,13 +5,13 @@
         <div class = "header-right-div">
           <li class = "header-right profile">
             <div class = "circle-profile" @click="goToMyPage">
-              <img :src = "headerInfo.picture_url" class = "profile-user-img">
+              <img :src = "userInfo.pictureUrl" class = "profile-user-img">
             </div>
           </li>
           <li class = "header-right">
             <div class = "user-info">
-              <h4>{{headerInfo.student_number}} {{headerInfo.user_name}}</h4>
-              <h5>{{headerInfo.department}}</h5>
+              <h4>{{userInfo.studentNumber}}&nbsp;&nbsp;{{userInfo.name}}</h4>
+              <h5>{{userInfo.department}}</h5>
             </div>
           </li>
           <li class = "header-right" v-click-outside="closeAlarm">
@@ -25,7 +25,7 @@
         </div>
         <div class = "header-left-div">
           <li class = "header-left">
-            <h3>{{headerInfo.team_name}}</h3>
+            <h3>{{teamInfo.projectName}} {{teamInfo.teamName}}</h3>
           </li>
         </div>
       </ul>
@@ -35,7 +35,6 @@
 
 <script>
 import {ref, onBeforeMount} from 'vue'
-import axios from 'axios';
 import {axiosInstance} from '@/axios';
 import {useRouter, useRoute} from 'vue-router'
 import { useStore } from 'vuex';
@@ -61,22 +60,26 @@ export default {
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const headerInfo = ref({});
+    const userInfo = ref({});
+    const teamInfo = ref({});
     const store = useStore();
-    const user_id = ref(store.state.userStore.user_id);
+    const userId = ref(store.state.userStore.user_id);
+    const role = ref(store.state.userStore.role);
     const teamId = ref(0);
     onBeforeMount(async () => {
       await router.isReady();
       teamId.value = route.params.teamId;
 
-      axios.get(`http://44.219.162.63:3000/header`, {
-        params : {userId : user_id.value, teamId : teamId}
-      })
+      axiosInstance.get(`/user-service/user-info/${userId.value}`)
           .then((res) => {
-            headerInfo.value = {...res.data.result};
+            userInfo.value = res.data;
+          })
+      axiosInstance.get(`/dashboard-service/team-info/${teamId.value}`)
+          .then((res)=> {
+            teamInfo.value = res.data;
           })
     })
-    return { headerInfo, teamId }
+    return { userInfo, teamInfo, teamId, userId, role }
   },
   methods: {
     controlAlarm() {
@@ -86,17 +89,7 @@ export default {
       this.isModalOpen = false;
     },
     goToMyPage() {
-      axiosInstance.get("/dashboard/mypage")
-        .then((res) => {
-          const userId = res.data.result.id;
-          const role = res.data.result.role;
-          const uri = `/dashboard/${role}/${userId}`
-          console.log(uri);
-          this.$router.push(uri);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
+      this.$router.push(`/dashboard/${this.role}/${this.userId}`);
     }
   }
 }
