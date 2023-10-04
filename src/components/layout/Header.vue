@@ -74,10 +74,12 @@ export default {
           .then((res) => {
             userInfo.value = res.data;
           })
-      axiosInstance.get(`/dashboard-service/team-info/${teamId.value}`)
+      if(teamId.value){
+        axiosInstance.get(`/dashboard-service/team-info/${teamId.value}`)
           .then((res)=> {
             teamInfo.value = res.data;
           })
+      }
     })
     return { userInfo, teamInfo, teamId, userId, role }
   },
