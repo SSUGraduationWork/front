@@ -41,14 +41,14 @@ const routes = [
     ]
   },
   {
-    path: '/work/:teamId',
+    path: '/works/:teamId',
     name: 'Work',
     component: Work,
     props:true
   },
 
   {
-    path: '/calendar/:teamId',
+    path: '/calendars/:teamId',
     name: 'Calendar',
     component: () => import('../views/Calendar/mainCalendar.vue'),
     props: true

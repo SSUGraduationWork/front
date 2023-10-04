@@ -38,9 +38,9 @@ export default {
   },
   data() {
     return {
-      workUrl: computed(() => '/work/' + this.teamId),
+      workUrl: computed(() => '/works/' + this.teamId),
       fileUrl: computed(() => '/board/list/' + this.teamId),
-      calendarUrl: computed(() => '/calendar/' + this.teamId),
+      calendarUrl: computed(() => '/calendars/' + this.teamId),
       chattingUrl: computed(() => '/chatting/' + this.teamId),
       contributionUrl: computed(() => '/contribution/' + this.teamId)
     }

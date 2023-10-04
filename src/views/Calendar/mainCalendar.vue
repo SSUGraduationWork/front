@@ -115,6 +115,7 @@
 <script>
 
 import axios from "axios";
+import {axiosInstance} from "@/axios"
 import vClickOutside from 'click-outside-vue3'
 const url = "http://localhost:3210";
 
@@ -231,8 +232,8 @@ export default {
     //0. 해당 팀이 해당 달에 가지고 있는 회의록 날짜 리스트로 받기
     async getExistMinuteList(teamID, currentMonth) {
       // console.log("exitstCurrentMonth: ",this.currentMonth);
-      axios
-      .get(url + `/calendars/getExistMinutes/${this.teamId}/${this.currentMonth}`)
+      axiosInstance
+      .get(`/calendar-service/calendars/getExistMinutes/${this.teamId}/${this.currentMonth}`)
       .then((response) => {
         if (response.data.message == "Success") {
           this.checkCurrentMonth = this.currentMonth;
@@ -395,8 +396,8 @@ export default {
 
     //생성
     async postMinutes() {
-      axios
-        .post(url + `/calendars/minutes/${this.teamId}`, this.postSetParams)
+      axiosInstance
+        .post(`/calendar-service/calendars/minutes/${this.teamId}`, this.postSetParams)
         .then((response) => {
           this.checkExist = false;
           if (response.data.message == "Success") {
@@ -431,7 +432,7 @@ export default {
     //조회
     async getMinutes() {
       try {
-        const response = await axios.get(url + `/calendars/minutes/${this.teamId}/${this.targetDate}`);
+        const response = await axiosInstance.get( `/calendar-service/calendars/minutes/${this.teamId}/${this.targetDate}`);
         if (response.data.message === "Success") {
           this.minutes = response.data.data;
           console.log("getMinutes minutes: ", this.minutes);
@@ -466,8 +467,8 @@ export default {
 
     //수정
     async updateMinutes() {
-      axios
-        .patch(url + `/calendars/minutes/${this.teamId}`, this.updateSetParams)
+      axiosInstance
+        .patch(`/calendar-service/calendars/minutes/${this.teamId}`, this.updateSetParams)
         .then((response) => {
           this.checkExist = false;
           if (response.data.message == "Success") {
@@ -507,8 +508,8 @@ export default {
     //삭제
     async deleteMinutes() {
       this.deleteModalDisplay = "none";
-      axios
-        .delete(url + `/calendars/minutes/${this.teamId}/${this.targetDate}`)
+      axiosInstance
+        .delete(`/calendar-service/calendars/minutes/${this.teamId}/${this.targetDate}`)
         .then((response) => {
           this.checkExist = false;
           if (response.data.message == "Success") {
@@ -529,8 +530,8 @@ export default {
 
     deleteProjects() {
     console.log("modalDisplay: ", this.modalDisplay);
-    axios
-      .delete(url + `/dashboard/projects/${this.updateProjectId}`)
+    axiosInstance
+      .delete(`/calendar-service/dashboard/projects/${this.updateProjectId}`)
       .then((response) => {
       if (response.data.message == "Success") {
         this.close();
