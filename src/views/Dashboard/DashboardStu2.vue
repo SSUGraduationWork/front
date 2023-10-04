@@ -140,7 +140,7 @@ export default {
 
         async getTeams() {
             try {
-                const response = await axiosInstance.get(`/dashboard/student/${this.studentId}`);
+                const response = await axiosInstance.get(`/dashboard-service/dashboard/student/${this.studentId}`);
                 if (response.data.message === "Success") {
                     console.log(response);
                     this.teams = response.data.data;
@@ -153,22 +153,18 @@ export default {
 
         //수정
         updateGenerate(team) {
-            console.log("team", team)
+        
             this.updateModalDisplay = "flex";            
             this.updateTeam = team;
             this.updateProjectId = team.projectId;
-            console.log("updateProjectId: ", this.updateProjectId);
             this.updateTeamId = team.teamId;
-            console.log("updateTeamId: ", this.updateTeamId);
             this.updateTeamName = team.teamName;
-            console.log("updateTeamName: ", this.updateTeamName);
             this.updateTeamNumber = team.teamNumber;
-            console.log("teamNumber: ", this.updateTeamNumber)
         },
 
         updateTeams() {
             axiosInstance
-                .post(`/dashboard/teams/${this.updateTeamId}`, this.updateSetParams)
+                .post(`/dashboard-service/dashboard/teams/${this.updateTeamId}`, this.updateSetParams)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     this.updateTeam = response.data.data;
@@ -215,7 +211,7 @@ export default {
     text-align: left;
 }
 .loading-container {
-  height: 100%;
+    height: 100%;
 }
 
 .content {

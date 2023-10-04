@@ -177,7 +177,7 @@ export default {
         //생성
         postTeams() {
             axiosInstance
-                .post(`/dashboard/teams/${this.projectId}/${this.studentId}`, this.postSetParams)
+                .post(`/dashboard-service/dashboard/teams/${this.projectId}/${this.studentId.value}`, this.postSetParams)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     this.postTeam = response;
@@ -198,7 +198,7 @@ export default {
 
         async getTeams() {
             try {
-                const response = await axiosInstance.get(`/dashboard/teamsByPro/${this.projectId}`);
+                const response = await axiosInstance.get(`/dashboard-service/dashboard/teamsByPro/${this.projectId}`);
                 if (response.data.message === "Success") {
                     this.teams = response.data.data.object1;
                     this.projectName = response.data.data.string;
@@ -231,7 +231,7 @@ export default {
     
         updateTeams() {
         axiosInstance
-            .post(`/dashboard/teams/${this.updateTeamId}`, this.updateSetParams)
+            .post(`/dashboard-service/dashboard/teams/${this.updateTeamId}`, this.updateSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.postTeam = response.data.data;
@@ -256,7 +256,7 @@ export default {
         deleteTeams() {
         console.log(this.deleteTeamId);
         axiosInstance
-            .delete(`/dashboard/teams/${this.deleteTeamId}`)
+            .delete(`/dashboard-service/dashboard/teams/${this.deleteTeamId}`)
             .then((response) => {
             if (response.data.message == "Success") {
                 console.log("Completely Delete");

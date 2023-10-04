@@ -65,7 +65,7 @@
     <div class="content">
         <div class="top">
             <div class="watchProjectName">{{this.projectName}}</div>
-            <el-button type="primary" class="new" @click="generate()"><i class="fi fi-br-plus"></i>팀 생성</el-button>
+            <!-- <el-button type="primary" class="new" @click="generate()"><i class="fi fi-br-plus"></i>팀 생성</el-button> -->
         </div>
 
         <div class="teams">
@@ -173,9 +173,8 @@ export default {
         },
         //생성
         postTeams() {
-
             axiosInstance
-                .post(`/dashboard/team/${this.projectId}/${this.studentId}`, this.postSetParams)
+                .post(`/dashboard-service/dashboard/team/${this.projectId}/${this.studentId}`, this.postSetParams)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     this.postTeam = response;
@@ -196,7 +195,7 @@ export default {
 
         async getTeams() {
             try {
-                const response = await axiosInstance.get(`/dashboard/teamsByPro/${this.projectId}`);
+                const response = await axiosInstance.get(`/dashboard-service/dashboard/teamsByPro/${this.projectId}`);
                 if (response.data.message === "Success") {
                     this.teams = response.data.data.object1;
                     this.projectName = response.data.data.string;
@@ -229,7 +228,7 @@ export default {
     
         updateTeams() {
         axiosInstance
-            .post(`/dashboard/teams/${this.updateTeamId}`, this.updateSetParams)
+            .post(`/dashboard-service/dashboard/teams/${this.updateTeamId}`, this.updateSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.postTeam = response.data.data;
@@ -254,7 +253,7 @@ export default {
         deleteTeams() {
         console.log(this.deleteTeamId);
         axiosInstance
-            .delete(`/dashboard/teams/${this.deleteTeamId}`)
+            .delete(`/dashboard-service/dashboard/teams/${this.deleteTeamId}`)
             .then((response) => {
             if (response.data.message == "Success") {
                 console.log("Completely Delete");

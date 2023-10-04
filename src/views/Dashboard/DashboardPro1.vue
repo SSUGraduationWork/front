@@ -133,6 +133,7 @@
 
 <script>
 import axios from "axios";
+import {axiosInstance} from "@/axios"
 import Avatar from './components/Avatar.vue';
 import Dropdown from './components/Dropdown.vue';
 import UpdateModalDropdown from './components/UpdateModalDropdown.vue';
@@ -140,7 +141,7 @@ import CreateModalDropdown from './components/CreateModalDropdown.vue';
 import ModButton from "./components/ModButton.vue";
 import Loader from '../../components/Loader';
 import {ref} from 'vue';
-import { axiosInstance } from '@/axios';
+
 const url = "http://localhost:3210";
 
 export default {
@@ -209,7 +210,7 @@ export default {
         //생성
         postProjects() {
         axiosInstance
-            .post(`/dashboard/projects/${this.professorId}`, this.postSetParams)
+            .post(`/dashboard-service/dashboard/projects/${this.professorId}`, this.postSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.postProject = response.data.data;
@@ -231,7 +232,7 @@ export default {
         
         async getProjects() {
             try {
-                const response = await axiosInstance.get(`/dashboard/professor/${this.professorId}`);
+                const response = await axiosInstance.get(`/dashboard-service/dashboard/professor/${this.professorId}`);
                 if (response.data.message === "Success") {
                     this.projects = response.data.data;
 
@@ -283,7 +284,7 @@ export default {
         //수정
         updateProjects() {
         axiosInstance
-            .patch(`/dashboard/projects/${this.updateProjectId}`, this.updateSetParams)
+            .patch(`/dashboard-service/dashboard/projects/${this.updateProjectId}`, this.updateSetParams)
             .then((response) => {
             if (response.data.message == "Success") {
                 this.updateProject = response.data.data;
@@ -309,7 +310,7 @@ export default {
 
         deleteProjects() {
         axiosInstance
-            .delete(`/dashboard/projects/${this.updateProjectId}`)
+            .delete(`/dashboard-service/dashboard/projects/${this.updateProjectId}`)
             .then((response) => {
             if (response.data.message == "Success") {
                 console.log("Completely Delete");
