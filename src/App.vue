@@ -4,7 +4,9 @@
     <FirstSidebar v-if="['DashboardPro1', 'DashboardPro2', 'Setting1'].includes($route.name)==true" :professorId="professorId" />
     <SecondSidebar v-if="['DashboardStu1', 'DashboardStu2', 'Setting2'].includes($route.name)==true" :studentId="studentId" />
     <div v-if="['Account','SignIn','SignUp','CallBack'].includes($route.name)==false" :style="{ 'margin-left': sidebarWidth }">
-      <Header :sidebarWidth = sidebarWidth></Header> 
+      <HeaderDashboard v-if="['DashboardPro2', 'Setting1', 'DashboardStu1', 'DashboardStu2', 'Setting2'].includes($route.name)==true" :sidebarWidth = sidebarWidth></HeaderDashboard>
+      <Header v-else :sidebarWidth = sidebarWidth></Header> 
+      
       <router-view :teamId="teamId"></router-view> 
     </div>
     <div v-else>
@@ -17,6 +19,7 @@ import Sidebar from '@/components/sidebar/Sidebar'
 import FirstSidebar from '@/components/sidebar/FirstSidebar'
 import SecondSidebar from '@/components/sidebar/SecondSidebar.vue'
 import Header from '@/components/layout/Header'
+import HeaderDashboard from '@/components/layout/HeaderDashboard.vue'
 import { sidebarWidth } from '@/components/sidebar/state'
 
 export default {
@@ -24,7 +27,8 @@ export default {
     Sidebar,
     Header,
     FirstSidebar,
-    SecondSidebar
+    SecondSidebar,
+    HeaderDashboard
   },
   setup() {
     return { sidebarWidth };

@@ -90,10 +90,10 @@ export default {
   },
   async created() {
     const boardId = this.$route.params.boardId;
-    const memberId = this.$route.params.memberId;
+    const userId = this.$store.state.userStore.user_id;
     const teamId = this.$route.params.teamId;
     try {
-      const response = await axiosInstance.get(`/board/view/${boardId}/${teamId}`);
+      const response = await axiosInstance.get(`/board-service/board/view/${boardId}/${userId}/${teamId}`);
       if (response.data.status.code === 200) {
         this.boardContent = response.data.content;
         this.formData.title = this.boardContent.title;
@@ -114,7 +114,7 @@ export default {
     increaseViewCount(boardId) {
       try {
         // 조회수를 서버에 증가시키는 API 호출
-        const response = axios.post(`http://localhost:3210/board/upcount/${boardId}`);
+        const response = axiosInstance.post(`board-service/board/upcount/${boardId}`);
         // 요청 성공 시 처리
         console.log('조회수 증가 성공:');
       } catch (error) {
@@ -148,7 +148,7 @@ export default {
     },
     async downloadFile(fileId, fileDir) {
       try {
-        const response = await axiosInstance.get(`/downloadFile/${this.teamId}/${fileId}`, {
+        const response = await axiosInstance.get(`board-service/downloadFile/${fileId}`, {
           responseType: 'blob',
         });
 

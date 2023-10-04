@@ -27,12 +27,6 @@
           <li class = "header-left">
             <h3>{{teamInfo.projectName}} {{teamInfo.teamName}}</h3>
           </li>
-          <li class = "header-left">
-            <div class = "share">
-              <i class="fa fa-share" aria-hidden="true"></i>
-              <span>&nbsp;&nbsp;공유</span>
-            </div>
-          </li>
         </div>
       </ul>
     </div>
@@ -190,15 +184,5 @@ h5 {
 }
 .circle-profile:hover{
   border: 1.5px solid #ccc;
-}
-.share{
-  border-radius: 10px;
-  width: 80px;
-  height: 37px;
-  line-height: 37px;
-  margin-left: 40px;
-  background-color: #3772FF;
-  color: white;
-  cursor: pointer;
 }
 </style>
