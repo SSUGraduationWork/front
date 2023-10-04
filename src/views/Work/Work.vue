@@ -115,7 +115,7 @@ export default {
         await router.isReady();
         teamId.value = route.params.teamId;
 
-        axiosInstance.get(`/work/${teamId.value}`)
+        axiosInstance.get(`/work-service/works/${teamId.value}`)
         .then((res) => {
             console.log(res);
             teamMembers.value = res.data.result.teamMembers;
@@ -123,7 +123,7 @@ export default {
 
             //user_id 와 유저 정보 연결
             (teamMembers.value).forEach((val, i, arr) => {
-              membersById[val.user_id] = val;
+              membersById[val.id] = val;
             })
             
         })
@@ -151,7 +151,7 @@ export default {
     },
     textChange(workId, value){
 
-      axiosInstance.post(`/work/${this.teamId}/${workId}/work_name`, {work_name : value})
+      axiosInstance.patch(`/work-service/works/${this.teamId}/${workId}/work_name`, {work_name : value})
         .then((res) => {
             console.log(res);
         })
@@ -161,7 +161,7 @@ export default {
     },
     addWork(){
       const workId = ref();
-      axiosInstance.post(`/work/${this.teamId}`)
+      axiosInstance.post(`/work-service/works/${this.teamId}`)
         .then((res) => {
           console.log(res);
           workId.value = res.data.result.work_id;
@@ -331,7 +331,7 @@ th{
   box-shadow: 0px 5px 5px -2px rgba(0, 0, 0, 0.25);
 }
 .footer{
-  height: 300px;
+  height: 500px;
 }
 </style>
 <style global>

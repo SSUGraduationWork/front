@@ -133,7 +133,7 @@
             postTeams() {
             this.loading = true;
             axiosInstance
-                .post(`/dashboard/teams/${this.projectId}/${this.studentId}`, this.postSetParams)
+                .post(`/dashboard-service/dashboard/teams/${this.studentId}`, this.postSetParams)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     this.postTeam = response;
@@ -156,7 +156,7 @@
     
             async getTeams() {
                 try {
-                    const response = await axiosInstance.get(`/dashboard/teamsByPro/${this.projectId}`);
+                    const response = await axiosInstance.get(`/dashboard-service/dashboard/teamsByPro/${this.projectId}`);
                     if (response.data.message === "Success") {
                         this.teams = response.data.data.object1;
                         this.projectName = response.data.data.string;
@@ -189,7 +189,7 @@
         
             updateTeams() {
             axios
-                .post(url + '/dashboard/teams/${this.updateTeamId}', this.updateSetParams)
+                .patch(url + '/dashboard-service/dashboard/teams', this.updateSetParams)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     this.postTeam = response.data.data;
@@ -214,7 +214,7 @@
             deleteTeams() {
             console.log(this.deleteTeamId);
             axios
-                .delete(url + `/dashboard/teams/${this.deleteTeamId}`)
+                .delete(url + `/dashboard-service/dashboard/teams/${this.deleteTeamId}`)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     console.log("Completely Delete");

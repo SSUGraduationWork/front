@@ -57,7 +57,7 @@ dateFormat.minute = computed(() => date.value.getMinutes());
 
 const change = () => {
     isNull = 0;
-    axiosInstance.post(`/work/${props.teamId}/${props.workId}/end_date`, {end_date: dayjs(date.value).format('YYYY-MM-DD HH:mm:ss')})
+    axiosInstance.patch(`/work-service/works/${props.teamId}/${props.workId}/end_date`, {end_date: dayjs(date.value).format('YYYY-MM-DD HH:mm:ss')})
         .then((res) => {
             console.log(res);
         })

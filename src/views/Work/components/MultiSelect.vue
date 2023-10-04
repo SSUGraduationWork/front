@@ -9,15 +9,15 @@
                     </div>
                     <div v-else-if="selectedMembers && selectedMembers.length == 1 && status == 1">
                         <div v-for="(a,i) in selectedMembers" :key="i" class = "values">
-                            <img class = "user-img" :src="a.picture_url" />
-                            <span class = "user-name">{{ a.user_name }}</span>
+                            <img class = "user-img" :src="a.pictureUrl" />
+                            <span class = "user-name">{{a.studentNumber}}&nbsp; {{ a.name }}</span>
                         </div>
                     </div>
                     <div v-else-if="status==1" class = "values"></div>
                     <div v-if="status == -1">
                         <div v-for="(a,i) in selectedMembers" :key="i" class = "values">
-                            <img class = "user-img" :src="a.picture_url" />
-                            <span class = "user-name">{{ a.user_name }}</span>
+                            <img class = "user-img" :src="a.pictureUrl" />
+                            <span class = "user-name">{{a.studentNumber}}&nbsp; {{ a.name }}</span>
                         </div>
                     </div>
                 </div>
@@ -29,8 +29,8 @@
             </template>
             <template #option="slotProps">
                 <div class="options">
-                    <img class = "option-img" :src="slotProps.option.picture_url" />
-                    <div class = "option-name">{{ slotProps.option.user_name }}</div>
+                    <img class = "option-img" :src="slotProps.option.pictureUrl" />
+                    <div class = "option-name">{{slotProps.option.studentNumber}} {{ slotProps.option.name }}</div>
                 </div>
             </template>
             <template #empty>
@@ -68,7 +68,8 @@ const teamMembers = Object.values(props.teamMembers);
 let workers = []
 
 const selectedMembers = ref([]);
-
+console.log(props.workers);
+console.log(props.teamMembers);
 if (props.workers !== null){
     workers = props.workers.split(";");
     for (let id of workers){
@@ -87,9 +88,9 @@ const reset = () => {
 let lastStatus = () => {
     if (isChange == true) {
         for (let userInfo of selectedMembers.value){
-            changeValue.push(userInfo.user_id);
+            changeValue.push(userInfo.id);
         }
-        axiosInstance.post(`/work/${props.teamId}/${props.workId}/worker`, {worker : changeValue})
+        axiosInstance.patch(`/work-service/works/${props.teamId}/${props.workId}/worker`, {worker : changeValue})
         .then((res) => {
             console.log(res);
         })

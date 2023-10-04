@@ -64,9 +64,10 @@ export default {
     const headerInfo = ref({});
     const store = useStore();
     const user_id = ref(store.state.userStore.user_id);
+    const teamId = ref(0);
     onBeforeMount(async () => {
       await router.isReady();
-      const {teamId} = route.params;
+      teamId.value = route.params.teamId;
 
       axios.get(`http://44.219.162.63:3000/header`, {
         params : {userId : user_id.value, teamId : teamId}
@@ -75,7 +76,7 @@ export default {
             headerInfo.value = {...res.data.result};
           })
     })
-    return { headerInfo }
+    return { headerInfo, teamId }
   },
   methods: {
     controlAlarm() {
@@ -134,7 +135,6 @@ export default {
   position: fixed;
 }
 .header-right-div{
-  background-color: white;
   float: right;
   width: 320px;
   height: 50px;

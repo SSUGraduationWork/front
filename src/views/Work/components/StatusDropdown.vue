@@ -53,7 +53,7 @@ const selectedStatus = ref(statuses.value[currentStatus-1]);
 const statusColor = ['#DFDFDF', '#DFDFDF', '#5D96DA', '#FF7171', '#99CC8C'];
 
 const change = () => {
-    axiosInstance.post(`work/${props.teamId}/${props.workId}/status`, {status: selectedStatus.value.code})
+    axiosInstance.patch(`work-service/works/${props.teamId}/${props.workId}/status`, {status: selectedStatus.value.code})
         .then((res) => {
             console.log(res);
         })

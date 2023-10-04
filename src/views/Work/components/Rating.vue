@@ -27,7 +27,7 @@ const value = ref(props.importance);
 
 const change = () => {
 
-    axiosInstance.post(`/work/${props.teamId}/${props.workId}/importance`, {importance: value.value})
+    axiosInstance.patch(`/work-service/works/${props.teamId}/${props.workId}/importance`, {importance: value.value})
         .then((res) => {
             console.log(res);
         })

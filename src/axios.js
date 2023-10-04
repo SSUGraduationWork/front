@@ -10,7 +10,9 @@ const axiosInstanceSpring = axios.create({
     baseURL : 'http://localhost:3210'
 })
 const axiosInstance = axios.create({
-    baseURL : 'http://localhost:3210'
+
+    baseURL : 'http://localhost:8001'
+
 })
 
 axiosInstanceSpring.interceptors.request.use(

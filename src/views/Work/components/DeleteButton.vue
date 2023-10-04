@@ -20,7 +20,7 @@ const props = defineProps({
 })
 const clickDelete = () => {
     console.log("delete " + props.workId);
-    axiosInstance.delete(`/work/${props.teamId}/${props.workId}`)
+    axiosInstance.delete(`/work-service/works/${props.workId}`)
         .then((res) => {
             console.log(res);
         })

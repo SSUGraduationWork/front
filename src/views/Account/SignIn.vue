@@ -20,15 +20,17 @@ import { useStore } from 'vuex';
 const store = useStore();
 const route = useRoute();
 const redirectURL = route.query.redirectURI;  //로그인 후 redirect할 uri
-const uriArr = redirectURL.split("/");
-console.log(uriArr);
-if(redirectURL && redirectURL != "/alarmList/view" && uriArr[1] != 'dashboard'){
-    store.commit('setRedirectURL', redirectURL );
-} else if(uriArr[2] == "teamsByPro"){
-    store.commit('setRedirectURL', `/dashboard/professor/teams/${uriArr[3]}`)
-}
-else {
-    store.commit('setRedirectURL', null);
+if (redirectURL){
+    const uriArr = redirectURL.split("/");
+    console.log(uriArr);
+    if(redirectURL != "/alarmList/view" && uriArr[1] != 'dashboard'){
+        store.commit('setRedirectURL', redirectURL );
+    } else if(uriArr[2] == "teamsByPro"){
+        store.commit('setRedirectURL', `/dashboard/professor/teams/${uriArr[3]}`)
+    }
+    else {
+        store.commit('setRedirectURL', null);
+    }   
 }
 
 const google_uri = process.env.VUE_APP_GOOGLE_URI;

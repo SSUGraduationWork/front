@@ -76,4 +76,13 @@ const props = defineProps({
 i{
     margin-left: 20px;
 }
+.circle-all{
+    
+}
+.circle-inprogress{
+
+}
+.circle-done{
+
+}
 </style>
