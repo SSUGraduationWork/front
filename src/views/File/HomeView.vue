@@ -213,6 +213,7 @@ import BoardDropdown from './components/BoardDropdown.vue';
 import WritePage from './WritePage.vue';
 import Loader from '../../components/Loader.vue';
 import bgColors from '../../../public/color';
+import { useStore } from 'vuex';
 
 export default {
   props: ['teamId'], // props로 받을 파라미터 이름을 선언
@@ -349,7 +350,9 @@ export default {
 
     async fetchBoardList(memberId, teamId) {
       try {
-        const url = `/board/list/${teamId}`
+        const store = useStore();
+        const userId = store.state.userStore.user_id;
+        const url = `/board-service/board/list/${userId}/${teamId}`
         const response = await axiosInstance.get(url);
 
 
@@ -357,7 +360,7 @@ export default {
           this.boardList = response.data.content;
           this.workList=response.data.work;
           this.memberList=response.data.member;
-          this.role = response.data.role;
+          this.role = store.state.userStore.role;
 
           for (const member of this.memberList){
             this.members[member.userId] = member;
