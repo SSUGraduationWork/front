@@ -3,7 +3,7 @@
         <div class="modal-content">
             <!-- 모달 내용 -->
             <div v-for="item in content" :key="item.alarmId" class="alarm-item">
-                <div class = "alarm" v-if="(item.alarmKind === 'requestFeedback' ) || item.alarmKind === 'newWrite'||item.alarmKind==='agreeFeedback'||item.alarmKind==='denyFeedback'||(item.alarmKind === 'complUpdate' && (item.feedbackYn==1||item.feedbackYn==0))">
+                <div class = "alarm" v-if="(item.alarmKind === 'requestFeedback' ) || item.alarmKind === 'newWrite'||item.alarmKind==='agreeFeedback'||item.alarmKind==='denyFeedback'||(item.alarmKind === 'complUpdate' && (item.feedbackYn==2||item.feedbackYn==0))">
                     <div class="small-text">{{ formatDateFromArray(item.createdTime) }}</div>
                     <div class="image-container">
                         <div class = "icon"><i v-if="!item.seen" class="fa-solid fa-circle icon-circle"></i></div>
@@ -14,7 +14,7 @@
                         </div>
                     </div>
                 </div>
-                <div  class = "alarm" v-else-if="item.alarmKind === 'complUpdate' && item.feedbackYn!=2">
+                <div  class = "alarm" v-else-if="item.alarmKind === 'complUpdate' && item.feedbackYn==1">
                     <div class="small-text">{{ formatDateFromArray(item.createdTime) }}</div>
                     <div class="image-container">
                         <div class = "icon"><i v-if="!item.seen" class="fa-solid fa-circle icon-circle"></i></div>
@@ -45,6 +45,8 @@ import { defineProps } from 'vue';
 import {useStore} from 'vuex';
 
 const content = ref([]);
+const store = useStore();
+const userId = store.state.userStore.user_id;
 const props = defineProps({
     isClicked : {
         type: Boolean,
@@ -52,7 +54,7 @@ const props = defineProps({
 });
 const fetchAndShowAlarms = async() => {
   try {
-        const userId = this.$store.state.userStore.user_id;
+      
         const response = await axiosInstance.get(`board-service/alarmList/view/${userId}`);
         content.value = response.data.content;
         console.log(content.value);

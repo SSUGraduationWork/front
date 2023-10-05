@@ -4,7 +4,7 @@
     <FirstSidebar v-if="['DashboardPro1', 'DashboardPro2', 'Setting1'].includes($route.name)==true" :professorId="professorId" />
     <SecondSidebar v-if="['DashboardStu1', 'DashboardStu2', 'Setting2'].includes($route.name)==true" :studentId="studentId" />
     <div v-if="['Account','SignIn','SignUp','CallBack'].includes($route.name)==false" :style="{ 'margin-left': sidebarWidth }">
-      <HeaderDashboard v-if="['DashboardPro2', 'Setting1', 'DashboardStu1', 'DashboardStu2', 'Setting2'].includes($route.name)==true" :sidebarWidth = sidebarWidth></HeaderDashboard>
+      <HeaderDashboard v-if="['DashboardPro1', 'Setting1', 'DashboardStu1', 'DashboardStu2', 'Setting2'].includes($route.name)==true" :sidebarWidth = sidebarWidth></HeaderDashboard>
       <Header v-else :sidebarWidth = sidebarWidth></Header> 
       
       <router-view :teamId="teamId"></router-view> 

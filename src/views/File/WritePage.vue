@@ -132,8 +132,9 @@ export default {
           ).then((res) => {
             console.log(res);
             this.boardId = res.data.content.boardId;
-            if(boardId != null){
+            if(this.boardId != null){
               this.boardId = res.data.content.boardId;
+
               this.goToDetailPage();
             }
           })

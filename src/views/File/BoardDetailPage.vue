@@ -98,7 +98,7 @@ export default {
         this.boardContent = response.data.content;
         this.formData.title = this.boardContent.title;
         this.formData.content = this.boardContent.content;
-        this.memberId = response.data.userId;
+        this.memberId = userId;
         this.loading = false;
         this.increaseViewCount(boardId);
 

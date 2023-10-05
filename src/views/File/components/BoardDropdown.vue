@@ -6,7 +6,7 @@
         {{ option }}
         <div class  = "status-icon">
             <i
-              :class="{'fa-solid fa-circle text-green':  index === 1, 'fa-solid fa-circle text-red': index === 2,'fa-solid fa-circle text-gray': index === 3}"
+              :class="{'fa-solid fa-circle text-red':  index === 1, 'fa-solid fa-circle text-green': index === 2,'fa-solid fa-circle text-gray': index === 3}"
           ></i>
         </div>
       </li>

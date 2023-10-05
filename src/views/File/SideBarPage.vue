@@ -14,7 +14,7 @@
             <div v-for="feedback in feedbackList" :key="feedback.feedbackId" class="feedback-item">
                 <div class="feedback-comment">
                     <div class = "profile"><img :src="writers[feedback.userId].pictureUrl" alt="이미지" class="spaced"></div>
-                    <div class = "student-info"><span class="spaced1">{{ writers[feedback.userId].studentNumber}}&nbsp; {{ writers[feedback.userId].userName }}</span></div>
+                    <div class = "student-info"><span class="spaced1">{{ writers[feedback.userId].studentNumber}}&nbsp; {{ writers[feedback.userId].name }}</span></div>
                     <div class = "created-at"><span class="small-text">{{ formatDate( feedback.createdAt) }}</span></div>
                 </div>
                 <div class = "content">
@@ -26,8 +26,8 @@
             </div>
             <div v-for="feedback in addComments" :key="feedback" class="feedback-item">
                 <div class="feedback-comment">
-                    <div class = "profile"><img :src="writers[this.memberId].pictureUrl" alt="이미지"  class="spaced"></div>
-                    <div class = "student-info"><span class="spaced1">{{ writers[memberId].studentNumber }}&nbsp; {{ writers[memberId].userName }}</span></div>
+                    <div class = "profile"><img :src="writers[memberId].pictureUrl" alt="이미지"  class="spaced"></div>
+                    <div class = "student-info"><span class="spaced1">{{ writers[memberId].studentNumber }}&nbsp; {{ writers[memberId].name }}</span></div>
                     <div class = "created-at"><span class="small-text">{{ formatDate2( feedback.date )}}</span></div>
 
                     <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
@@ -84,7 +84,7 @@ export default {
         saveApproved:0,
         newApproved:0,
         count: 0,
-        memberId : null
+        memberId : this.$store.state.userStore.user_id
         };
     },
     beforeCreate() {
@@ -95,13 +95,13 @@ export default {
             this.feedbackList = response.data.feedback;
             this.feedbackStatusList=response.data.feedbackStatus;
             this.writerList=response.data.writer;
-            this.memberId = response.data.userId;
 
             for (const feedbackStatus of this.feedbackStatusList){
               this.feedbackStatuses[feedbackStatus.userId] = feedbackStatus;
             }
             for (const writer of this.writerList){
-              this.writers[writer.userId] = writer;
+              this.writers[writer.id] = writer;
+              console.log(this.writers);
             }
           })
 
@@ -179,7 +179,7 @@ export default {
         // 입력 메시지 란을 숨김
         this.isCommentVisible = false;
         const userId = this.$store.state.userStore.user_id;
-        const response = await axiosInstance.post(`/comment/${this.boardId}/${userId}/${approvalStatus}`, data);
+        const response = await axiosInstance.post(`/board-service/comment/${this.boardId}/${userId}/${approvalStatus}`, data);
 
       } catch (error) {
         console.error('코멘트 제출 오류:', error);

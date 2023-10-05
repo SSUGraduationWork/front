@@ -103,7 +103,7 @@
               </td>
               <td class = "writer">
                 <img :src="members[board.userId].pictureUrl" alt="사용자 이미지" style="max-width: 28px; max-height: 28px;" class="spaced">
-                <span>{{members[board.userId].studentNumber }} &nbsp;{{ members[board.userId].writerName }}</span>
+                <span>{{members[board.userId].studentNumber }} &nbsp;{{ members[board.userId].name }}</span>
               </td>
               <td>{{  formatDateFromArray(board.createdTime) }}</td>
               <td :key="(board.feedbackYn===0||board.feedbackYn===2)"><i class="fa-solid fa-circle text-red"></i></td>
@@ -128,7 +128,7 @@
               </td>
               <td class = "writer">
                 <img :src="members[board.userId].pictureUrl" alt="사용자 이미지" style="max-width: 28px; max-height: 28px;" class="spaced">
-                <span>{{members[board.userId].studentNumber }} &nbsp;{{ members[board.userId].writerName }}</span>
+                <span>{{members[board.userId].studentNumber }} &nbsp;{{ members[board.userId].name }}</span>
               </td>
               <td>{{  formatDateFromArray(board.createdTime) }}</td>
               <td :key="(board.feedbackYn===3)"><i class="fa-solid fa-circle text-gray"></i></td>
@@ -152,10 +152,10 @@
               </router-link></td>
             <td class = "writer">
               <img :src="members[board.userId].pictureUrl" alt="사용자 이미지" style="max-width: 28px; max-height: 28px;" class="spaced">
-              <span>{{members[board.userId].studentNumber }} &nbsp;{{ members[board.userId].writerName }}</span>
+              <span>{{members[board.userId].studentNumber }} &nbsp;{{ members[board.userId].name }}</span>
             </td>
             <td>{{  formatDateFromArray(board.createdTime) }}</td>
-            <td :key="(board.feedbackYn)"><i :class="{'fa-solid fa-circle text-green': (board.feedbackYn===1), 'fa-solid fa-circle text-red': (board.feedbackYn===0||board.feedbackYn===2),'fa-solid fa-circle text-gray': (board.feedbackYn===3)}"></i></td>
+            <td :key="(board.feedbackYn)"><i :class="{'fa-solid fa-circle text-green': (board.feedbackYn===1||board.feedbackYn==2), 'fa-solid fa-circle text-red': (board.feedbackYn===0),'fa-solid fa-circle text-gray': (board.feedbackYn===3)}"></i></td>
             <td>{{ board.viewCount }}</td>
           </tr>
           </tbody>
@@ -351,24 +351,24 @@ export default {
     async fetchBoardList(memberId, teamId) {
       try {
         const store = useStore();
+        this.role = store.state.userStore.role;
         const userId = store.state.userStore.user_id;
         const url = `/board-service/board/list/${userId}/${teamId}`
         const response = await axiosInstance.get(url);
 
 
           // 서버에서 받아온 데이터를 boardList에 저장
-          this.boardList = response.data.content;
+          this.boardList = response.data.content.reverse();
+          console.log(response.data);
           this.workList=response.data.work;
           this.memberList=response.data.member;
-          this.role = store.state.userStore.role;
 
           for (const member of this.memberList){
-            this.members[member.userId] = member;
+            this.members[member.id] = member;
           }
         for (const work of this.workList){
           this.works[work.workId] = work;
         }
-
 
 
           // boardId를 기준으로 내림차순으로 정렬

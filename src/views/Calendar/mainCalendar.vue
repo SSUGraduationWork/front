@@ -49,7 +49,7 @@
       <div class="content2">
         <textarea 
           @input="resize($event.target), changeInput()"
-            style="margin-top:10px; width: 100%; height: 'auto'"
+            style="margin-top:10px; width: 100%; height: 'auto'; min-height: 500px;"
             type="textarea"
             placeholder="내용을 입력해 주세요."
             v-model="minutes.content" @change="isModified=true"
@@ -582,7 +582,7 @@ export default {
 }
 
 .calendar {
-  margin-top: 150px;
+  margin-top: 110px;
   text-align: center;
   font-family: Arial, sans-serif;
   margin-left: 70px;
@@ -685,7 +685,7 @@ td {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -702,7 +702,7 @@ td {
 
   background-color: white;
   width: 600px;
-  height: 720px;
+  height: 80vh;
   padding: 20px;
   border-radius: 8px;
   overflow: auto;
@@ -888,6 +888,7 @@ textarea {
 .icons {
   position: relative;
   height: 20px;
+  cursor: pointer;
   /* display: flex; */
 }
 

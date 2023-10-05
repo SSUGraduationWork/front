@@ -73,6 +73,9 @@ export default {
       axiosInstance.get(`/user-service/user-info/${userId.value}`)
           .then((res) => {
             userInfo.value = res.data;
+            if(userInfo.value.studentNumber == 0){
+              userInfo.value.studentNumber = "";
+            }
           })
       if(teamId.value){
         axiosInstance.get(`/dashboard-service/team-info/${teamId.value}`)
