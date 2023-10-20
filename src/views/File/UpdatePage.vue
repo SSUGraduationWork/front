@@ -171,7 +171,7 @@ export default {
         console.log('Selected File IDs:', selectedFileIdsJson);
         // 서버에 선택된 파일 ID들을 보내고 파일을 삭제하는 API 호출
         if(selectedFileIdsJson != "[]"){
-            await axiosInstance.delete(`/files/delete/${this.boardId}`, {
+            await axiosInstance.delete(`/board-service/files/delete`, {
               data: selectedFileIdsJson, // 선택된 파일 ID들을 요청의 본문(body)로 보냄
               headers: {
                 'Content-Type': 'application/json' // JSON 형식으로 요청을 보내기 위해 헤더 설정

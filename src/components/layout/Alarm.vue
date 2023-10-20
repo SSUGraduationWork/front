@@ -3,18 +3,18 @@
         <div class="modal-content">
             <!-- 모달 내용 -->
             <div v-for="item in content" :key="item.alarmId" class="alarm-item">
-                <div class = "alarm" v-if="(item.alarmKind === 'requestFeedback' ) || item.alarmKind === 'newWrite'||item.alarmKind==='agreeFeedback'||item.alarmKind==='denyFeedback'||(item.alarmKind === 'complUpdate' && (item.feedbackYn==2||item.feedbackYn==0))">
+                <div class = "alarm" v-if="(item.alarmKind === 'requestFeedback' ) || item.alarmKind === 'newWrite'||item.alarmKind==='agreeFeedback'||item.alarmKind==='denyFeedback'||(item.alarmKind === 'complUpdate' && (item.feedbackYn==1||item.feedbackYn==0))">
                     <div class="small-text">{{ formatDateFromArray(item.createdTime) }}</div>
                     <div class="image-container">
                         <div class = "icon"><i v-if="!item.seen" class="fa-solid fa-circle icon-circle"></i></div>
                         <div class ="user-img"><img :src="item.pictureUrl" alt="이미지" class="spaced"></div>
                         <div class="content-font-size">
                             {{ item.content }}
-                            <p class = "direct"><a :href="item.redirectUrl + '/' + $route.params.memberId+'/'+$route.params.teamId" @click="handleLinkClick(item.alarmId)"><i class="fa-solid fa-arrow-up-right-from-square"></i>바로가기</a></p>
+                            <p class = "direct"><a :href="item.redirectUrl +'/'+$route.params.teamId" @click="handleLinkClick(item.alarmId)"><i class="fa-solid fa-arrow-up-right-from-square"></i>바로가기</a></p>
                         </div>
                     </div>
                 </div>
-                <div  class = "alarm" v-else-if="item.alarmKind === 'complUpdate' && item.feedbackYn==1">
+                <div  class = "alarm" v-if="item.alarmKind === 'complUpdate' && item.feedbackYn==2">
                     <div class="small-text">{{ formatDateFromArray(item.createdTime) }}</div>
                     <div class="image-container">
                         <div class = "icon"><i v-if="!item.seen" class="fa-solid fa-circle icon-circle"></i></div>
@@ -22,8 +22,8 @@
                         <div class="content-font-size">{{ item.content }}</div>
                     </div>
                     <div class="rebutton-style">
-                        <button @click="handleReapprove(item.boardId, item.writerId, true)" class="reagree">재수락</button>
-                        <button @click="handleReapprove(item.boardId, item.writerId, false)" class="redeny">거절</button>
+                        <button @click="handleReapprove(item.boardId, item.writerId, 1)" class="reagree">재수락</button>
+                        <button @click="handleReapprove(item.boardId, item.writerId, 2)" class="redeny">거절</button>
                     </div>
                 </div>
                 <div  class = "alarm" v-if="item.alarmKind === 'complFeedback'">

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Work from '../views/Work/Work.vue'
 import HomeView from '../views/File/HomeView.vue'
+import HomeViewProfessor from '../views/File/HomeViewProfessor.vue'
 import WritePage from '../views/File/WritePage.vue'
 import UpdatePage from '../views/File/UpdatePage.vue'
 import BoardDetailPage from '../views/File/BoardDetailPage.vue'
@@ -93,6 +94,12 @@ const routes = [
     path: '/board/list/:teamId',
     name: 'HomeView',
     component: HomeView,
+    props: true, // 이 설정으로 동적 라우팅 파라미터를 컴포넌트의 props로 전달할 수 있습
+  },
+  {
+    path: '/professor/board/list/:teamId',
+    name: 'HomeViewProfessor',
+    component: HomeViewProfessor,
     props: true, // 이 설정으로 동적 라우팅 파라미터를 컴포넌트의 props로 전달할 수 있습
   },
   {//글쓰기
