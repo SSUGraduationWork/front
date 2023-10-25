@@ -12,20 +12,7 @@
   </div>
 <div v-else>
   <div  class="container">
-    <div class="feedback-status">
-      <div class="feedback-completed">
-        <div class="icon-blue i-completed"><i class="fi fi-br-check"></i></div>
-        <div class="feedback-count-label">완료한 피드백 <i class="fi fi-bs-menu-dots"></i></div>
 
-        <div class="feedback-count">{{ feedbackCompletedCount }}</div>
-      </div>
-      <div class="feedback-incomplete">
-        <div class="icon-blue"><i class="fi fi-rs-comment-dots"></i></div>
-        <div class="feedback-count-label">남은 피드백 <i class="fi fi-bs-menu-dots"></i></div>
-
-        <div class="feedback-count">{{ feedbackIncompleteCount }}</div>
-      </div>
-    </div>
     <div class="table-container">
 
       <!-- 검색 입력창 -->
@@ -33,8 +20,7 @@
         <div class="file-letter">파일</div>
         <div v-if="role=='student'" class="write-button-container"><button class="write-button" @click="goToWritePage">글쓰기</button></div> <!-- "글쓰기" 버튼 추가 -->
 
-        <!-- dropdown-->
-        <div  class="search-dropdown"><BoardDropdown :options="updateSelectedIndex"  @selected="handleDropdownSelect"/></div>
+
 
         <div class="search-input-container">
 
@@ -56,87 +42,12 @@
             <th>제목</th>
             <th> 작성자</th>
             <th>작성일</th>
-            <th>피드백 여부</th>
             <th>조회수</th>
           </tr>
         </thead>
         <div class = "margin-space"></div>
-        <template v-if="selectedIndex === 2">
-          <template v-for="(board, index) in feedbackTrueItems" :key="index">
-            <tr v-if="(board.feedbackYn===1||board.feedbackYn===2)">
-              <td>{{ feedbackCompletedCount-index - currentPage * itemsPerPage  }}</td>
-              <td class="work-name-container">
-                <div class = "work-name" :style="{ backgroundColor: getBackgroundColor(board.workId) }">
-                  <i class="fa-solid fa-tag"></i><span>{{ works[board.workId].workName }}</span>
-                </div>
-              </td>
-              <td class="title">
-                <router-link
-                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
-                >{{ board.title }}
-                </router-link>
-              </td>
-              <td class ="writer">
-                <img :src="members[board.userId].pictureUrl" alt="사용자 이미지" style="max-width: 28px; max-height: 28px;" class="spaced">
-                <span> {{members[board.userId].studentNumber }} &nbsp;{{ members[board.userId].writerName}}</span>
-              </td>
-              <td>{{  formatDateFromArray(board.createdTime) }}</td>
-              <td :key="(board.feedbackYn===1||board.feedbackYn===2)"><i class="fa-solid fa-circle text-green"></i></td>
-              <td>{{ board.viewCount }} </td>
-            </tr>
-          </template>
-        </template>
-        <template v-else-if="selectedIndex === 1">
-          <template v-for="(board, index) in feedbackFalseItems" :key="index">
-            <tr v-if="(board.feedbackYn===0)">
-              <td>{{ feedbackIncompleteCount-index - currentPage * itemsPerPage  }}</td>
-              <td class="work-name-container">
-                <div class = "work-name" :style="{ backgroundColor: getBackgroundColor(board.workId) }">
-                  <i class="fa-solid fa-tag"></i><span>{{ works[board.workId].workName}}</span>
-                </div>
-              </td>
-              <td class="title">
-                <router-link
-                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
-                >{{ board.title }}
-                </router-link>
-              </td>
-              <td class = "writer">
-                <img :src="members[board.userId].pictureUrl" alt="사용자 이미지" style="max-width: 28px; max-height: 28px;" class="spaced">
-                <span>{{members[board.userId].studentNumber }} &nbsp;{{ members[board.userId].name }}</span>
-              </td>
-              <td>{{  formatDateFromArray(board.createdTime) }}</td>
-              <td :key="(board.feedbackYn===0)"><i class="fa-solid fa-circle text-red"></i></td>
-              <td>{{ board.viewCount }}</td>
-            </tr>
-          </template>
-        </template>
-        <template v-else-if="selectedIndex === 3">
-          <template v-for="(board, index) in myfeedbackItems" :key="index">
-            <tr v-if="(board.feedbackYn===3)">
-              <td>{{myBoardWriteCount-index - currentPage * itemsPerPage }}</td>
-              <td class="work-name-container">
-                <div class = "work-name" :style="{ backgroundColor: getBackgroundColor(board.workId) }">
-                  <i class="fa-solid fa-tag"></i><span>{{works[board.workId].workName }}</span>
-                </div>
-              </td>
-              <td class="title">
-                <router-link
-                    :to="{ name: 'BoardDetailPage', params: { boardId: board.boardId ,teamId:teamId} }"
-                >{{ board.title }}
-                </router-link>
-              </td>
-              <td class = "writer">
-                <img :src="members[board.userId].pictureUrl" alt="사용자 이미지" style="max-width: 28px; max-height: 28px;" class="spaced">
-                <span>{{members[board.userId].studentNumber }} &nbsp;{{ members[board.userId].name }}</span>
-              </td>
-              <td>{{  formatDateFromArray(board.createdTime) }}</td>
-              <td :key="(board.feedbackYn===3)"><i class="fa-solid fa-circle text-gray"></i></td>
-              <td>{{ board.viewCount }}</td>
-            </tr>
-          </template>
-        </template>
-        <template v-else>
+
+
           <tbody>
           <tr v-for="(board, index) in visibleBoardData" :key="index">
             <td>{{ this.boardList.length-index - currentPage * itemsPerPage }}</td>
@@ -155,11 +66,11 @@
               <span>{{members[board.userId].studentNumber }} &nbsp;{{ members[board.userId].name }}</span>
             </td>
             <td>{{  formatDateFromArray(board.createdTime) }}</td>
-            <td :key="(board.feedbackYn)"><i :class="{'fa-solid fa-circle text-green': (board.feedbackYn===1||board.feedbackYn==2), 'fa-solid fa-circle text-red': (board.feedbackYn===0),'fa-solid fa-circle text-gray': (board.feedbackYn===3)}"></i></td>
+
             <td>{{ board.viewCount }}</td>
           </tr>
           </tbody>
-        </template>
+
       </table>
     </div>
 
@@ -227,19 +138,13 @@ export default {
       totalList:[],
       currentPage: 0, // 현재 페이지 번호
       visibleBoardData: [], // 보여줄 데이터 배열 추가
-      feedbackTrueItems: [],  // 피드백이 true인 항목을 저장할 배열
-      feedbackFalseItems: [], // 피드백이 false인 항목을 저장할 배열
-      myfeedbackItems: [] ,// 본이이 작성한 게시판일 경우의 피드백
       totalPages: 0, // 전체 페이지 수
-      falsePages:0,
-      truePages:0,
-      mywritePages:0,
       feedbackTrueItemCount:0,
       feedbackFalseItemCount:0,
       visiblePagesStart: 1, // 현재 보이는 페이지 숫자 범위 시작
       visiblePagesEnd: 3,   // 현재 보이는 페이지 숫자 범위 끝
       dropdownOptions: ['Option 1', 'Option 2', 'Option 3'],
-      itemsPerPage: 7, // 한 페이지에 보여줄 항목 수 추가
+      itemsPerPage: 10, // 한 페이지에 보여줄 항목 수 추가
       loading: true, // 초기 로딩 상태를 true로 설정
       selectedIndex: null, // 선택된 인덱스를 저장할 데이터
       colors: {}, //작업 이름 bg 색상
@@ -267,41 +172,18 @@ export default {
 
       return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
     },
-    visiblePageRange1() {
-      const maxVisiblePages = 3;
-      const middlePage = Math.floor((this.visiblePagesStart + this.visiblePagesEnd) / 2);
-      const startPage = Math.max(1, middlePage - Math.floor(maxVisiblePages / 2));
-      const endPage = Math.min(this.truePages, startPage + maxVisiblePages - 1);
 
-      return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-    },
-    visiblePageRange2() {
-      const maxVisiblePages = 3;
-      const middlePage = Math.floor((this.visiblePagesStart + this.visiblePagesEnd) / 2);
-      const startPage = Math.max(1, middlePage - Math.floor(maxVisiblePages / 2));
-      const endPage = Math.min(this.falsePages, startPage + maxVisiblePages - 1);
-
-      return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-    },
-    visiblePageRange3() {
-      const maxVisiblePages = 3;
-      const middlePage = Math.floor((this.visiblePagesStart + this.visiblePagesEnd) / 2);
-      const startPage = Math.max(1, middlePage - Math.floor(maxVisiblePages / 2));
-      const endPage = Math.min(this.mywritePages, startPage + maxVisiblePages - 1);
-
-      return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-    },
     feedbackCompletedCount() {
       //board.feedbackYn===4는 게시판 작성자가 본인이 쓴 글이면 4
       //board.feedbackYn===1는 게시판 작성자가 피드백을한 경우(수락)
-      return this.boardList.filter(board => (board.feedbackYn===1||board.feedbackYn===2)).length;
+      return this.boardList.filter(board => (board.feedbackYn===1)).length;
     },
     feedbackIncompleteCount() {
 
       //피드백 수정요청을 한 사람도 피드백 완료 개수에 세야할지 정해야함
       //board.feedbackYn===0는 게시판 작성자가 피드백을 아예 안한 경우
       //board.feedbackYn===2는 게시판 작성자가 피드백을 했는데 거절한 경우(거절)
-      return this.boardList.filter((board => (board.feedbackYn===0))).length;
+      return this.boardList.filter((board => (board.feedbackYn===0||board.feedbackYn===2))).length;
     },
     myBoardWriteCount() {
       //board.feedbackYn===3은 게시판 작성자 본인이 쓴 경우
@@ -373,14 +255,11 @@ export default {
 
           // boardId를 기준으로 내림차순으로 정렬
           this.totalList.sort((a, b) => b.boardId - a.boardId);
-          this.feedbackTrueItemCount = this.feedbackTrueItems.length;
-          this.feedbackFalseItemCount = this.feedbackFalseItems.length;
+
           // 전체 페이지 수 계산
           this.totalPages = Math.ceil(this.boardList.length / this.itemsPerPage);
           // 초기 visibleBoardData 설정
-        this.falsePages=Math.ceil(this.feedbackIncompleteCount/this.itemsPerPage);
-        this.truePages=Math.ceil(this.feedbackCompletedCount/this.itemsPerPage);
-        this.mywritePages=Math.ceil(this.myBoardWriteCount/this.itemsPerPage);
+
         this.updateVisibleBoardData();
 
       } catch (error) {
@@ -396,8 +275,8 @@ export default {
       ////////
       this.visibleBoardData = this.boardList.slice(startIndex, endIndex);
       // 피드백이 true인 항목과 false인 항목을 분류
-      this.feedbackTrueItems = this.boardList.filter(board => board.feedbackYn === 1||board.feedbackYn === 2).slice(startIndex, endIndex);
-      this.feedbackFalseItems = this.boardList.filter(board => (board.feedbackYn===0)).slice(startIndex, endIndex);
+      this.feedbackTrueItems = this.boardList.filter(board => board.feedbackYn === 1).slice(startIndex, endIndex);
+      this.feedbackFalseItems = this.boardList.filter(board => (board.feedbackYn === 2||board.feedbackYn===0)).slice(startIndex, endIndex);
       this.myfeedbackItems = this.boardList.filter(board => (board.feedbackYn ===3)).slice(startIndex, endIndex);
     },
     goToPage(pageNumber) {
@@ -522,8 +401,8 @@ tr{
   background-color: #F5F6FA; /* 검색창과 이모티콘 부분만 회색 배경색 */
   border-radius: 7px;
   height: 37px;
-  width: 230px; /* 검색 입력창 너비 조절 */
-  margin-right: 185px;
+  width: 280px; /* 검색 입력창 너비 조절 */
+  margin-right: 55px;
 }
 .fi-br-search{
   color: #3e3e3e;
