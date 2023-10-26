@@ -27,7 +27,9 @@ import vClickOutside from 'click-outside-vue3';
 //import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap 5 CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Bootstrap 5 JavaScrip
 
+
 const app = createApp(App)
+
 app.use(router);
 app.use(ElementPlus);
 app.use(PrimeVue, {

@@ -81,7 +81,7 @@ const routes = [
   {
     path: '/chatting/:teamId',
     name: 'Chat',
-    component: () => import('../views/Chat.vue'),
+    component: () => import('../views/Chat/Chat.vue'),
     props: true
   },
   {
