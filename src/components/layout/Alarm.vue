@@ -22,8 +22,16 @@
                         <div class="content-font-size">{{ item.content }}</div>
                     </div>
                     <div class="rebutton-style">
-                        <button @click="handleReapprove(item.boardId, item.writerId, 1)" class="reagree">재수락</button>
-                        <button @click="handleReapprove(item.boardId, item.writerId, 2)" class="redeny">거절</button>
+                        <button v-if="!check[item.alarmId]" @click="handleReapprove(item.boardId, item.writerId, item.alarmId, 1)" class="reagree">수락</button>
+                        <button v-if="!check[item.alarmId]" @click="handleReapprove(item.boardId, item.writerId, item.alarmId, 2)" class="redeny">거절</button>
+                        <div v-if = "check[item.alarmId] == 2" class = "no">
+                          <div class = "no-icon"><i class="fi fi-sr-cross-circle"></i></div>
+                          <div class = "no-content">&nbsp;&nbsp;거절하셨습니다.</div>
+                        </div>
+                        <div v-if = "check[item.alarmId] == 1" class = "yes">
+                          <div class = "yes-icon"><i class="fi fi-ss-check-circle"></i></div>
+                          <div class = "yes-content">&nbsp;&nbsp;수락하셨습니다.</div>
+                        </div>
                     </div>
                 </div>
                 <div  class = "alarm" v-if="item.alarmKind === 'complFeedback'">
@@ -47,6 +55,7 @@ import {useStore} from 'vuex';
 const content = ref([]);
 const store = useStore();
 const userId = store.state.userStore.user_id;
+const check = ref({});
 const props = defineProps({
     isClicked : {
         type: Boolean,
@@ -107,10 +116,12 @@ const formatDateFromArray = (dateArray) => {
       return formattedDate;
 }
 
-const handleReapprove = async (boardId, writerId, isApproved) => {
+const handleReapprove = async (boardId, writerId, alarmId, isApproved) => {
       try {
+        check.value[alarmId] = isApproved;
         await axiosInstance.post(`board-service/recomment/${boardId}/${writerId}/${isApproved}`);
         // 재수락 또는 거절 요청을 보낸 후에, 필요한 업데이트를 수행할 수 있습니다.
+
       } catch (error) {
         console.error('Error reapproving:', error);
       }
@@ -269,5 +280,21 @@ a{
 }
 .icon-3{
     margin-top: 10px;
+}
+.no, .yes{
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+}
+.no-icon, .yes-icon{
+  color: #E53535;
+  font-size: 14px;
+  margin-top: 1.3px;
+}
+.no-content, .yes-content{
+  margin-bottom: 10px;
+}
+.yes-icon{
+  color: #3772FF;
 }
 </style>

@@ -7,10 +7,6 @@
 -->
 
 <template>
-  <div v-if="loading" class="loading-container">
-    <Loader></Loader>
-  </div>
-<div v-else>
   <div  class="container">
 
     <div class="table-container">
@@ -19,8 +15,6 @@
       <div class="search-container">
         <div class="file-letter">파일</div>
         <div v-if="role=='student'" class="write-button-container"><button class="write-button" @click="goToWritePage">글쓰기</button></div> <!-- "글쓰기" 버튼 추가 -->
-
-
 
         <div class="search-input-container">
 
@@ -46,7 +40,6 @@
           </tr>
         </thead>
         <div class = "margin-space"></div>
-
 
           <tbody>
           <tr v-for="(board, index) in visibleBoardData" :key="index">
@@ -114,7 +107,7 @@
       <button @click="showNextPages" ><i class= "fi fi-rr-angle-small-right"></i></button>
     </div>
   </template>
-</div>
+
 </template>
 
 <script>
