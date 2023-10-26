@@ -11,7 +11,8 @@
     <Loader></Loader>
   </div>
 <div v-else>
-  <div  class="container">
+  <ProfessorView  v-if = "role == 'professor'"></ProfessorView>
+  <div v-else class="container">
     <div class="feedback-status">
       <div class="feedback-completed">
         <div class="icon-blue i-completed"><i class="fi fi-br-check"></i></div>
@@ -166,7 +167,7 @@
 
   </div>
   <!-- 페이지 버튼 표시 -->
-
+<div v-if = "role == 'student'">
   <template v-if="selectedIndex === 1">
     <div class="pagination">
       <button @click="showPreviousPages" > <i class= "fi fi-rr-angle-small-left"></i></button>
@@ -204,6 +205,7 @@
     </div>
   </template>
 </div>
+</div>
 </template>
 
 <script>
@@ -214,6 +216,7 @@ import WritePage from './WritePage.vue';
 import Loader from '../../components/Loader.vue';
 import bgColors from '../../../public/color';
 import { useStore } from 'vuex';
+import ProfessorView from './HomeViewProfessor.vue';
 
 export default {
   props: ['teamId'], // props로 받을 파라미터 이름을 선언
@@ -253,10 +256,12 @@ export default {
   components: {
     BoardDropdown,
     WritePage,
-    Loader
+    Loader,
+    ProfessorView
   },
   mounted() {
     this.fetchBoardList(this.memberId, this.teamId);
+    this.role = this.$store.state.userStore.role;
   },
   computed: {
     visiblePageRange0() {
