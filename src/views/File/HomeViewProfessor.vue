@@ -230,12 +230,11 @@ export default {
     },
 
 
-    async fetchBoardList(memberId, teamId) {
+    async fetchBoardList(teamId) {
       try {
         const store = useStore();
         this.role = store.state.userStore.role;
-        const userId = store.state.userStore.user_id;
-        const url = `/board-service/board/list/${userId}/${teamId}`
+        const url = `/board-service/professor/board/list/${teamId}`
         const response = await axiosInstance.get(url);
 
 
