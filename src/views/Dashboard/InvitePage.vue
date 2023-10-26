@@ -3,10 +3,15 @@
     <Loader></Loader>
 </div>
 <div v-else>
+<div>
+    <span class="collapse-icon" @click="toggleSidebar">
+        <h1 class = "logo">Co<span>Work</span></h1>
+    </span>
+</div>
 <div class = "black-bg" :style="{display:updateModalDisplay}">
     <div class = "white-bg">
         <div class ="icon-box">
-            <div class = "icon-circle"><i class="fa fa-users" aria-hidden="true"></i></div>
+        <div class = "icon-circle"><i class="fa fa-users" aria-hidden="true"></i></div>
         </div>
         <div class="update-modal-overlay">
             <input
@@ -36,10 +41,9 @@
                 v-model="postTeamName"
                 class="custom-input-style"
             >
-                    <!-- dialog footer 영역 -->
-                    <!-- <template v-slot:footer> -->
+            
         </div>
-        <div class="footer"><!--2-->
+        <div class="footer">
             <span class="dialog-footer">
                 <button @click="close()" class="cancel">취소</button>
                 <button type="primary" @click="postTeams()" class = "ok">생성</button>
@@ -65,7 +69,7 @@
     <div class="content">
         <div class="top">
             <div class="watchProjectName">{{this.projectName}}</div>
-            <!-- <el-button type="primary" class="new" @click="generate()"><i class="fi fi-br-plus"></i>팀 생성</el-button> -->
+            <el-button type="primary" class="new" @click="generate()"><i class="fi fi-br-plus"></i>팀 생성</el-button>
         </div>
 
         <div class="teams">
@@ -78,13 +82,13 @@
 
             <div class="container1">            
                 <div class="teamName">{{team.teamName}}</div>
-                <div class = "more-button" v-on:click.prevent @click="modButtonControl(team.teamId)">
+                <!-- <div class = "more-button" v-on:click.prevent @click="modButtonControl(team.teamId)">
                     <i class="fi fi-rs-menu-dots-vertical"></i>
                     <TeamDeleteButton :moreButtonOpen = "moreButtonOpen[(team.teamId).toString()]" 
                         @deleteProject="deleteGenerate(team.teamId)" 
                         @updateProject="updateGenerate(team)">
                     </TeamDeleteButton>
-                </div>
+                </div> -->
             </div>
             <div class="semester"> </div>
             <div class= "participant">
@@ -104,7 +108,10 @@ import {axiosInstance} from '@/axios';
 import TeamDeleteButton from './components/TeamDeleteButton.vue';
 import Avatar from './components/Avatar.vue';
 import Loader from '../../components/Loader.vue'
+import { useStore } from 'vuex';
+const store = useStore();
 const url = "http://localhost:3210";
+
 
 export default {
     props: ['teams'],
@@ -121,7 +128,7 @@ export default {
                 teamNumber: 0 //백엔드에서 카운트해줌
             }
             console.log("params: ",params)
-            return params;      
+            return params;
         },
 
         updateSetParams() {
@@ -173,8 +180,15 @@ export default {
         },
         //생성
         postTeams() {
+            // const store = useStore();
+            // const studentId = this.$store.state.useStore.user_id;
+
+            const store = useStore();
+            const studentId = this.$store.state.userStore.user_id; // "userStore"로 접근
+
+            console.log("studentId: " +studentId);
             axiosInstance
-                .post(`/dashboard-service/dashboard/team/${this.projectId}/${this.studentId}`, this.postSetParams)
+                .post(`/dashboard-service/dashboard/teams/${this.projectId}/${studentId}`, this.postSetParams)
                 .then((response) => {
                 if (response.data.message == "Success") {
                     this.postTeam = response;
@@ -288,8 +302,22 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
 
+.logo{
+    margin-left: 20px;
+    padding: 10px;
+    font-size: 40px;
+    font-family: 'REM', sans-serif;
+}
+.logo span{
+    color: #3772FF;
+}
+.sidebar span{
+    top:0;
+}
+
+
 * {
-  font-family: 'Red Hat Display', sans-serif;
+  /* font-family: 'Red Hat Display', sans-serif; */
 }
 .loading-container {
   height: 100%;
@@ -345,7 +373,7 @@ export default {
 .content {
     width: 85%;
     margin: 0 auto;
-    margin-top: 95px;
+    margin-top: 20px;
     min-width: 900px;
 }
 
@@ -369,7 +397,7 @@ export default {
     cursor: pointer;
     text-decoration: none; /* 링크에 밑줄 제거 */
     color: inherit; /*색변하지 않도록 */
-    height: 170px;
+    height: 160px;
     margin-bottom: 30px;
 }
 

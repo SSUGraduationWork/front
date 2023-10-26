@@ -924,9 +924,7 @@ textarea {
   cursor: pointer;
 }
 .dot {
-  /* padding-top: 20px; */
-  font-size: 1px;
-  color: #ff3f3f;
+  color: #ff9898;
 }
 
 .inputTitle {

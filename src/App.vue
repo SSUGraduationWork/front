@@ -1,9 +1,9 @@
 <template>
   <div>
-    <Sidebar v-if="['Account','SignIn','SignUp','CallBack','Das', 'DashboardPro1', 'DashboardPro2', 'DashboardStu', 'Setting1', 'Setting2'].includes($route.name)==false" :teamId="teamId" />
+    <Sidebar v-if="['Account','SignIn','SignUp','CallBack','Das', 'DashboardPro1', 'DashboardPro2', 'DashboardStu', 'Setting1', 'Setting2', 'Invitation'].includes($route.name)==false" :teamId="teamId" />
     <FirstSidebar v-if="['DashboardPro1', 'DashboardPro2', 'Setting1'].includes($route.name)==true" :professorId="professorId" />
     <SecondSidebar v-if="['DashboardStu1', 'DashboardStu2', 'Setting2'].includes($route.name)==true" :studentId="studentId" />
-    <div v-if="['Account','SignIn','SignUp','CallBack'].includes($route.name)==false" :style="{ 'margin-left': sidebarWidth }">
+    <div v-if="['Account','SignIn','SignUp','CallBack','Invitation'].includes($route.name)==false" :style="{ 'margin-left': sidebarWidth }">
       <HeaderDashboard v-if="['DashboardPro1', 'Setting1', 'DashboardStu1', 'DashboardStu2', 'Setting2'].includes($route.name)==true" :sidebarWidth = sidebarWidth></HeaderDashboard>
       <Header v-else :sidebarWidth = sidebarWidth></Header> 
       

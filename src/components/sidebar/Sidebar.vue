@@ -21,7 +21,6 @@
     <SidebarLink :to="chattingUrl" icon="fi fi-rr-comment-alt"><span class = "list">채팅</span></SidebarLink>
     <SidebarLink :to="contributionUrl" icon="fi fi-rs-chart-pie-alt"><span class = "list">기여도</span></SidebarLink>
 
-
   </div>
 </template>
 

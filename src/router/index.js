@@ -55,6 +55,12 @@ const routes = [
     props: true
   },
   {
+    path: '/dashboard/invitation/:projectId',
+    name: 'Invitation',
+    component: () => import('../views/Dashboard/InvitePage.vue'),
+    props: true
+  },
+  {
     path: '/dashboard/professor/:professorId',
     name: 'DashboardPro1',
     component: () => import('../views/Dashboard/DashboardPro1.vue'),

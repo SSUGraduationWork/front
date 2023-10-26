@@ -17,8 +17,6 @@
     <div class="margin-block"></div>
     <SidebarLink :to="dashboardUrl" icon="fi fi-rr-apps"><span class = "list">대시보드</span></SidebarLink>
     <SidebarLink :to="settingUrl" icon="fi fi-rs-settings"><span class = "list">설정</span></SidebarLink>
-
-
   </div>
 </template>
 
