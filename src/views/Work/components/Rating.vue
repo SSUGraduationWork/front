@@ -1,6 +1,6 @@
 <template>
     <div class="card flex justify-content-center">
-        <Rating v-model="value" :cancel="false" v-on:update:model-value="change" />
+        <Rating :disabled="role == 'professor'" v-model="value" :cancel="false" v-on:update:model-value="change" />
     </div>
 </template>
 
@@ -20,6 +20,10 @@ const props = defineProps({
     teamId : {
         type: Number,
         default: 0
+    },
+    role: {
+        type: String,
+        default: 'student'
     }
 })
 

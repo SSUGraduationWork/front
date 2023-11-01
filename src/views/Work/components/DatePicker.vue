@@ -1,5 +1,5 @@
 <template>
-    <VueDatePicker v-model="date" :format-locale="ko" :min-date="new Date()" @update:model-value="change" time-picker-inline>
+    <VueDatePicker :disabled="role == 'professor'" v-model="date" :format-locale="ko" :min-date="new Date()" @update:model-value="change" time-picker-inline>
         <template #trigger>
             <div v-if= "isNull == 0" class = "end-date">
                 <p class = "ymd">{{dateFormat.year}}년 {{dateFormat.month}}월 {{dateFormat.day}}일</p>
@@ -28,6 +28,10 @@ const props = defineProps({
     teamId : {
         type: Number,
         default: 0
+    },
+    role: {
+        type: String,
+        defulat: "student"
     }
 })
 let isNull = 0;

@@ -49,8 +49,8 @@
                         <i class="fi fi-sr-document"></i>
                         <span class="title">{{ post.title }}</span>
                         <span class="uploaded-by">uploaded by</span>
-                        <img class = "profile-img" :src="teamMembers[post.user_id].pictureUrl" />
-                        <span class="poster">{{ teamMembers[post.user_id].name }}</span>
+                        <img class = "profile-img" :src="teamMembers[post.userId].pictureUrl" />
+                        <span class="poster">{{ teamMembers[post.userId].name }}</span>
                     </div>
                 </div>
             </div>
@@ -81,8 +81,10 @@ let workers = [];
 let date = ref();
 const board = ref();
 const importance = ref();
+const teamMembers = ref(props.teamMembers);
 const emit = defineEmits(["closeDetail", "openDetail"]);
-console.log(props.teamMembers);
+console.log("팀 멤버 : ", teamMembers.value);
+
 if (props.workId > 0) {
     axiosInstance.get(`/work-service/works-detail/${props.workId}`)
     .then((res) => {
@@ -276,9 +278,9 @@ img{
 .posts:hover{
     margin-top: -2px;
     margin-left: 0px;
-    transform: scale(1.1,1.1);
-    -ms-transform: scale(1.1,1.1);
-    -webkit-transform: scale(1.1,1.1);
+    transform: scale(1.03,1.03);
+    -ms-transform: scale(1.03,1.03);
+    -webkit-transform: scale(1.03,1.03);
     box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 .fi-sr-document, .title, .uploaded-by, .profile-img, .poster{

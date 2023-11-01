@@ -14,6 +14,9 @@ const axiosInstance = axios.create({
     baseURL : 'http://localhost:8001'
 
 })
+const axiosInstanceChat = axios.create({
+    baseURL : 'http://localhost:3001'
+})
 
 axiosInstanceSpring.interceptors.request.use(
     (config) => {
@@ -34,6 +37,7 @@ axiosInstanceNode.interceptors.request.use(
 
     }
 )
+
 axiosInstance.interceptors.request.use(
     (config) => {
         let access_token = store.state.userStore.jwtToken;
@@ -44,6 +48,7 @@ axiosInstance.interceptors.request.use(
 
     }
 )
+
 axiosInstance.interceptors.response.use(
     (response) => {
         return response;
@@ -63,4 +68,5 @@ axiosInstance.interceptors.response.use(
         return Promise.reject(error);
     }
 )
+
 export { axiosInstanceNode, axiosInstanceSpring, axiosInstance };
