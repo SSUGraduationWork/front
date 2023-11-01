@@ -1,6 +1,6 @@
 <template>
     <div class="card flex justify-content-center">
-        <Dropdown v-model="selectedStatus" :options="statuses" optionLabel="name" v-on:change="change" class="w-full md:w-14rem" dropdownIcon=" ">
+        <Dropdown  :disabled="role == 'professor'" v-model="selectedStatus" :options="statuses" optionLabel="name" v-on:change="change" class="w-full md:w-14rem" dropdownIcon=" ">
             <template #value>
                 <div v-if="selectedStatus && selectedStatus.code != 1" class = "current-status" :style="{background: statusColor[selectedStatus.code]}">
                     <div class="current-status-name">{{ selectedStatus.name }}</div>
@@ -37,6 +37,10 @@ const props = defineProps({
     teamId : {
         type: Number,
         default: 0
+    },
+    role:{
+        type: String,
+        default: 'student'
     }
     
 })

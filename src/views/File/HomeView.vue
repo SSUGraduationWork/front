@@ -11,7 +11,7 @@
     <Loader></Loader>
   </div>
 <div v-else>
-  <ProfessorView  v-if = "role == 'professor'"></ProfessorView>
+  <ProfessorView  v-if = "role == 'professor'" :teamId = "teamId"></ProfessorView>
   <div v-else class="container">
     <div class="feedback-status">
       <div class="feedback-completed">
@@ -260,8 +260,7 @@ export default {
     ProfessorView
   },
   mounted() {
-    this.fetchBoardList(this.memberId, this.teamId);
-    this.role = this.$store.state.userStore.role;
+    this.fetchBoardList(this.teamId);
   },
   computed: {
     visiblePageRange0() {
@@ -353,14 +352,15 @@ export default {
     },
 
 
-    async fetchBoardList(memberId, teamId) {
+    async fetchBoardList(teamId) {
       try {
         const store = useStore();
         this.role = store.state.userStore.role;
         const userId = store.state.userStore.user_id;
-        const url = `/board-service/board/list/${userId}/${teamId}`
-        const response = await axiosInstance.get(url);
-
+        
+        if (this.role == "student"){
+          const url = `/board-service/board/list/${userId}/${teamId}`
+          const response = await axiosInstance.get(url);
 
           // 서버에서 받아온 데이터를 boardList에 저장
           this.boardList = response.data.content.reverse();
@@ -371,9 +371,9 @@ export default {
           for (const member of this.memberList){
             this.members[member.id] = member;
           }
-        for (const work of this.workList){
-          this.works[work.workId] = work;
-        }
+          for (const work of this.workList){
+            this.works[work.workId] = work;
+          }
 
 
           // boardId를 기준으로 내림차순으로 정렬
@@ -383,10 +383,11 @@ export default {
           // 전체 페이지 수 계산
           this.totalPages = Math.ceil(this.boardList.length / this.itemsPerPage);
           // 초기 visibleBoardData 설정
-        this.falsePages=Math.ceil(this.feedbackIncompleteCount/this.itemsPerPage);
-        this.truePages=Math.ceil(this.feedbackCompletedCount/this.itemsPerPage);
-        this.mywritePages=Math.ceil(this.myBoardWriteCount/this.itemsPerPage);
-        this.updateVisibleBoardData();
+          this.falsePages=Math.ceil(this.feedbackIncompleteCount/this.itemsPerPage);
+          this.truePages=Math.ceil(this.feedbackCompletedCount/this.itemsPerPage);
+          this.mywritePages=Math.ceil(this.myBoardWriteCount/this.itemsPerPage);
+          this.updateVisibleBoardData();
+        }
 
       } catch (error) {
         console.error('Error fetching board list:', error);

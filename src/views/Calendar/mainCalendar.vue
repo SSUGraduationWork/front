@@ -43,16 +43,18 @@
 
       </container>
       <div class="title2">
-        <textarea type="textarea" class="inputTitle" @input="resize($event.target), changeInput()" placeholder="제목을 입력해 주세요" 
+        <textarea :disabled="role == 'professor'" type="textarea" class="inputTitle" @input="resize($event.target), changeInput()" placeholder="제목을 입력해 주세요" 
         v-model="minutes.title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
+        :style="{'background-color': role == 'professor' ? 'white' : 'initial'}"
         ></textarea></div>
       <div class="content2">
-        <textarea 
+        <textarea :disabled="role == 'professor'"
           @input="resize($event.target), changeInput()"
             style="margin-top:10px; width: 100%; height: 'auto'; min-height: 500px;"
             type="textarea"
             placeholder="내용을 입력해 주세요."
             v-model="minutes.content" @change="isModified=true"
+            :style="{'background-color': role == 'professor' ? 'white' : 'initial'}"
           ></textarea>
       </div>
 
@@ -85,24 +87,26 @@
     <div class="modal_window" v-click-outside="postFunction" v-if="minutes == null && modalDisplay == 'flex'">
       <div class="date1">{{targetDate}}</div>
       <div class="title2">
-        <textarea type="textarea" class="inputTitle" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
+        <textarea type="textarea" :disabled="role == 'professor'" class="inputTitle" @input="resize($event.target)" placeholder="제목을 입력해 주세요" 
         v-model="title" wrap="soft" style="min-height: 1.2em; width: 100%; height: 'auto'; line-height: 1;"
+        :style="{'background-color': role == 'professor' ? 'white' : 'initial'}"
         ></textarea>
       </div>
       <div class="content2">
-        <textarea 
+        <textarea :disabled="role == 'professor'"
           @input="resize($event.target), changeInput()"
             style="margin-top:10px; width: 100%; height: 'auto'"
             type="textarea"
             placeholder="내용을 입력해 주세요."
             v-model="content" @change="isModified=true"
+            :style="{'background-color': role == 'professor' ? 'white' : 'initial'}"
         ></textarea>
       </div>
 
             <!--모두 입력하라는 알림창-->
       <div id="modal" class="deleteModal" :style="{display: inputModalDisplay}">
         <div class="delete-modal-window">
-          <div>title과 input 모두 입력하시오</div>
+          <div>제목과 내용을 모두 입력해주세요.</div>
           <div class="delete-footer">
             <button class="document" @click="inputClose()">확인</button>
           </div>
@@ -160,6 +164,8 @@ export default {
       checkday: '',
       dayExist: false,
       checkExist: false,
+
+      role: this.$store.state.userStore.role
     };
   },
 
@@ -565,8 +571,10 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
 *{
   font-family: 'Red Hat Display', sans-serif;
+ 
 }
 
 .move{
@@ -582,7 +590,7 @@ export default {
 }
 
 .calendar {
-  margin-top: 110px;
+  margin-top: 95px;
   text-align: center;
   font-family: Arial, sans-serif;
   margin-left: 70px;
@@ -626,7 +634,7 @@ td {
   border-radius: 100%;
   border: none;
   background: white;
-  font-size: 20px;
+  font-size: 18px;
   width: 40px;
   height: 40px;
 
@@ -646,13 +654,13 @@ td {
   background: white;
   color: lightgrey;
   /* background-color: white; */
-  font-size: 20px;
+  font-size: 18px;
   width: 40px;
   height: 40px;
 }
 
 .today {
-  font-size: 20px;
+  font-size: 18px;
   border: none;
   border-radius: 100%;
   color: black;
@@ -722,6 +730,7 @@ td {
 }
 
 .title {
+  
   text-align: left;
   font-weight: bold;
   font-size: 18px ;
@@ -815,7 +824,6 @@ textarea {
 
 .title2 {
   text-align: left;
-
   height: 'auto';
   border-bottom: 1px solid grey;
   margin-right: 30px;

@@ -8,7 +8,7 @@
     <!-- ... -->
     <!-- ... -->
 
-    <Sidebar :board-id="boardId" :member-id="memberId" :team-id="teamId"/>
+    <Sidebar :board-id="boardId" :member-id="memberId" :team-id="teamId" :role="role" />
 
     <!-- ... -->
     <div @submit.prevent="submitForm">
@@ -86,6 +86,7 @@ export default {
       color: this.$route.params.color,
       mod: false,
       memberId: 0,
+      role: this.$store.state.userStore.role,
     };
   },
   async created() {

@@ -41,7 +41,7 @@
             </div>
         </div>
         <div v-if="!collapsed" class="comment-box" :style="{ width: sidebarWidth }">
-            <div class="approve-mod-container">
+            <div v-if = "role == 'student'" class="approve-mod-container">
                 <button @click="toggleApproval" class="approve-toggle">
                     <div v-show="isApproved" class="approve-icon approve-true"><i class="fi fi-sr-checkbox"></i></div>
                     <div v-show="!isApproved"  class="approve-icon approve-false"  ><i class="fi fi-rr-checkbox"></i></div>
@@ -50,8 +50,10 @@
                 <div class="mod_request" @click="toggleApproval">수정 요청</div>
             </div>
             <!-- 코멘트 입력 메시지 창 추가 -->
-            <textarea v-model="comment" class="comment-input" placeholder="Add a comment..."></textarea>
-            <button @click="submitComment" class="comment-summit">저장</button>
+            <textarea :disabled="role == 'professor'" 
+              :style="{'background-color': role == 'professor' ? 'white' : 'initial'}"
+               v-model="comment" class="comment-input" placeholder="Add a comment..."></textarea>
+            <button :disabled="role == 'professor'" @click="submitComment" class="comment-summit">저장</button>
 
         </div>
     </div>
@@ -64,7 +66,7 @@ import { axiosInstance } from '@/axios';
 import {useStore} from 'vuex';
 
 export default {
-    props: ['boardId','teamId'],
+    props: ['boardId','teamId', 'role'],
     name: 'Sidebar',
     setup() {
         return { collapsed, toggleSidebar, sidebarWidth, sidebarHeight }

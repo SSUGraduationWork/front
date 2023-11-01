@@ -7,7 +7,11 @@
 -->
 
 <template>
-  <div  class="container">
+<div v-if="loading" class="loading-container">
+  <Loader></Loader>
+</div>
+<div v-else>
+  <div class="container">
 
     <div class="table-container">
 
@@ -107,7 +111,7 @@
       <button @click="showNextPages" ><i class= "fi fi-rr-angle-small-right"></i></button>
     </div>
   </template>
-
+</div>
 </template>
 
 <script>
@@ -154,7 +158,8 @@ export default {
     Loader
   },
   mounted() {
-    this.fetchBoardList(this.memberId, this.teamId);
+    console.log("팀 아이디 : ", this.teamId);
+    this.fetchBoardList(this.teamId);
   },
   computed: {
     visiblePageRange0() {

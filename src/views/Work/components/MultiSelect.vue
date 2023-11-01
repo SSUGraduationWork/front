@@ -1,6 +1,6 @@
 <template>
     <div class = "all">
-        <MultiSelect v-model="selectedMembers" :options="teamMembers" filter optionLabel="user_name" display="comma" closeIcon = "false" 
+        <MultiSelect :disabled="role == 'professor'" v-model="selectedMembers" :options="teamMembers" filter optionLabel="user_name" display="comma" closeIcon = "false" 
         v-on:before-show="reset" v-on:before-hide = "lastStatus" v-on:update:model-value="change" emptyFilterMessage=" " class="multi-select">
             <template #value>
                 <div>
@@ -62,6 +62,10 @@ const props = defineProps({
     teamId : {
         type: Number,
         default: 0
+    },
+    role: {
+        type: String,
+        default: 'student'
     }
 });
 const teamMembers = Object.values(props.teamMembers);

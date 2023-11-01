@@ -45,10 +45,10 @@
           </div>
         </div>
       </div>
-      <div class = "footer">
+      <div class = "footer" >
         <div class = "input-box">
-          <textarea type="text" v-model="message" placeholder="메세지를 입력하세요" ref="remarksTextArea" @keypress="handleKeyDown"></textarea>
-          <div @click="submitMessage" class = "submit">
+          <textarea :disabled="role == 'professor'" type="text" v-model="message" placeholder="메세지를 입력하세요" ref="remarksTextArea" @keypress="handleKeyDown"></textarea>
+          <div :style="{'cursor': role == 'professor' ? 'auto' : 'pointer'}" @click="submitMessage" class = "submit">
               <i class="fa-regular fa-paper-plane"></i>
           </div>
         </div>
@@ -73,6 +73,7 @@ const route = useRoute();
 const moment = require('moment');
 const {teamId} = route.params;
 const userId = store.state.userStore.user_id;
+const role = store.state.userStore.role;
 
 const teamMembers = ref();
 const membersById = ref({});
@@ -86,8 +87,9 @@ const backgroundColor = ref("#F5F6FA")
 const localVideo = ref(null);
 const localStream = ref(null);
 const voiceChatMembers = ref({});
+const chatURI = "http://localhost:3001";
 
-const socket = io("http://localhost:3333", {
+const socket = io(chatURI, {
   withCredentials: true,
   extraHeaders: {
     "extra-custom-headers": "localhost"
@@ -114,7 +116,7 @@ onBeforeMount(() => {
   
 });
 
-axios.get(`http://localhost:3333/chats/${teamId}`)
+axios.get(`${chatURI}/chats/${teamId}`)
   .then((res) => {
     const chats = res.data.chats;
     chats.forEach((val, i, arr) => {
@@ -137,7 +139,6 @@ socket.emit("enter_room", teamId, userId, () => {
   console.log(`${teamId}번 방 입장`);
 })
 socket.on("chat_message", (userId, message) => {
-  console.log(`${membersById.value[userId].name} : ${message}`);
   scrollToBottom();
   messages.value.push([userId, message, moment().format('YYYY.MM.DD'), moment().format('h:mm A')]);
 })

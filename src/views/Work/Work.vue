@@ -1,6 +1,6 @@
 <template>
 <div class = "work-page">
-  <WorkDetail v-if="detailButtonClick && membersById !== null && detailWorkId > 0" :teamMembers="membersById" :workId="detailWorkId" :teamId="teamId" @close-detail="detailButtonClick=false" @open-detail="detailButtonClick=true"></WorkDetail>
+  <WorkDetail v-if="detailButtonClick && membersById && detailWorkId > 0" :teamMembers="membersById" :workId="detailWorkId" :teamId="teamId" @close-detail="detailButtonClick=false" @open-detail="detailButtonClick=true"></WorkDetail>
   <div class = "work">
     <div class = "type">
       <button class = "type-list"><i class="fa fa-list-ul" aria-hidden="true"></i></button>
@@ -8,7 +8,7 @@
         <div><i class="fi fi-rr-apps"></i></div>
       </button>
     </div>
-    <div class = "add-button" @click="addWork">
+    <div v-if = "role == 'student'" class = "add-button" @click="addWork">
       <button class="add-work"><i class="fi fi-br-plus"></i><span>생성</span></button>
     </div>
     <div class = "header-margin"></div>
@@ -23,24 +23,25 @@
       <tbody v-for="(work, i) in workInfo" :key="i" :id = "work.work_id" class = "work-row">
         <tr  v-if="deletedWork[work.work_id]!=true">
           <td class = "work-name">
-            <textarea v-model="work.work_name" @input="resize($event.target)" v-on:change="textChange(work.work_id, $event.target.value)" class="work-name-input"></textarea>
+            <textarea v-if="role =='student'" v-model="work.work_name" @input="resize($event.target)" v-on:change="textChange(work.work_id, $event.target.value)" class="work-name-input"></textarea>
+            <textarea v-else disabled v-model="work.work_name" @input="resize($event.target)" v-on:change="textChange(work.work_id, $event.target.value)" class="work-name-input"></textarea>
           </td>
           <td class = "team-members">
-            <MultiSelect v-if="membersById !== null" :teamMembers="membersById" :workers="work.worker" :workId = "work.work_id" :teamId="teamId"></MultiSelect>
+            <MultiSelect v-if="membersById !== null" :teamMembers="membersById" :workers="work.worker" :workId = "work.work_id" :teamId="teamId" :role="role"></MultiSelect>
           </td>
           <td class = "end-date">
-            <DatePicker :endDate="work.end_date" :workId = "work.work_id" :teamId="teamId"></DatePicker>
+            <DatePicker :endDate="work.end_date" :workId = "work.work_id" :teamId="teamId" :role="role"></DatePicker>
           </td>
           <td class = "importance">
-            <Rating :importance="work.importance" :workId = "work.work_id" :teamId="teamId"></Rating>
+            <Rating :importance="work.importance" :workId = "work.work_id" :teamId="teamId" :role="role"></Rating>
           </td>
           <td class = "status">
-            <StatusDropdown :status="work.status" :workId = "work.work_id" :teamId="teamId"></StatusDropdown>
+            <StatusDropdown :status="work.status" :workId = "work.work_id" :teamId="teamId" :role="role"></StatusDropdown>
           </td>
           <td class = "more" :class="{active : button[work.work_id]}">
             <button @click = "buttonClick(work.work_id)" @blur="buttonUnclick(work.work_id)">
               <i v-if="button[work.work_id]!=true" class="fi fi-rr-menu-dots-vertical"></i>
-              <DeleteButton v-if="button[work.work_id]" :workId = work.work_id :teamId="teamId" @delete-work="deleteWork"></DeleteButton>
+              <DeleteButton v-if="role == 'student' && button[work.work_id]" :workId = work.work_id :teamId="teamId" @delete-work="deleteWork"></DeleteButton>
             </button>
           </td>
           <td v-if="button[work.work_id]" class = "more-options">
@@ -99,6 +100,7 @@ import WorkDetail from './components/WorkDetail';
 import {ref, onBeforeMount} from 'vue';
 import {useRouter, useRoute} from 'vue-router'
 import { axiosInstanceNode, axiosInstance } from '../../axios';
+import { useStore } from 'vuex';
 
 export default {
   components: { DatePicker, MultiSelect, StatusDropdown, Rating, DeleteButton, WorkDetail },
@@ -110,7 +112,9 @@ export default {
     const workInfo = ref();
     const teamId = ref();
     const membersById = {};  // key : user_id, val : 유저 정보 (유저 pk, 이름, 프로필 사진 url)
-    
+    const store = useStore();
+    const role = store.state.userStore.role;
+
     onBeforeMount(async () => {
         await router.isReady();
         teamId.value = route.params.teamId;
@@ -128,10 +132,10 @@ export default {
             
         })
         .catch((error) => {
-
+          console.log(error);
         })
     });
-    return { workInfo, teamMembers, membersById, teamId }
+    return { workInfo, teamMembers, membersById, teamId, role }
     
   },
   data() {
