@@ -67,7 +67,7 @@ const props = defineProps({
     background-color: #3772FF;
     color: white;
     font-weight: 700;
-    box-shadow: 0 19px 38px rgba(0,0,0,0.08), 0 8px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 19px 38px rgba(0,0,0,0.08), 0 8px 12px rgba(0,0,0,0.08);
 }
 .circle span{
     line-height: 60px;
@@ -77,12 +77,12 @@ i{
     margin-left: 20px;
 }
 .circle-all{
-    
+    background-color: #5D96DA;
 }
 .circle-inprogress{
-
+    background-color: #5D96DA;
 }
 .circle-done{
-
+    background-color: #5D96DA;
 }
 </style>
