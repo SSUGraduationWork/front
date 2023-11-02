@@ -15,33 +15,27 @@
     </span>
 
     <div class="margin-block"></div>
-    <SidebarLink :to="workUrl" icon="fi fi-rr-rectangle-list"><span class = "list">작업</span></SidebarLink>
-    <SidebarLink :to="fileUrl" icon="fi fi-rr-document"><span class = "list">파일</span></SidebarLink>
-    <SidebarLink :to="calendarUrl" icon="fi fi-rr-calendar"><span class = "list">달력</span></SidebarLink>
-    <SidebarLink :to="chattingUrl" icon="fi fi-rr-comment-alt"><span class = "list">채팅</span></SidebarLink>
-    <SidebarLink :to="contributionUrl" icon="fi fi-rs-chart-pie-alt"><span class = "list">기여도</span></SidebarLink>
-
+    <SidebarLink :to="dashboardUrl" icon="fi fi-rr-apps"><span class = "list">대시보드</span></SidebarLink>
+    <SidebarLink :to="settingUrl" icon="fi fi-rs-settings"><span class = "list">설정</span></SidebarLink>
   </div>
 </template>
 
 <script>
-import SidebarLink from './SidebarLink'
+import SidebarLink from './FirstSidebarLink'
 import { collapsed, toggleSidebar, sidebarWidth } from './state'
 import {computed} from 'vue'
 
 export default {
-  props: ['teamId'],
+  props: ['professorId'],
   components: { SidebarLink},
   setup() {
     return { collapsed, toggleSidebar, sidebarWidth }
   },
   data() {
     return {
-      workUrl: computed(() => '/works/' + this.teamId),
-      fileUrl: computed(() => '/board/list/' + this.teamId),
-      calendarUrl: computed(() => '/calendars/' + this.teamId),
-      chattingUrl: computed(() => '/chatting/' + this.teamId),
-      contributionUrl: computed(() => '/contribution/' + this.teamId)
+      dashboardUrl: computed(() => '/dashboard/professor/' + this.professorId),
+      settingUrl: computed(() => '/settingPro/' + this.professorId)
+      // fileUrl: computed(() => '/board/list/11/' + this.teamId),
     }
   }
 }
