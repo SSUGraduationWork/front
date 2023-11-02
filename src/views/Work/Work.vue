@@ -1,8 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div class = "work">
-  </div>
-=======
 <div class = "work-page">
   <WorkDetail v-if="detailButtonClick && membersById && detailWorkId > 0" :teamMembers="membersById" :workId="detailWorkId" :teamId="teamId" @close-detail="detailButtonClick=false" @open-detail="detailButtonClick=true"></WorkDetail>
   <div class = "work">
@@ -90,16 +86,10 @@
     </div>
   </div>
 </div>
->>>>>>> dev/main
 </template>
 
 <script>
 import axios from 'axios';
-<<<<<<< HEAD
-export default {
-  props: ['teamId'],
-  setup() {
-=======
 import DatePicker from './components/DatePicker';
 import MultiSelect from './components/MultiSelect';
 import StatusDropdown from './components/StatusDropdown';
@@ -146,17 +136,11 @@ export default {
         })
     });
     return { workInfo, teamMembers, membersById, teamId, role }
->>>>>>> dev/main
     
   },
   data() {
     return {
       options : ["작업명", "담당자", "마감일", "중요도", "상태"],
-<<<<<<< HEAD
-    }
-  },
-  methods : {
-=======
       addedWorks : [],
       button : {},
       deletedWork : {},
@@ -205,52 +189,10 @@ export default {
       this.detailWorkId = workId;
       this.detailButtonClick = true;
     }
->>>>>>> dev/main
   },
 }
 </script>
 <style scoped>
-<<<<<<< HEAD
-ul{
-  list-style : none;
-}
-.view-type li {
-  float: left;
-  margin-left: 22px;
-  margin-top : 30px;
-}
-.options li {
-  margin-right : 10em;
-  padding: 0.7em;
-  display : inline-block;
-  margin-top: 90px;
-}
-.work-table {
-  margin-right : 20px;
-  width: 76em;
-}
-.importance {
-  width : 10em;
-}
-.work-name{
-  width : 20em;
-  border-right: ;
-}
-input {
-  width : 15.5em;
-  height: 2em;
-  border:none;
-  border-top : 1px solid black;
-  border-bottom: 1px solid black;
-}
-.work-name {
-  border-left: 1px solid black;
-  border-radius: 10px 0 0 10px;
-}
-.status {
-  border-right: 1px solid blacks;
-  border-radius: 0 10px 10px 0;
-=======
 @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;600;700&display=swap');
 *{
   font-family: 'Red Hat Display', sans-serif;
@@ -399,6 +341,5 @@ th{
 <style global>
 .team-members:hover .p-multiselect-trigger {
   color: #8F8F8F;
->>>>>>> dev/main
 }
 </style>

@@ -1,10 +1,5 @@
 <template>
   <div class="contribution">
-<<<<<<< HEAD
-    <h1>기여도 페이지 입니다.</h1>
-  </div>
-</template>
-=======
     <Explanation v-if="ex==true" @close-ex="closeEx" @open-ex="openEx"></Explanation>
     <Progress v-if="progress" :progress="progress"></Progress>
     <div class = "margin-space"></div>
@@ -57,4 +52,3 @@ const closeEx = () => {
   height: 30px;
 }
 </style>
->>>>>>> dev/main

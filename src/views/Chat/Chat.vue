@@ -1,10 +1,5 @@
 <template>
   <div class="chat">
-<<<<<<< HEAD
-    <h1>채팅 페이지 입니다.</h1>
-  </div>
-</template>
-=======
     <div class ="voice">
       <div class = "voice-chat" @click="enterVoiceChat" :style = "{backgroundColor : backgroundColor}">
         <div class ="voice-icon"><i class="fi fi-sr-volume"></i></div>
@@ -407,4 +402,3 @@ img{
   width: 57%;
 }
 </style>
->>>>>>> dev/main
