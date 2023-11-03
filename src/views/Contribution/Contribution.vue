@@ -40,7 +40,7 @@ const closeEx = () => {
 </script>
 <style scoped>
 .contribution{
-  margin-top: 7em;
+  margin-top: 6.5em;
   width: 100%;
 }
 .contribution-graph{

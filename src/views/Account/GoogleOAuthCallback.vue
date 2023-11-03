@@ -36,8 +36,11 @@ axiosInstance.get(`/user-service/accounts/oauth2/google/callback?code=${route.qu
                 if (redirectURL.value != null){
                     store.commit('setRedirectURL', null);
                     router.push(`${redirectURL.value}`);
+                
+                    //window.open(`http://192.168.23.111:80/${redirectURL.value}`,"_self")
                 } else{
                     router.push(`/dashboard/${res.data.role}/${res.data.user_id}`);
+                    //window.open(`http://192.168.23.111:80/dashboard/${res.data.role}/${res.data.user_id}`,"_self")
                 }
             }
         }
