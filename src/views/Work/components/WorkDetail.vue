@@ -46,11 +46,13 @@
                 </div>
                 <div class = "board">
                     <div v-for="(post, i) in board" :key="i" class = "posts">
-                        <i class="fi fi-sr-document"></i>
-                        <span class="title">{{ post.title }}</span>
-                        <span class="uploaded-by">uploaded by</span>
-                        <img class = "profile-img" :src="teamMembers[post.userId].pictureUrl" />
-                        <span class="poster">{{ teamMembers[post.userId].name }}</span>
+                        <router-link :to="`/board/view/${post.id}/${teamId}`">
+                            <i class="fi fi-sr-document"></i>
+                            <span class="title">{{ post.title }}</span>
+                            <span class="uploaded-by">uploaded by</span>
+                            <img class = "profile-img" :src="teamMembers[post.userId].pictureUrl" />
+                            <span class="poster">{{ teamMembers[post.userId].name }}</span>
+                        </router-link>
                     </div>
                 </div>
             </div>
@@ -310,5 +312,8 @@ img{
     margin-top: 2px;
     color: #3772FF;
 }
-
+a{
+    text-decoration:none;
+    color: black;
+}
 </style>
