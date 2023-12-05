@@ -11,8 +11,8 @@ const axiosInstanceSpring = axios.create({
 })
 const axiosInstance = axios.create({
 
-    //baseURL : 'http://192.168.23.212:30094'
-    baseURL: 'http://localhost:8001'
+    baseURL : 'http://apigateway-service:8001'
+    //baseURL: 'http://localhost:8001'
 })
 const axiosInstanceChat = axios.create({
     baseURL : 'http://localhost:3001'
