@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkco_work"]=self["webpackChunkco_work"]||[]).push([[331],{5331:function(n,r,t){t.r(r),t.d(r,{default:function(){return k}});var c=t(3396);const e={class:"setting"},u=(0,c._)("h1",null,"세팅 페이지 입니다.",-1),s=[u];function o(n,r){return(0,c.wg)(),(0,c.iD)("div",e,s)}var a=t(89);const i={},f=(0,a.Z)(i,[["render",o]]);var k=f}}]);
+//# sourceMappingURL=331.12a63357.js.map
