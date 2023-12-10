@@ -17,7 +17,6 @@ const axiosInstance = axios.create({
 const axiosInstanceChat = axios.create({
     baseURL : 'http://localhost:3001'
 })
-console.log(process.env.VUE_APP_GATEWAY_URI);
 
 axiosInstanceSpring.interceptors.request.use(
     (config) => {
