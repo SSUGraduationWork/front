@@ -1,15 +1,15 @@
 <template>
     <div class="progress">
         <div class = "content">
-            <span class = "title">전체 작업 <i class="fi fi-bs-menu-dots"></i></span>
+            <span class = "title">전체 작업 </span>
             <div class = "circle circle-all"><span>{{ progress.totalWorks }}</span></div>
         </div>    
         <div class = "content">
-            <span class = "title">진행 중 <i class="fi fi-bs-menu-dots"></i></span>
+            <span class = "title">진행 중 </span>
             <div class = "circle circle-inprogress"><span>{{ progress.inProgress }}</span></div>
         </div>
         <div class = "content">
-            <span class = "title">완료 <i class="fi fi-bs-menu-dots"></i></span>
+            <span class = "title">완료 </span>
             <div class = "circle circle-done"><span>{{ progress.done }}</span></div>
         </div>
     </div>

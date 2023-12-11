@@ -35,6 +35,7 @@ const totalContribution = props.contribution.reduce((pv, cv, idx, val) => {
 
 const contributions = [];
 for (let c of props.contribution) {
+    
     contributions.push(c.contribution/totalContribution * 160 + '%');
 }
 

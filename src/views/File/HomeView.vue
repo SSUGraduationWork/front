@@ -16,13 +16,13 @@
     <div class="feedback-status">
       <div class="feedback-completed">
         <div class="icon-blue i-completed"><i class="fi fi-br-check"></i></div>
-        <div class="feedback-count-label">완료한 피드백 <i class="fi fi-bs-menu-dots"></i></div>
+        <div class="feedback-count-label">완료한 피드백 </div>
 
         <div class="feedback-count">{{ feedbackCompletedCount }}</div>
       </div>
       <div class="feedback-incomplete">
         <div class="icon-blue"><i class="fi fi-rs-comment-dots"></i></div>
-        <div class="feedback-count-label">남은 피드백 <i class="fi fi-bs-menu-dots"></i></div>
+        <div class="feedback-count-label">남은 피드백</div>
 
         <div class="feedback-count">{{ feedbackIncompleteCount }}</div>
       </div>

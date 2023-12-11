@@ -22,9 +22,6 @@
                       <div :class="['feedback-comment-box', { 'blue-background': feedback.modReq==2},{'grey-background': (feedbackStatuses[feedback.userId].feedbackYn==3)}]">
                       {{ feedback.comment }}
   
-  
-                        {{feedbackStatuses[memberId].feedbackYn}}
-  
                       </div>
                   </div>
               </div>
@@ -39,11 +36,7 @@
                       <!--modReq==0인 경우 거부한 것임. 파란색으로 표현-->
                           <div :class="['feedback-comment-box', { 'blue-background': (feedbackStatuses[memberId].feedbackYn==2)||(feedbackStatuses[memberId].feedbackYn==0 &&feedback.newApproved==1)},{'grey-background': (feedbackStatuses[memberId].feedbackYn==3)}]">
                           {{ feedback.comment }}
-  
-                            {{feedbackStatuses[memberId].feedbackYn}}
-  
-  
-                            {{feedback.modReq}}
+
                           </div>
                       </div>
                   </div>
@@ -112,7 +105,6 @@
               }
               for (const writer of this.writerList){
                 this.writers[writer.id] = writer;
-                console.log(this.writers);
               }
             })
   
@@ -360,8 +352,9 @@
   }
   
   .grey-background {
-    background-color: #BABABA; /* 원하는 배경색으로 변경하세요 */
+    background-color: #dedede; /* 원하는 배경색으로 변경하세요 */
     color: black;
+    box-shadow: 0 0 3px rgba(0,0,0,0.2)
   }
   
   .comment-container{

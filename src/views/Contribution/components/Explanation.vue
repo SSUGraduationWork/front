@@ -25,11 +25,11 @@
                 <p class="sub">작업 점수는 아래의 과정을 거쳐서 얻을 수 있습니다.</p>
                 <ul>
                     <li>자신이 담당한 작업에 대한 결과물을 <span class = "tag tag-file">파일</span>에서 글쓰기를 통해 올립니다.</li>
-                    <li>모든 팀원은 게시글에 대한 피드백을 남길 수 있는데, <span class = "tag">"수정 요청이 아닌 피드백"</span>을 남기면 해당 게시글을 <span class = "status allow">[승인]</span>한 상태가 되고, 
-                        <span class = "tag">"수정 요청 피드백"</span>을 남기면 <span class = "status refuse">[거부]</span>한 상태가 됩니다.</li>
-                    <li>본인을 제외한 모든 팀원들이 해당 게시글에 대해 <span class = "status allow">[승인]</span> 상태가 되면, 해당 작업은 <span class = "status done">[완료]</span> 상태가 되어 본인만 <span class = "tag">'(작업 중요도)/(담당자 수)'</span>만큼 점수를 획득하게 됩니다.</li>
+                    <li>모든 팀원은 게시글에 대한 피드백을 남길 수 있는데, <span class = "tag">"수정 요청이 아닌 피드백"</span>을 남기면 해당 게시글을 <span class = "status allow">[수락]</span>한 상태가 되고, 
+                        <span class = "tag">"수정 요청 피드백"</span>을 남기면 <span class = "status refuse">[거절]</span>한 상태가 됩니다.</li>
+                    <li>본인을 제외한 모든 팀원들이 해당 게시글에 대해 <span class = "status allow">[수락]</span> 상태가 되면, 해당 작업은 <span class = "status done">[완료]</span> 상태가 되어 본인만 <span class = "tag">'작업 중요도'</span>만큼 점수를 획득하게 됩니다.</li>
                     <li>만약 팀원 중 한 명이라도 수정요청을 한 경우, 수정 요청을 반영해서 게시글을 수정해야 합니다. 
-                        게시글을 수정하면 수정요청을 한 팀원에게 수정에 대한 [승인/거부]가 알림으로 전송되며, 모든 팀원이 <span class = "status allow">[승인]</span> 상태가 되기 전까지는 작업 점수가 부여되지 않습니다.</li>
+                        게시글을 수정하면 수정요청을 한 팀원에게 수정에 대한 [수락/거절]가 알림으로 전송되며, 모든 팀원이 <span class = "status allow">[승인]</span> 상태가 되기 전까지는 작업 점수가 부여되지 않습니다.</li>
                 </ul>
                 <div class="feedback tag-sub ">
                     <div>
@@ -59,12 +59,13 @@
                     <li>작업 마감일이 지나고 <span class="tag">24시간 이내</span>에 게시글을 올린 경우, 작업 점수의 <span class="tag">절반</span>만큼만 획득할 수 있습니다. 
                         즉, <span class="tag">2023.08.03 00:00</span>이 마감일이었다면 <span class="tag">2023.08.04 00:00</span> 이전에 올려야 작업 점수를 절반이라도 받을 수 있습니다.</li>
                     <li>작업 마감일로부터 <span class="tag">24시간 이후</span>에 게시글을 올리는 경우 작업 점수를 받을 수 없습니다. 
-                        즉, <span class="tag">2023.08.04 00:00</span> 이후부터 작업 점수는 <span class="tag">0점</span>입니다.</li>
+                        즉, 위 예시에서 <span class="tag">2023.08.04 00:00</span> 이후부터 작업 점수는 <span class="tag">0점</span>입니다.</li>
                     <li>피드백을 할 수 있는 기한은 게시글이 올라온 후 <span class="tag">48시간 이내</span>입니다. 만약 48시간 이내에 피드백을 하지 않으면 
-                        자동으로 <span class = "status allow">[승인]</span> 상태가 되고, 피드백 점수는 <span class = "tag">0점</span>이 됩니다.</li>
-                    <li>하나의 게시글에 대한 수정요청은 한 사람당 <span class="tag">3번</span>까지 가능합니다. 이후부터는 자동으로 <span class = "status allow">[승인]</span> 상태가 되며, 
+                        자동으로 <span class = "status allow">[수락]</span> 상태가 되고, 피드백 점수는 <span class = "tag">0점</span>이 됩니다.</li>
+                    <li>하나의 게시글에 대한 수정요청은 한 사람당 <span class="tag">3번</span>까지 가능합니다. 이후부터는 자동으로 <span class = "status allow">[수락]</span> 상태가 되며, 
                         계속해서 수정 요청을 하더라도 작업의 <span class = "status done">[완료]</span> 여부에 영향을 끼치지 않습니다.</li>
                 </ul>
+                <!--
                 <div class="example tag-sub">
                     <div class = "example-icon">
                         <span><i class="fi fi-sr-key"></i></span>
@@ -79,6 +80,7 @@
                     <p>....</p>
                     <p>최종적으로 "홍길동"님은 2.5점을 획득하게 됩니다. ( 중요도(5) / 담당자 수(2) = 2.5 )</p>
                 </div>
+                -->
             </div>
         </div>
     </div>
