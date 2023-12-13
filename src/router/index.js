@@ -11,7 +11,9 @@ const routes = [
 
   {
     path: '/',
-    redirect: '/dashboard',
+    name: 'Dashboard',
+    component: () => import('../views/Dashboard/Dashboard.vue'),
+    props: true
   },
   {
     path: '/accounts',
