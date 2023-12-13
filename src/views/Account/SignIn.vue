@@ -23,7 +23,7 @@ const redirectURL = route.query.redirectURI;  //로그인 후 redirect할 uri
 if (redirectURL){
     const uriArr = redirectURL.split("/");
     console.log(uriArr);
-    if(redirectURL != "/alarmList/view" && uriArr[1] != 'dashboard'){
+    if(redirectURL != "/alarmList/view" && uriArr[1] != 'dashboard' && uriArr[1] != 'user-info'){
         store.commit('setRedirectURL', redirectURL );
     } else if(uriArr[2] == "teamsByPro"){
         store.commit('setRedirectURL', `/dashboard/professor/teams/${uriArr[3]}`)
