@@ -17,7 +17,7 @@ const store  = useStore();
 const registerStore = 'registerStore';
 const userStore = 'userStore';
 const redirectURL = ref(store.state.redirectURL);  //로그인 후 redirect할 uri
-
+console.log("진입")
 axiosInstance.get(`/user-service/accounts/oauth2/google/callback?code=${route.query.code}`)
     .then((res) => {
 
