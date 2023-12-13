@@ -117,7 +117,7 @@ onBeforeMount(() => {
   
 });
 
-axiosInstance.get(`/chat-service/${teamId}`)
+axiosInstance.get(`/chat-service/chats/${teamId}`)
   .then((res) => {
     const chats = res.data.chats;
     chats.forEach((val, i, arr) => {
