@@ -10,9 +10,9 @@ const axiosInstanceSpring = axios.create({
     baseURL : 'http://localhost:3210'
 })
 const axiosInstance = axios.create({
-    baseURL : process.env.VUE_APP_GATEWAY_URI
+    //baseURL : process.env.VUE_APP_GATEWAY_URI
     //baseURL : 'http://apigateway-service:8001'
-    //baseURL: 'http://localhost:8001/api'
+    baseURL: 'http://localhost:8001/api'
 })
 const axiosInstanceChat = axios.create({
     baseURL : 'http://localhost:3001'

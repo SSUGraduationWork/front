@@ -1,7 +1,7 @@
 <template>
   <div class="chat">
     <div class ="voice">
-      <div class = "voice-chat" @click="enterVoiceChat" :style = "{backgroundColor : backgroundColor}">
+      <!-- <div class = "voice-chat" @click="enterVoiceChat" :style = "{backgroundColor : backgroundColor}">
         <div class ="voice-icon"><i class="fi fi-sr-volume"></i></div>
         <div class = "voice-info">음성 채팅</div>
         <video ref="localVideo" autoplay style="display: none;"></video>
@@ -10,7 +10,27 @@
         <div class = "sound-icon"><i class="fi fi-sr-circle-waveform-lines"></i></div>
         <div class = "connection"></div>
         <div class="mute-icon"><i class="fi fi-ss-circle-microphone"></i></div>
+      </div> -->
+      <div class = "voice-chat" :style = "{backgroundColor : backgroundColor}">
+        <div class ="voice-icon"><i class="fi fi-ss-user"></i></div>
+        <div class = "voice-info">참가자</div>
+        <video ref="localVideo" autoplay style="display: none;"></video>
       </div>
+      <div>
+        <div v-for = "(member, i) in membersById" :key="i" class = "members">
+          <div class = "user-img-1">
+            <img :src = "member['pictureUrl']">
+          </div>
+          <div class = "user-name-1">
+            {{member['studentNumber']}}&nbsp;&nbsp;{{ member['name'] }}
+          </div>
+        </div>
+      </div>
+      <!-- <div class = "footer-bg">
+        <div class = "sound-icon"><i class="fi fi-sr-circle-waveform-lines"></i></div>
+        <div class = "connection"></div>
+        <div class="mute-icon"><i class="fi fi-ss-circle-microphone"></i></div>
+      </div> -->
     </div>
     <div class ="message">
       <div class = "chatting" ref="chattingContainer">
@@ -110,6 +130,7 @@ onBeforeMount(() => {
             (teamMembers.value).forEach((val, i, arr) => {
               membersById.value[val.id] = val;
             })
+            console.log(membersById.value);
         })
         .catch((error) => {
           console.log(error);
@@ -407,5 +428,25 @@ img{
 }
 .connection{
   width: 57%;
+}
+.user-img-1{
+  width: 35px;
+  height: 35px;
+  border-radius: 70%;
+  overflow: hidden;
+  background : #F5F6FA;
+  border:none;
+}
+
+.members{
+  display: flex;
+  margin-right: 13px;
+  margin-left: 40px;
+  margin-top: 25px;
+  line-height: 35px;
+}
+.user-name-1{
+  margin-left: 10px;
+  font-weight: 500;
 }
 </style>
