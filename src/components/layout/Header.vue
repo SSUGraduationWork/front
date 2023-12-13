@@ -140,7 +140,7 @@ export default {
 }
 .header-right-div{
   float: right;
-  width: 320px;
+  width: 400px;
   height: 50px;
   position: fixed;
   right: 10px;
