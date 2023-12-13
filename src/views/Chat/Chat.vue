@@ -87,13 +87,14 @@ const backgroundColor = ref("#F5F6FA")
 const localVideo = ref(null);
 const localStream = ref(null);
 const voiceChatMembers = ref({});
-const chatURI = "http://localhost:3001";
+const wsURI = process.env.VUE_APP_WS_URI;
 
-const socket = io(chatURI, {
+
+const socket = io(wsURI, {
   withCredentials: true,
   extraHeaders: {
     "extra-custom-headers": "localhost"
-  }
+  },
 });
 
 
@@ -116,7 +117,7 @@ onBeforeMount(() => {
   
 });
 
-axios.get(`${chatURI}/chats/${teamId}`)
+axiosInstance.get(`/chat-service/${teamId}`)
   .then((res) => {
     const chats = res.data.chats;
     chats.forEach((val, i, arr) => {
@@ -174,25 +175,31 @@ const enterVoiceChat = () => {
     const video = localVideo.value;
     video.srcObject = null; // Remove the video stream
     delete voiceChatMembers.value.userId;
+
+    
     return 
   }
+
   navigator.mediaDevices.getUserMedia({audio: true})
         .then((stream) => {
           video.srcObject = stream;
           console.log(stream);
           localStream.value = stream;
+          voiceChatMembers.value[userId] = userId;
+
+          socket.emit("voice_chat_room", teamId, userId, () => {
+            console.log('hi')
+          });
         })
         .catch((err) => {
           console.log("Error accessing media devices", err);
         })
-  voiceChatMembers.value[userId] = userId;
 }
 
 
 </script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=REM:ital,wght@1,800&display=swap');
-*{}
 .chat{
   width: 100%;
   height: 91vh;
